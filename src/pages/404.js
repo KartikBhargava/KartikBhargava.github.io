@@ -1,16 +1,16 @@
 import React from "react"
-import Layout from "../components/layout"
-import SEO from "../components/seo"
 
 const NotFoundPage = () => {
   return (
-    <Layout>
-      <SEO title="404: Not found" />
-      <div>
-        <h1>404: Not Found</h1>
-        <p>You just hit a route that doesn't exist... the sadness.</p>
-      </div>
-    </Layout>
+    <div style={{ 
+      padding: "2rem", 
+      fontFamily: "Arial, sans-serif",
+      textAlign: "center"
+    }}>
+      <h1>404 - Page Not Found</h1>
+      <p>Sorry, the page you're looking for doesn't exist.</p>
+      <a href="/" style={{ color: "#0066cc" }}>← Go back home</a>
+    </div>
   )
 }
 

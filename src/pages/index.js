@@ -1,20 +1,24 @@
 import React from "react"
-import Layout from "../components/layout"
-import SEO from "../components/seo"
 
 const IndexPage = () => {
   return (
-    <Layout>
-      <SEO title="Home" />
-      <div>
-        <h1>Welcome to Your Tech Blog</h1>
-        <p>This is a Gatsby-powered tech blog. Start writing your first post!</p>
-        <p>
-          Your blog is now successfully deployed and ready for content. 
-          Add your blog posts in the <code>content/blog/</code> directory.
-        </p>
-      </div>
-    </Layout>
+    <div style={{ 
+      padding: "2rem", 
+      fontFamily: "Arial, sans-serif",
+      maxWidth: "800px",
+      margin: "0 auto"
+    }}>
+      <h1>🚀 Your Tech Blog</h1>
+      <p>Welcome to your new Gatsby-powered tech blog!</p>
+      <p>The site is now working and ready for deployment. ✅</p>
+      
+      <h2>Next Steps:</h2>
+      <ul>
+        <li>Add your first blog post</li>
+        <li>Customize the design</li>
+        <li>Add more features</li>
+      </ul>
+    </div>
   )
 }
 

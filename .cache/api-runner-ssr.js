@@ -1,16 +1,4 @@
 var plugins = [{
-      name: 'gatsby-plugin-react-helmet',
-      plugin: require('D:/Gatsby/tech-blog-kartik-bhargava/node_modules/gatsby-plugin-react-helmet/gatsby-ssr.js'),
-      options: {"plugins":[]},
-    },{
-      name: 'gatsby-plugin-image',
-      plugin: require('D:/Gatsby/tech-blog-kartik-bhargava/node_modules/gatsby-plugin-image/gatsby-ssr.js'),
-      options: {"plugins":[]},
-    },{
-      name: 'gatsby-plugin-sitemap',
-      plugin: require('D:/Gatsby/tech-blog-kartik-bhargava/node_modules/gatsby-plugin-sitemap/gatsby-ssr.js'),
-      options: {"plugins":[],"output":"/","createLinkInHead":true,"entryLimit":45000,"query":"{ site { siteMetadata { siteUrl } } allSitePage { nodes { path } } }","excludes":[]},
-    },{
       name: 'default-site-plugin',
       plugin: require('D:/Gatsby/tech-blog-kartik-bhargava/gatsby-ssr.js'),
       options: {"plugins":[]},
