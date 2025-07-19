@@ -1,12 +1,10 @@
 module.exports = {
-  pathPrefix: "/my-tech-blog",
+  // Remove pathPrefix completely
   siteMetadata: {
-    title: `Your Tech Blog`,
-    description: `A blog about technology`,
-    author: `Your Name`,
-    siteUrl: `https://kartikbhargava.github.io/my-tech-blog`,
+    title: `Kartik Bhargava - Tech Blog`,
+    description: `Technology, programming, and development insights`,
+    author: `Kartik Bhargava`,
+    siteUrl: `https://kartikbhargava.github.io`, // No subdirectory
   },
-  plugins: [
-    // Just the essentials for now
-  ],
+  plugins: [],
 }

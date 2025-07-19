@@ -27,7 +27,7 @@ jobs:
       run: npm ci
 
     - name: Build
-      run: npm run build
+      run: npm run build  # Remove --prefix-paths
       env:
         CI: true
         GATSBY_CPU_COUNT: 1
