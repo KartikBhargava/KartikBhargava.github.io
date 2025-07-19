@@ -1,24 +1,43 @@
-import React from "react"
+import React, { useState } from "react"
+import Layout from "../components/layout/layout"
+import HomeSection from "../components/sections/homeSection"
+import AboutSection from "../components/sections/aboutSection"
+import WritingSection from "../components/sections/writingSection"
+import ContactSection from "../components/sections/contactSection"
 
 const IndexPage = () => {
+  const [activeSection, setActiveSection] = useState('home')
+
+  const sections = {
+    home: 'Home',
+    about: 'About',
+    writing: 'Writing',
+    contact: 'Contact'
+  }
+
+  const renderContent = () => {
+    switch(activeSection) {
+      case 'home':
+        return <HomeSection setActiveSection={setActiveSection} />
+      case 'about':
+        return <AboutSection />
+      case 'writing':
+        return <WritingSection />
+      case 'contact':
+        return <ContactSection />
+      default:
+        return <HomeSection setActiveSection={setActiveSection} />
+    }
+  }
+
   return (
-    <div style={{ 
-      padding: "2rem", 
-      fontFamily: "Arial, sans-serif",
-      maxWidth: "800px",
-      margin: "0 auto"
-    }}>
-      <h1>🚀 Your Tech Blog</h1>
-      <p>Welcome to your new Gatsby-powered tech blog!</p>
-      <p>The site is now working and ready for deployment. ✅</p>
-      
-      <h2>Next Steps:</h2>
-      <ul>
-        <li>Add your first blog post</li>
-        <li>Customize the design</li>
-        <li>Add more features</li>
-      </ul>
-    </div>
+    <Layout 
+      activeSection={activeSection} 
+      setActiveSection={setActiveSection} 
+      sections={sections}
+    >
+      {renderContent()}
+    </Layout>
   )
 }
 
