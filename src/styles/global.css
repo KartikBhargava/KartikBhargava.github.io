@@ -12,20 +12,6 @@ body {
   background-color: #fafafa;
 }
 
-/* Layout */
-.layout {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-
-.main-content {
-  flex: 1;
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 2rem 1rem;
-}
-
 /* Typography */
 h1, h2, h3, h4, h5, h6 {
   margin-bottom: 1rem;
@@ -39,6 +25,40 @@ h3 { font-size: 1.5rem; }
 
 p {
   margin-bottom: 1rem;
+}
+
+/* Links */
+a {
+  color: #663399;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Code */
+code {
+  background-color: #f1f3f4;
+  padding: 0.2rem 0.4rem;
+  border-radius: 3px;
+  font-family: 'Courier New', monospace;
+  font-size: 0.9rem;
+}
+
+pre {
+  background-color: #2d3748;
+  color: #e2e8f0;
+  padding: 1rem;
+  border-radius: 0.3rem;
+  overflow-x: auto;
+  margin: 1rem 0;
+}
+
+pre code {
+  background-color: transparent;
+  padding: 0;
+  color: inherit;
 }
 
 /* Blog post styles */
@@ -60,6 +80,7 @@ p {
   display: flex;
   gap: 0.5rem;
   margin-bottom: 2rem;
+  flex-wrap: wrap;
 }
 
 .tag {
@@ -71,31 +92,6 @@ p {
   font-weight: 500;
 }
 
-/* Code highlighting */
-.gatsby-highlight {
-  background-color: #2d3748;
-  border-radius: 0.3rem;
-  margin: 1rem 0;
-  padding: 1rem;
-  overflow: auto;
-}
-
-.gatsby-highlight pre[class*="language-"] {
-  margin: 0;
-  padding: 0;
-  background-color: transparent;
-  float: left;
-  min-width: 100%;
-}
-
-code[class*="language-"],
-pre[class*="language-"] {
-  color: #e2e8f0;
-  font-family: 'Fira Code', Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
-  font-size: 0.9rem;
-  line-height: 1.5;
-}
-
 /* Navigation */
 .post-navigation {
   display: flex;
@@ -105,24 +101,11 @@ pre[class*="language-"] {
   border-top: 1px solid #eee;
 }
 
-.post-navigation a {
-  color: #0066cc;
-  text-decoration: none;
-  font-weight: 500;
-}
-
-.post-navigation a:hover {
-  text-decoration: underline;
-}
-
 /* Responsive design */
 @media (max-width: 768px) {
-  .main-content {
-    padding: 1rem;
-  }
-  
   .blog-post {
     padding: 1rem;
+    margin: 1rem;
   }
   
   h1 { font-size: 2rem; }

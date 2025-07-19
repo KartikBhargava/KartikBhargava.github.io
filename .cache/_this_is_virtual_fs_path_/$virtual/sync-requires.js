@@ -10,6 +10,6 @@ exports.components = {
   "component---src-pages-page-2-js": preferDefault(require("D:\\Gatsby\\tech-blog-kartik-bhargava\\src\\pages\\page-2.js")),
   "component---src-pages-using-ssr-js": preferDefault(require("D:\\Gatsby\\tech-blog-kartik-bhargava\\src\\pages\\using-ssr.js")),
   "component---src-pages-using-typescript-tsx": preferDefault(require("D:\\Gatsby\\tech-blog-kartik-bhargava\\src\\pages\\using-typescript.tsx")),
-  "component---src-templates-using-dsg-js": preferDefault(require("D:\\Gatsby\\tech-blog-kartik-bhargava\\src\\templates\\using-dsg.js"))
+  "component---src-templates-blog-post-js": preferDefault(require("D:\\Gatsby\\tech-blog-kartik-bhargava\\src\\templates\\blog-post.js"))
 }
 
