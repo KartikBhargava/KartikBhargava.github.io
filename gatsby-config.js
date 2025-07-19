@@ -1,9 +1,13 @@
 module.exports = {
+  // Add pathPrefix for GitHub Pages (replace with your repo name)
+  pathPrefix: "/my-tech-blog",
+  
   siteMetadata: {
     title: `Your Tech Blog`,
     description: `A blog about technology, programming, and development`,
     author: `Your Name`,
-    siteUrl: `https://yourdomain.com`,
+    // Update with your GitHub Pages URL
+    siteUrl: `https://kartikbhargava.github.io/my-tech-blog`,
   },
   plugins: [
     `gatsby-plugin-react-helmet`,
