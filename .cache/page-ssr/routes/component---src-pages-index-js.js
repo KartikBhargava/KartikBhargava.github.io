@@ -25,6 +25,25 @@ const Header = ({
     0: mobileMenuOpen,
     1: setMobileMenuOpen
   } = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
+  const {
+    0: isMobile,
+    1: setIsMobile
+  } = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    // Check if we're on the client side
+    const checkScreenSize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    // Initial check
+    checkScreenSize();
+
+    // Add event listener for window resize
+    window.addEventListener('resize', checkScreenSize);
+
+    // Cleanup
+    return () => window.removeEventListener('resize', checkScreenSize);
+  }, []);
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("header", {
     style: {
       background: "white",
@@ -37,7 +56,6 @@ const Header = ({
       maxWidth: "1200px",
       margin: "0 auto",
       padding: "0 1rem",
-      // Reduced padding on mobile
       display: "flex",
       justifyContent: "space-between",
       alignItems: "center"
@@ -45,7 +63,6 @@ const Header = ({
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     style: {
       fontSize: "1.25rem",
-      // Smaller on mobile
       fontWeight: "700",
       color: "#1f2937",
       display: "flex",
@@ -54,11 +71,11 @@ const Header = ({
     }
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", null, "\uD83E\uDD16"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
     style: {
-      display: window.innerWidth < 640 ? "none" : "inline" // Hide name on very small screens
+      display: isMobile ? "none" : "inline"
     }
   }, "Kartik Bhargava")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("nav", {
     style: {
-      display: window.innerWidth >= 768 ? "flex" : "none",
+      display: isMobile ? "none" : "flex",
       gap: "0.5rem"
     }
   }, Object.entries(sections).map(([key, label]) => /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", {
@@ -69,10 +86,8 @@ const Header = ({
       background: activeSection === key ? "rgba(52, 168, 83, 0.1)" : "transparent",
       border: "none",
       padding: "0.75rem 1rem",
-      // Smaller padding
       borderRadius: "8px",
       fontSize: "0.9rem",
-      // Smaller font
       fontWeight: "600",
       cursor: "pointer",
       transition: "all 0.2s ease"
@@ -80,14 +95,14 @@ const Header = ({
   }, label))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", {
     onClick: () => setMobileMenuOpen(!mobileMenuOpen),
     style: {
-      display: window.innerWidth < 768 ? "block" : "none",
+      display: isMobile ? "block" : "none",
       background: "transparent",
       border: "none",
       fontSize: "1.5rem",
       cursor: "pointer",
       padding: "0.5rem"
     }
-  }, mobileMenuOpen ? "✕" : "☰")), mobileMenuOpen && window.innerWidth < 768 && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+  }, mobileMenuOpen ? "✕" : "☰")), mobileMenuOpen && isMobile && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     style: {
       background: "white",
       borderTop: "1px solid #e2e8f0",
@@ -700,6 +715,8 @@ const PortfolioSection = () => {
     0: selectedCategory,
     1: setSelectedCategory
   } = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)('all');
+  const isMobile = typeof window !== 'undefined' ? window.innerWidth < 768 : false;
+  const isTablet = typeof window !== 'undefined' ? window.innerWidth < 1024 : false;
   const categories = {
     all: 'All Projects',
     featured: 'Featured',
@@ -790,157 +807,210 @@ const PortfolioSection = () => {
         return '#6b7280';
     }
   };
+
+  // Simple ProjectCard Component
   const ProjectCard = ({
-    project
-  }) => /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_ui_card__WEBPACK_IMPORTED_MODULE_1__["default"], {
-    style: {
-      height: "auto",
-      display: "flex",
-      flexDirection: "column",
-      transition: "all 0.2s ease"
-    }
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    style: {
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "space-between",
-      marginBottom: "1rem"
-    }
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    style: {
-      display: "flex",
-      alignItems: "center",
-      gap: "1rem"
-    }
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    style: {
-      fontSize: "3rem"
-    }
-  }, project.image), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h3", {
-    style: {
-      fontSize: "1.4rem",
-      fontWeight: "600",
-      color: "#1f2937",
-      marginBottom: "0.5rem"
-    }
-  }, project.title), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    style: {
-      display: "inline-block",
-      background: getStatusColor(project.status),
-      color: "white",
-      padding: "0.25rem 0.75rem",
-      borderRadius: "12px",
-      fontSize: "0.75rem",
-      fontWeight: "600"
-    }
-  }, project.status)))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", {
-    style: {
-      fontSize: "1rem",
-      color: "#4b5563",
-      lineHeight: "1.6",
-      marginBottom: "1.5rem"
-    }
-  }, project.description), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    style: {
-      marginBottom: "1.5rem"
-    }
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h4", {
-    style: {
-      fontSize: "0.9rem",
-      fontWeight: "600",
-      color: "#374151",
-      marginBottom: "0.75rem"
-    }
-  }, "Project Highlights:"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    style: {
-      display: "flex",
-      flexWrap: "wrap",
-      gap: "0.5rem"
-    }
-  }, project.highlights.map(highlight => /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
-    key: highlight,
-    style: {
-      background: "#34a853",
-      color: "white",
-      padding: "0.25rem 0.75rem",
-      borderRadius: "12px",
-      fontSize: "0.75rem",
-      fontWeight: "500"
-    }
-  }, highlight)))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    style: {
-      marginBottom: "1.5rem"
-    }
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    style: {
-      display: "flex",
-      flexWrap: "wrap",
-      gap: "0.5rem"
-    }
-  }, project.technologies.map(tech => /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
-    key: tech,
-    style: {
-      background: "#f3f4f6",
-      color: "#374151",
-      padding: "0.25rem 0.75rem",
-      borderRadius: "12px",
-      fontSize: "0.75rem",
-      fontWeight: "500"
-    }
-  }, tech)))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    style: {
-      marginBottom: "1.5rem",
-      flex: 1
-    }
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h4", {
-    style: {
-      fontSize: "0.9rem",
-      fontWeight: "600",
-      color: "#374151",
-      marginBottom: "0.75rem"
-    }
-  }, "Key Features:"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("ul", {
-    style: {
-      fontSize: "0.85rem",
-      color: "#6b7280",
-      lineHeight: "1.5",
-      paddingLeft: "1rem",
-      margin: 0
-    }
-  }, project.features.slice(0, 3).map((feature, index) => /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
-    key: index,
-    style: {
-      marginBottom: "0.25rem"
-    }
-  }, feature)))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    style: {
-      display: "flex",
-      gap: "1rem",
-      marginTop: "auto"
-    }
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_ui_buttons__WEBPACK_IMPORTED_MODULE_2__["default"], {
-    variant: "primary",
-    style: {
-      background: "#1f2937",
-      padding: "0.75rem 1.5rem",
-      fontSize: "0.9rem",
-      flex: 1
-    },
-    onClick: () => window.open(project.githubUrl, '_blank')
-  }, "\uD83D\uDC19 View Code"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_ui_buttons__WEBPACK_IMPORTED_MODULE_2__["default"], {
-    variant: "secondary",
-    style: {
-      padding: "0.75rem 1.5rem",
-      fontSize: "0.9rem",
-      flex: 1
-    },
-    onClick: () => {/* Handle demo/preview */}
-  }, "\uD83D\uDCF1 Preview")));
+    project,
+    index
+  }) => {
+    const {
+      0: isExpanded,
+      1: setIsExpanded
+    } = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
+    const {
+      0: isHovered,
+      1: setIsHovered
+    } = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
+    return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_ui_card__WEBPACK_IMPORTED_MODULE_1__["default"], {
+      style: {
+        height: "auto",
+        display: "flex",
+        flexDirection: "column",
+        padding: isMobile ? "1.5rem" : "2rem",
+        transition: "all 0.3s ease",
+        transform: isHovered ? "translateY(-4px)" : "translateY(0)",
+        boxShadow: isHovered ? "0 12px 40px rgba(0,0,0,0.15)" : "0 4px 6px rgba(0,0,0,0.05)"
+      },
+      onMouseEnter: () => !isMobile && setIsHovered(true),
+      onMouseLeave: () => setIsHovered(false)
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+      style: {
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        marginBottom: "1rem",
+        flexDirection: isMobile ? "column" : "row",
+        gap: isMobile ? "1rem" : "0"
+      }
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+      style: {
+        display: "flex",
+        alignItems: "center",
+        gap: "1rem",
+        width: "100%"
+      }
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+      style: {
+        fontSize: isMobile ? "2.5rem" : "3rem",
+        flexShrink: 0,
+        transition: "transform 0.3s ease",
+        cursor: "pointer",
+        transform: isHovered ? "scale(1.1)" : "scale(1)"
+      }
+    }, project.image), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+      style: {
+        flex: 1
+      }
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h3", {
+      style: {
+        fontSize: isMobile ? "1.2rem" : "1.4rem",
+        fontWeight: "600",
+        color: "#1f2937",
+        marginBottom: "0.5rem",
+        lineHeight: "1.2"
+      }
+    }, project.title), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+      style: {
+        display: "inline-block",
+        background: getStatusColor(project.status),
+        color: "white",
+        padding: "0.25rem 0.75rem",
+        borderRadius: "12px",
+        fontSize: "0.75rem",
+        fontWeight: "600",
+        position: "relative"
+      }
+    }, project.status)))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", {
+      style: {
+        fontSize: isMobile ? "0.9rem" : "1rem",
+        color: "#4b5563",
+        lineHeight: "1.6",
+        marginBottom: "1.5rem"
+      }
+    }, project.description), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+      style: {
+        marginBottom: "1.5rem"
+      }
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h4", {
+      style: {
+        fontSize: "0.9rem",
+        fontWeight: "600",
+        color: "#374151",
+        marginBottom: "0.75rem"
+      }
+    }, "Project Highlights:"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+      style: {
+        display: "flex",
+        flexWrap: "wrap",
+        gap: "0.5rem"
+      }
+    }, project.highlights.map(highlight => /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
+      key: highlight,
+      style: {
+        background: "#34a853",
+        color: "white",
+        padding: "0.25rem 0.75rem",
+        borderRadius: "12px",
+        fontSize: "0.75rem",
+        fontWeight: "500",
+        cursor: "default",
+        display: "inline-block"
+      }
+    }, highlight)))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+      style: {
+        marginBottom: "1.5rem"
+      }
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+      style: {
+        display: "flex",
+        flexWrap: "wrap",
+        gap: "0.5rem"
+      }
+    }, project.technologies.map(tech => /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
+      key: tech,
+      style: {
+        background: "#f3f4f6",
+        color: "#374151",
+        padding: "0.25rem 0.75rem",
+        borderRadius: "12px",
+        fontSize: "0.75rem",
+        fontWeight: "500",
+        cursor: "default",
+        display: "inline-block"
+      }
+    }, tech)))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+      style: {
+        marginBottom: "1.5rem",
+        flex: 1
+      }
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", {
+      onClick: () => setIsExpanded(!isExpanded),
+      style: {
+        background: "none",
+        border: "none",
+        fontSize: "0.9rem",
+        fontWeight: "600",
+        color: "#374151",
+        marginBottom: "0.75rem",
+        cursor: "pointer",
+        display: "flex",
+        alignItems: "center",
+        gap: "0.5rem",
+        padding: 0
+      }
+    }, "Key Features:", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
+      style: {
+        transition: "transform 0.3s ease",
+        transform: isExpanded ? "rotate(180deg)" : "rotate(0deg)"
+      }
+    }, "\u25BC")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+      style: {
+        maxHeight: isExpanded ? "200px" : "80px",
+        overflow: "hidden",
+        transition: "max-height 0.4s ease"
+      }
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("ul", {
+      style: {
+        fontSize: "0.85rem",
+        color: "#6b7280",
+        lineHeight: "1.5",
+        paddingLeft: "1rem",
+        margin: 0
+      }
+    }, project.features.map((feature, featureIndex) => /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
+      key: featureIndex,
+      style: {
+        marginBottom: "0.25rem",
+        opacity: isExpanded ? 1 : featureIndex < 2 ? 1 : 0.3,
+        transition: "opacity 0.3s ease"
+      }
+    }, feature))))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+      style: {
+        display: "flex",
+        gap: "1rem",
+        marginTop: "auto",
+        flexDirection: isMobile ? "column" : "row"
+      }
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_ui_buttons__WEBPACK_IMPORTED_MODULE_2__["default"], {
+      variant: "primary",
+      style: {
+        background: "#1f2937",
+        flex: 1
+      },
+      onClick: () => window.open(project.githubUrl, '_blank')
+    }, "\uD83D\uDC19 View Code"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_ui_buttons__WEBPACK_IMPORTED_MODULE_2__["default"], {
+      variant: "secondary",
+      style: {
+        flex: 1
+      },
+      onClick: () => {/* Handle demo/preview */}
+    }, "\uD83D\uDCF1 Preview")));
+  };
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     style: {
       maxWidth: "1200px",
       margin: "0 auto",
-      padding: "3rem 2rem 2rem",
+      padding: isMobile ? "2rem 1rem" : "3rem 2rem 2rem",
       minHeight: "100%",
       display: "flex",
       flexDirection: "column"
@@ -948,28 +1018,31 @@ const PortfolioSection = () => {
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     style: {
       textAlign: "center",
-      marginBottom: "3rem"
+      marginBottom: isMobile ? "2rem" : "3rem"
     }
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h2", {
     style: {
-      fontSize: "3rem",
+      fontSize: isMobile ? "2rem" : "3rem",
       marginBottom: "1rem",
       fontWeight: "700",
       color: "#1f2937"
     }
   }, "My Android Projects"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", {
     style: {
-      fontSize: "1.2rem",
+      fontSize: isMobile ? "1rem" : "1.2rem",
       color: "#6b7280",
       maxWidth: "600px",
-      margin: "0 auto"
+      margin: "0 auto",
+      lineHeight: "1.6"
     }
   }, "Personal projects showcasing Android development skills, learning journey, and exploration of modern Android technologies")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     style: {
       display: "flex",
       justifyContent: "center",
-      gap: "1rem",
-      marginBottom: "3rem"
+      gap: isMobile ? "0.5rem" : "1rem",
+      marginBottom: isMobile ? "2rem" : "3rem",
+      flexWrap: "wrap",
+      padding: isMobile ? "0 0.5rem" : "0"
     }
   }, Object.entries(categories).map(([key, label]) => /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", {
     key: key,
@@ -978,34 +1051,50 @@ const PortfolioSection = () => {
       background: selectedCategory === key ? "#34a853" : "transparent",
       color: selectedCategory === key ? "white" : "#6b7280",
       border: selectedCategory === key ? "none" : "2px solid #e5e7eb",
-      padding: "0.75rem 1.5rem",
+      padding: isMobile ? "0.5rem 1rem" : "0.75rem 1.5rem",
       borderRadius: "25px",
-      fontSize: "0.9rem",
+      fontSize: isMobile ? "0.8rem" : "0.9rem",
       fontWeight: "600",
       cursor: "pointer",
-      transition: "all 0.2s ease"
+      transition: "all 0.3s ease",
+      minWidth: isMobile ? "auto" : "120px",
+      textAlign: "center",
+      boxShadow: selectedCategory === key ? "0 4px 12px rgba(52, 168, 83, 0.3)" : "none"
+    },
+    onMouseEnter: e => {
+      if (!isMobile && selectedCategory !== key) {
+        e.target.style.transform = "translateY(-2px)";
+        e.target.style.borderColor = "#34a853";
+      }
+    },
+    onMouseLeave: e => {
+      if (selectedCategory !== key) {
+        e.target.style.transform = "translateY(0)";
+        e.target.style.borderColor = "#e5e7eb";
+      }
     }
   }, label))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     style: {
       display: "grid",
-      gridTemplateColumns: "repeat(auto-fit, minmax(400px, 1fr))",
-      gap: "2rem",
+      gridTemplateColumns: isMobile ? "1fr" : isTablet ? "1fr" : "repeat(auto-fit, minmax(400px, 1fr))",
+      gap: isMobile ? "1.5rem" : "2rem",
       marginBottom: "3rem"
     }
-  }, filteredProjects.map(project => /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(ProjectCard, {
+  }, filteredProjects.map((project, index) => /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(ProjectCard, {
     key: project.id,
-    project: project
+    project: project,
+    index: index
   }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     style: {
       marginTop: "3rem",
       background: "#f8fafc",
       borderRadius: "16px",
-      padding: "2rem",
+      padding: isMobile ? "1.5rem" : "2rem",
       border: "1px solid #e2e8f0"
     }
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h3", {
     style: {
-      fontSize: "1.5rem",
+      fontSize: isMobile ? "1.2rem" : "1.5rem",
       fontWeight: "600",
       color: "#1f2937",
       textAlign: "center",
@@ -1014,63 +1103,48 @@ const PortfolioSection = () => {
   }, "My Android Learning Journey"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     style: {
       display: "grid",
-      gridTemplateColumns: "repeat(4, 1fr)",
-      gap: "2rem",
+      gridTemplateColumns: isMobile ? "repeat(2, 1fr)" : "repeat(4, 1fr)",
+      gap: isMobile ? "1.5rem" : "2rem",
       textAlign: "center"
     }
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+  }, [{
+    number: "6",
+    label: "Projects Built"
+  }, {
+    number: "8+",
+    label: "Technologies Learned"
+  }, {
+    number: "2+",
+    label: "Years Learning"
+  }, {
+    number: "100%",
+    label: "Passion Driven"
+  }].map((stat, index) => /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    key: index
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     style: {
-      fontSize: "2.5rem",
+      fontSize: isMobile ? "2rem" : "2.5rem",
       fontWeight: "700",
       color: "#34a853",
-      marginBottom: "0.5rem"
+      marginBottom: "0.5rem",
+      transition: "transform 0.3s ease",
+      cursor: "default"
+    },
+    onMouseEnter: e => {
+      if (!isMobile) {
+        e.target.style.transform = "scale(1.1)";
+      }
+    },
+    onMouseLeave: e => {
+      e.target.style.transform = "scale(1)";
     }
-  }, "6"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+  }, stat.number), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     style: {
-      fontSize: "0.9rem",
+      fontSize: isMobile ? "0.8rem" : "0.9rem",
       color: "#6b7280",
       fontWeight: "500"
     }
-  }, "Projects Built")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    style: {
-      fontSize: "2.5rem",
-      fontWeight: "700",
-      color: "#34a853",
-      marginBottom: "0.5rem"
-    }
-  }, "8+"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    style: {
-      fontSize: "0.9rem",
-      color: "#6b7280",
-      fontWeight: "500"
-    }
-  }, "Technologies Learned")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    style: {
-      fontSize: "2.5rem",
-      fontWeight: "700",
-      color: "#34a853",
-      marginBottom: "0.5rem"
-    }
-  }, "2+"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    style: {
-      fontSize: "0.9rem",
-      color: "#6b7280",
-      fontWeight: "500"
-    }
-  }, "Years Learning")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    style: {
-      fontSize: "2.5rem",
-      fontWeight: "700",
-      color: "#34a853",
-      marginBottom: "0.5rem"
-    }
-  }, "100%"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    style: {
-      fontSize: "0.9rem",
-      color: "#6b7280",
-      fontWeight: "500"
-    }
-  }, "Passion Driven")))));
+  }, stat.label))))));
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (PortfolioSection);
 
@@ -1219,41 +1293,112 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+// src/components/UI/Button.js
 
 const Button = ({
   children,
   variant = "primary",
   onClick,
   style = {},
+  disabled = false,
   ...props
 }) => {
+  const {
+    0: isHovered,
+    1: setIsHovered
+  } = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
+  const {
+    0: isPressed,
+    1: setIsPressed
+  } = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
+  const isMobile = typeof window !== 'undefined' ? window.innerWidth < 768 : false;
+  const handleMouseEnter = () => {
+    if (!isMobile && !disabled) {
+      setIsHovered(true);
+    }
+  };
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+    setIsPressed(false);
+  };
+  const handleMouseDown = () => {
+    if (!disabled) {
+      setIsPressed(true);
+    }
+  };
+  const handleMouseUp = () => {
+    setIsPressed(false);
+  };
+
+  // Define base styles that don't change
   const baseStyle = {
     border: "none",
-    padding: "1rem 2rem",
-    fontSize: "1rem",
+    padding: isMobile ? "0.75rem 1.5rem" : "1rem 2rem",
+    fontSize: isMobile ? "0.9rem" : "1rem",
     borderRadius: "8px",
-    cursor: "pointer",
+    cursor: disabled ? "not-allowed" : "pointer",
     fontWeight: "600",
-    transition: "all 0.2s ease",
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: "0.5rem",
+    userSelect: "none",
+    outline: "none",
+    textDecoration: "none",
+    // Smooth transition for all properties
+    transition: "all 0.2s ease-in-out",
+    opacity: disabled ? 0.6 : 1,
+    // Transform for press effect
+    transform: isPressed ? "translateY(1px) scale(0.98)" : isHovered ? "translateY(-1px)" : "translateY(0px)",
+    // Shadow effects
+    boxShadow: isPressed ? "0 2px 4px rgba(0,0,0,0.1)" : isHovered ? "0 6px 20px rgba(0,0,0,0.15)" : "0 2px 8px rgba(0,0,0,0.1)",
     ...style
   };
-  const variants = {
-    primary: {
-      background: "#3b82f6",
-      color: "white"
-    },
-    secondary: {
-      background: "transparent",
-      color: "#374151",
-      border: "2px solid #d1d5db"
+
+  // Define variant styles with consistent colors
+  const getVariantStyles = () => {
+    switch (variant) {
+      case 'primary':
+        return {
+          backgroundColor: isHovered && !disabled ? "#2563eb" : "#3b82f6",
+          color: "white",
+          border: "2px solid transparent"
+        };
+      case 'secondary':
+        return {
+          backgroundColor: isHovered && !disabled ? "#f9fafb" : "transparent",
+          color: isHovered && !disabled ? "#1f2937" : "#374151",
+          border: `2px solid ${isHovered && !disabled ? "#9ca3af" : "#d1d5db"}`
+        };
+      case 'android':
+        return {
+          backgroundColor: isHovered && !disabled ? "#16a34a" : "#22c55e",
+          color: "white",
+          border: "2px solid transparent"
+        };
+      default:
+        return {
+          backgroundColor: isHovered && !disabled ? "#2563eb" : "#3b82f6",
+          color: "white",
+          border: "2px solid transparent"
+        };
     }
   };
+  const variantStyles = getVariantStyles();
+  const finalStyles = {
+    ...baseStyle,
+    ...variantStyles
+  };
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", Object.assign({
+    onMouseEnter: handleMouseEnter,
+    onMouseLeave: handleMouseLeave,
+    onMouseDown: handleMouseDown,
+    onMouseUp: handleMouseUp,
+    onFocus: handleMouseEnter,
+    onBlur: handleMouseLeave,
     onClick: onClick,
-    style: {
-      ...baseStyle,
-      ...variants[variant]
-    }
+    disabled: disabled,
+    style: finalStyles
   }, props), children);
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Button);
@@ -1272,24 +1417,49 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+// src/components/UI/Card.js
 
 const Card = ({
   children,
   style = {},
   onClick,
+  hover = true,
   ...props
 }) => {
-  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", Object.assign({
-    onClick: onClick,
-    style: {
-      background: "white",
-      padding: "2rem",
-      borderRadius: "12px",
-      border: "1px solid #e2e8f0",
-      cursor: onClick ? "pointer" : "default",
-      transition: "all 0.2s ease",
-      ...style
+  const {
+    0: isHovered,
+    1: setIsHovered
+  } = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
+  const isMobile = typeof window !== 'undefined' ? window.innerWidth < 768 : false;
+  const handleMouseEnter = () => {
+    if (hover && !isMobile) {
+      setIsHovered(true);
     }
+  };
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+  };
+  const baseStyle = {
+    background: "white",
+    padding: isMobile ? "1.5rem" : "2rem",
+    borderRadius: "12px",
+    border: "1px solid #e2e8f0",
+    cursor: onClick ? "pointer" : "default",
+    position: "relative",
+    // Smooth transitions
+    transition: "all 0.3s ease",
+    // Transform and shadow effects
+    transform: isHovered ? "translateY(-4px)" : "translateY(0px)",
+    boxShadow: isHovered ? "0 12px 40px rgba(0,0,0,0.15)" : "0 2px 8px rgba(0,0,0,0.08)",
+    // Border color change on hover
+    borderColor: isHovered ? "#d1d5db" : "#e2e8f0",
+    ...style
+  };
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", Object.assign({
+    onMouseEnter: handleMouseEnter,
+    onMouseLeave: handleMouseLeave,
+    onClick: onClick,
+    style: baseStyle
   }, props), children);
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Card);

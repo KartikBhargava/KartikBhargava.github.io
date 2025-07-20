@@ -1,7 +1,24 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 
 const Header = ({ activeSection, setActiveSection, sections }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
+
+  useEffect(() => {
+    // Check if we're on the client side
+    const checkScreenSize = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+
+    // Initial check
+    checkScreenSize()
+
+    // Add event listener for window resize
+    window.addEventListener('resize', checkScreenSize)
+
+    // Cleanup
+    return () => window.removeEventListener('resize', checkScreenSize)
+  }, [])
 
   return (
     <header style={{
@@ -13,13 +30,13 @@ const Header = ({ activeSection, setActiveSection, sections }) => {
       <div style={{
         maxWidth: "1200px",
         margin: "0 auto",
-        padding: "0 1rem", // Reduced padding on mobile
+        padding: "0 1rem",
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center"
       }}>
         <div style={{ 
-          fontSize: "1.25rem", // Smaller on mobile
+          fontSize: "1.25rem",
           fontWeight: "700",
           color: "#1f2937",
           display: "flex",
@@ -28,7 +45,7 @@ const Header = ({ activeSection, setActiveSection, sections }) => {
         }}>
           <span>🤖</span>
           <span style={{ 
-            display: window.innerWidth < 640 ? "none" : "inline" // Hide name on very small screens
+            display: isMobile ? "none" : "inline"
           }}>
             Kartik Bhargava
           </span>
@@ -36,7 +53,7 @@ const Header = ({ activeSection, setActiveSection, sections }) => {
 
         {/* Desktop Navigation */}
         <nav style={{ 
-          display: window.innerWidth >= 768 ? "flex" : "none",
+          display: isMobile ? "none" : "flex",
           gap: "0.5rem" 
         }}>
           {Object.entries(sections).map(([key, label]) => (
@@ -47,9 +64,9 @@ const Header = ({ activeSection, setActiveSection, sections }) => {
                 color: activeSection === key ? "#34a853" : "#6b7280",
                 background: activeSection === key ? "rgba(52, 168, 83, 0.1)" : "transparent",
                 border: "none",
-                padding: "0.75rem 1rem", // Smaller padding
+                padding: "0.75rem 1rem",
                 borderRadius: "8px",
-                fontSize: "0.9rem", // Smaller font
+                fontSize: "0.9rem",
                 fontWeight: "600",
                 cursor: "pointer",
                 transition: "all 0.2s ease"
@@ -64,7 +81,7 @@ const Header = ({ activeSection, setActiveSection, sections }) => {
         <button
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           style={{
-            display: window.innerWidth < 768 ? "block" : "none",
+            display: isMobile ? "block" : "none",
             background: "transparent",
             border: "none",
             fontSize: "1.5rem",
@@ -77,7 +94,7 @@ const Header = ({ activeSection, setActiveSection, sections }) => {
       </div>
 
       {/* Mobile Navigation Menu */}
-      {mobileMenuOpen && window.innerWidth < 768 && (
+      {mobileMenuOpen && isMobile && (
         <div style={{
           background: "white",
           borderTop: "1px solid #e2e8f0",
