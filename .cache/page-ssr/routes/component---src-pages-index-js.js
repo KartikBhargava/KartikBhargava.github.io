@@ -21,6 +21,10 @@ const Header = ({
   setActiveSection,
   sections
 }) => {
+  const {
+    0: mobileMenuOpen,
+    1: setMobileMenuOpen
+  } = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("header", {
     style: {
       background: "white",
@@ -32,23 +36,29 @@ const Header = ({
     style: {
       maxWidth: "1200px",
       margin: "0 auto",
-      padding: "0 2rem",
+      padding: "0 1rem",
+      // Reduced padding on mobile
       display: "flex",
       justifyContent: "space-between",
       alignItems: "center"
     }
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     style: {
-      fontSize: "1.5rem",
+      fontSize: "1.25rem",
+      // Smaller on mobile
       fontWeight: "700",
       color: "#1f2937",
       display: "flex",
       alignItems: "center",
       gap: "0.5rem"
     }
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", null, "\uD83E\uDD16"), "Kartik Bhargava"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("nav", {
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", null, "\uD83E\uDD16"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
     style: {
-      display: "flex",
+      display: window.innerWidth < 640 ? "none" : "inline" // Hide name on very small screens
+    }
+  }, "Kartik Bhargava")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("nav", {
+    style: {
+      display: window.innerWidth >= 768 ? "flex" : "none",
       gap: "0.5rem"
     }
   }, Object.entries(sections).map(([key, label]) => /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", {
@@ -58,14 +68,53 @@ const Header = ({
       color: activeSection === key ? "#34a853" : "#6b7280",
       background: activeSection === key ? "rgba(52, 168, 83, 0.1)" : "transparent",
       border: "none",
-      padding: "0.75rem 1.5rem",
+      padding: "0.75rem 1rem",
+      // Smaller padding
       borderRadius: "8px",
-      fontSize: "0.95rem",
+      fontSize: "0.9rem",
+      // Smaller font
       fontWeight: "600",
       cursor: "pointer",
       transition: "all 0.2s ease"
     }
-  }, label)))));
+  }, label))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", {
+    onClick: () => setMobileMenuOpen(!mobileMenuOpen),
+    style: {
+      display: window.innerWidth < 768 ? "block" : "none",
+      background: "transparent",
+      border: "none",
+      fontSize: "1.5rem",
+      cursor: "pointer",
+      padding: "0.5rem"
+    }
+  }, mobileMenuOpen ? "✕" : "☰")), mobileMenuOpen && window.innerWidth < 768 && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    style: {
+      background: "white",
+      borderTop: "1px solid #e2e8f0",
+      padding: "1rem",
+      display: "flex",
+      flexDirection: "column",
+      gap: "0.5rem"
+    }
+  }, Object.entries(sections).map(([key, label]) => /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", {
+    key: key,
+    onClick: () => {
+      setActiveSection(key);
+      setMobileMenuOpen(false);
+    },
+    style: {
+      color: activeSection === key ? "#34a853" : "#6b7280",
+      background: activeSection === key ? "rgba(52, 168, 83, 0.1)" : "transparent",
+      border: "none",
+      padding: "1rem",
+      borderRadius: "8px",
+      fontSize: "1rem",
+      fontWeight: "600",
+      cursor: "pointer",
+      transition: "all 0.2s ease",
+      textAlign: "left"
+    }
+  }, label))));
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Header);
 
@@ -92,6 +141,8 @@ const Layout = ({
   setActiveSection,
   sections
 }) => {
+  // Portfolio section needs scrolling, others don't
+  const needsScrolling = activeSection === 'portfolio';
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     style: {
       fontFamily: "-apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif",
@@ -108,7 +159,9 @@ const Layout = ({
   }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("main", {
     style: {
       flex: 1,
-      background: "#fafafa"
+      background: "#fafafa",
+      overflow: needsScrolling ? "auto" : "hidden",
+      display: needsScrolling ? "block" : "flex"
     }
   }, children));
 };
@@ -130,6 +183,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 
 const AboutSection = () => {
+  const isMobile = window.innerWidth < 768;
   const quickFacts = [{
     icon: "📍",
     label: "Based in India"
@@ -144,7 +198,7 @@ const AboutSection = () => {
     style: {
       maxWidth: "1200px",
       margin: "0 auto",
-      padding: "3rem 2rem",
+      padding: isMobile ? "2rem 1rem" : "3rem 2rem",
       height: "100%",
       display: "flex",
       alignItems: "center"
@@ -152,21 +206,25 @@ const AboutSection = () => {
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     style: {
       display: "grid",
-      gridTemplateColumns: "2fr 1fr",
-      gap: "4rem",
+      gridTemplateColumns: isMobile ? "1fr" : "2fr 1fr",
+      gap: isMobile ? "2rem" : "4rem",
       alignItems: "center",
       width: "100%"
     }
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h2", {
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     style: {
-      fontSize: "3rem",
-      marginBottom: "2rem",
+      order: isMobile ? 2 : 1
+    }
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h2", {
+    style: {
+      fontSize: isMobile ? "2rem" : "3rem",
+      marginBottom: "1.5rem",
       fontWeight: "700",
       color: "#1f2937"
     }
   }, "About Me"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     style: {
-      fontSize: "1.2rem",
+      fontSize: isMobile ? "1rem" : "1.2rem",
       color: "#4b5563",
       lineHeight: "1.7",
       marginBottom: "2rem"
@@ -185,7 +243,7 @@ const AboutSection = () => {
     }
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h3", {
     style: {
-      fontSize: "1.3rem",
+      fontSize: isMobile ? "1.1rem" : "1.3rem",
       fontWeight: "600",
       color: "#1f2937",
       marginBottom: "1rem"
@@ -193,7 +251,7 @@ const AboutSection = () => {
   }, "Android Expertise"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     style: {
       display: "grid",
-      gridTemplateColumns: "1fr 1fr",
+      gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
       gap: "1rem"
     }
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h4", {
@@ -248,36 +306,42 @@ const AboutSection = () => {
     style: {
       background: "#f8fafc",
       borderRadius: "16px",
-      padding: "2rem",
+      padding: isMobile ? "1.5rem" : "2rem",
       border: "1px solid #e2e8f0",
-      textAlign: "center"
+      textAlign: "center",
+      order: isMobile ? 1 : 2
     }
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h3", {
     style: {
-      fontSize: "1.5rem",
+      fontSize: isMobile ? "1.2rem" : "1.5rem",
       fontWeight: "600",
       color: "#1f2937",
-      marginBottom: "2rem"
+      marginBottom: "1.5rem"
     }
   }, "Quick Facts"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     style: {
       display: "flex",
-      flexDirection: "column",
-      gap: "1.5rem"
+      flexDirection: isMobile ? "row" : "column",
+      justifyContent: isMobile ? "space-around" : "center",
+      gap: isMobile ? "1rem" : "1.5rem"
     }
   }, quickFacts.map((fact, index) => /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    key: index
+    key: index,
+    style: {
+      textAlign: "center"
+    }
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     style: {
-      fontSize: "1.8rem",
+      fontSize: "1.5rem",
       fontWeight: "700",
       color: "#34a853"
     }
   }, fact.icon), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", {
     style: {
-      fontSize: "0.9rem",
+      fontSize: "0.8rem",
       color: "#6b7280",
-      marginTop: "0.5rem"
+      marginTop: "0.5rem",
+      whiteSpace: isMobile ? "nowrap" : "normal"
     }
   }, fact.label)))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     style: {
@@ -289,7 +353,7 @@ const AboutSection = () => {
     }
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     style: {
-      fontSize: "1.2rem",
+      fontSize: "1rem",
       fontWeight: "600",
       marginBottom: "0.5rem"
     }
@@ -319,16 +383,17 @@ __webpack_require__.r(__webpack_exports__);
 
 
 const ContactSection = () => {
+  const isMobile = window.innerWidth < 768;
   const contactMethods = [{
     icon: "📧",
     title: "Email",
-    description: "bhargava.kartik07@gmail.com",
-    href: "mailto:bhargava.kartik07@gmail.com"
+    description: "kartik.android@example.com",
+    href: "mailto:kartik.android@example.com"
   }, {
     icon: "💼",
     title: "LinkedIn",
     description: "Connect professionally",
-    href: "www.linkedin.com/in/kartik-bhargava-39586611b"
+    href: "https://linkedin.com/in/kartikbhargava"
   }, {
     icon: "🐙",
     title: "GitHub",
@@ -339,7 +404,7 @@ const ContactSection = () => {
     style: {
       maxWidth: "800px",
       margin: "0 auto",
-      padding: "3rem 2rem",
+      padding: isMobile ? "2rem 1rem" : "3rem 2rem",
       height: "100%",
       display: "flex",
       flexDirection: "column",
@@ -348,24 +413,24 @@ const ContactSection = () => {
     }
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h2", {
     style: {
-      fontSize: "3rem",
+      fontSize: isMobile ? "2rem" : "3rem",
       marginBottom: "1.5rem",
       fontWeight: "700",
       color: "#1f2937"
     }
   }, "Let's Build Something Amazing"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", {
     style: {
-      fontSize: "1.2rem",
-      marginBottom: "3rem",
+      fontSize: isMobile ? "1rem" : "1.2rem",
+      marginBottom: "2rem",
       color: "#6b7280",
       lineHeight: "1.6"
     }
   }, "Looking for an Android developer for your next project? I'm always interested in exciting Android opportunities and challenging mobile app projects."), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     style: {
       display: "grid",
-      gridTemplateColumns: "repeat(3, 1fr)",
-      gap: "2rem",
-      marginBottom: "3rem"
+      gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)",
+      gap: isMobile ? "1rem" : "2rem",
+      marginBottom: isMobile ? "2rem" : "3rem"
     }
   }, contactMethods.map((method, index) => /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("a", {
     key: index,
@@ -377,17 +442,20 @@ const ContactSection = () => {
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_ui_card__WEBPACK_IMPORTED_MODULE_1__["default"], {
     style: {
       display: "flex",
-      flexDirection: "column",
+      flexDirection: isMobile ? "row" : "column",
       alignItems: "center",
-      textAlign: "center",
+      textAlign: isMobile ? "left" : "center",
+      gap: isMobile ? "1rem" : "0",
+      padding: isMobile ? "1.5rem" : "2rem",
       transition: "all 0.2s ease"
     }
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     style: {
-      fontSize: "2.5rem",
-      marginBottom: "1rem"
+      fontSize: "2rem",
+      marginBottom: isMobile ? "0" : "1rem",
+      flexShrink: 0
     }
-  }, method.icon), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h3", {
+  }, method.icon), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h3", {
     style: {
       fontSize: "1.1rem",
       fontWeight: "600",
@@ -396,46 +464,49 @@ const ContactSection = () => {
   }, method.title), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", {
     style: {
       fontSize: "0.9rem",
-      color: "#6b7280"
+      color: "#6b7280",
+      margin: 0
     }
-  }, method.description))))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+  }, method.description)))))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     style: {
       display: "grid",
-      gridTemplateColumns: "1fr 1fr",
-      gap: "2rem"
+      gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
+      gap: isMobile ? "1rem" : "2rem"
     }
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_ui_card__WEBPACK_IMPORTED_MODULE_1__["default"], {
     style: {
       background: "#f8fafc",
-      textAlign: "center"
+      textAlign: "center",
+      padding: isMobile ? "1.5rem" : "2rem"
     }
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h3", {
     style: {
-      fontSize: "1.3rem",
+      fontSize: isMobile ? "1.1rem" : "1.3rem",
       fontWeight: "600",
       color: "#1f2937",
       marginBottom: "1rem"
     }
   }, "Response Time"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", {
     style: {
-      fontSize: "1rem",
+      fontSize: isMobile ? "0.9rem" : "1rem",
       color: "#6b7280"
     }
   }, "I typically respond within 24 hours. For urgent Android projects, LinkedIn is the fastest way to reach me.")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_ui_card__WEBPACK_IMPORTED_MODULE_1__["default"], {
     style: {
       background: "#34a853",
       color: "white",
-      textAlign: "center"
+      textAlign: "center",
+      padding: isMobile ? "1.5rem" : "2rem"
     }
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h3", {
     style: {
-      fontSize: "1.3rem",
+      fontSize: isMobile ? "1.1rem" : "1.3rem",
       fontWeight: "600",
       marginBottom: "1rem"
     }
   }, "Availability"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", {
     style: {
-      fontSize: "1rem",
+      fontSize: isMobile ? "0.9rem" : "1rem",
       opacity: "0.9"
     }
   }, "Open to freelance Android projects and full-time opportunities. Remote work preferred."))));
@@ -465,67 +536,75 @@ const HomeSection = ({
   setActiveSection
 }) => {
   const androidTechnologies = ["Kotlin", "Java", "Jetpack Compose", "Android Studio", "Firebase", "Room", "Retrofit", "Coroutines"];
+  const isMobile = window.innerWidth < 768;
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     style: {
       display: "grid",
-      gridTemplateColumns: "1fr 1fr",
-      gap: "4rem",
+      gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
+      gap: isMobile ? "2rem" : "4rem",
       alignItems: "center",
       height: "100%",
       maxWidth: "1200px",
       margin: "0 auto",
-      padding: "2rem"
+      padding: isMobile ? "2rem 1rem" : "2rem"
     }
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    style: {
+      order: isMobile ? 2 : 1
+    }
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     style: {
       display: "inline-block",
       background: "#34a853",
-      // Android green
       color: "white",
       padding: "0.5rem 1rem",
       borderRadius: "6px",
       fontSize: "0.85rem",
       fontWeight: "600",
-      marginBottom: "2rem"
+      marginBottom: "1.5rem"
     }
   }, "\uD83E\uDD16 Open to Android Projects"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h1", {
     style: {
-      fontSize: "3.5rem",
-      marginBottom: "1.5rem",
+      fontSize: isMobile ? "2.5rem" : "3.5rem",
+      marginBottom: "1rem",
       fontWeight: "700",
       lineHeight: "1.1",
       color: "#1f2937"
     }
   }, "Hi, I'm Kartik"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h2", {
     style: {
-      fontSize: "2rem",
-      marginBottom: "2rem",
+      fontSize: isMobile ? "1.5rem" : "2rem",
+      marginBottom: "1.5rem",
       fontWeight: "400",
       color: "#6b7280",
       lineHeight: "1.3"
     }
   }, "Android Developer & Mobile App Architect"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", {
     style: {
-      fontSize: "1.2rem",
-      marginBottom: "3rem",
+      fontSize: isMobile ? "1rem" : "1.2rem",
+      marginBottom: "2rem",
       color: "#4b5563",
-      lineHeight: "1.6",
-      maxWidth: "500px"
+      lineHeight: "1.6"
     }
   }, "I craft native Android applications that deliver exceptional user experiences. Passionate about clean architecture, modern Android development, and building apps that users love."), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     style: {
       display: "flex",
       gap: "1rem",
-      marginBottom: "2rem"
+      marginBottom: "2rem",
+      flexDirection: isMobile ? "column" : "row"
     }
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_ui_buttons__WEBPACK_IMPORTED_MODULE_1__["default"], {
     variant: "primary",
     style: {
-      background: "#34a853"
+      background: "#34a853",
+      width: isMobile ? "100%" : "auto"
     }
   }, "View My Apps"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_ui_buttons__WEBPACK_IMPORTED_MODULE_1__["default"], {
     variant: "secondary",
-    onClick: () => setActiveSection('writing')
+    onClick: () => setActiveSection('writing'),
+    style: {
+      width: isMobile ? "100%" : "auto"
+    }
   }, "Read Android Blog")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     style: {
       marginTop: "2rem"
@@ -549,45 +628,46 @@ const HomeSection = ({
     style: {
       background: "#f8fafc",
       borderRadius: "16px",
-      padding: "3rem",
+      padding: isMobile ? "2rem" : "3rem",
       textAlign: "center",
-      border: "1px solid #e2e8f0"
+      border: "1px solid #e2e8f0",
+      order: isMobile ? 1 : 2
     }
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     style: {
-      fontSize: "6rem",
-      marginBottom: "2rem"
+      fontSize: isMobile ? "4rem" : "6rem",
+      marginBottom: "1.5rem"
     }
   }, "\uD83D\uDCF1"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     style: {
       display: "grid",
       gridTemplateColumns: "1fr 1fr",
-      gap: "2rem",
+      gap: isMobile ? "1rem" : "2rem",
       textAlign: "center"
     }
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     style: {
-      fontSize: "2.5rem",
+      fontSize: isMobile ? "2rem" : "2.5rem",
       fontWeight: "700",
       color: "#34a853",
       marginBottom: "0.5rem"
     }
   }, "5+"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     style: {
-      fontSize: "0.9rem",
+      fontSize: "0.8rem",
       color: "#6b7280",
       fontWeight: "500"
     }
   }, "Years Android Dev")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     style: {
-      fontSize: "2.5rem",
+      fontSize: isMobile ? "2rem" : "2.5rem",
       fontWeight: "700",
       color: "#34a853",
       marginBottom: "0.5rem"
     }
   }, "25+"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     style: {
-      fontSize: "0.9rem",
+      fontSize: "0.8rem",
       color: "#6b7280",
       fontWeight: "500"
     }
@@ -860,8 +940,8 @@ const PortfolioSection = () => {
     style: {
       maxWidth: "1200px",
       margin: "0 auto",
-      padding: "3rem 2rem",
-      height: "100%",
+      padding: "3rem 2rem 2rem",
+      minHeight: "100%",
       display: "flex",
       flexDirection: "column"
     }
@@ -910,8 +990,7 @@ const PortfolioSection = () => {
       display: "grid",
       gridTemplateColumns: "repeat(auto-fit, minmax(400px, 1fr))",
       gap: "2rem",
-      flex: 1,
-      alignContent: "start"
+      marginBottom: "3rem"
     }
   }, filteredProjects.map(project => /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(ProjectCard, {
     key: project.id,
@@ -1013,6 +1092,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 const WritingSection = () => {
+  const isMobile = window.innerWidth < 768;
   const androidBlogPosts = [{
     title: "Building Custom Views with Jetpack Compose",
     excerpt: "Learn how to create reusable custom UI components using Jetpack Compose's powerful composition model.",
@@ -1042,7 +1122,7 @@ const WritingSection = () => {
     style: {
       maxWidth: "1200px",
       margin: "0 auto",
-      padding: "3rem 2rem",
+      padding: isMobile ? "2rem 1rem" : "3rem 2rem",
       height: "100%",
       display: "flex",
       flexDirection: "column",
@@ -1051,31 +1131,32 @@ const WritingSection = () => {
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     style: {
       textAlign: "center",
-      marginBottom: "3rem"
+      marginBottom: isMobile ? "2rem" : "3rem"
     }
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h2", {
     style: {
-      fontSize: "3rem",
+      fontSize: isMobile ? "2rem" : "3rem",
       marginBottom: "1rem",
       fontWeight: "700",
       color: "#1f2937"
     }
   }, "Android Development Blog"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", {
     style: {
-      fontSize: "1.2rem",
+      fontSize: isMobile ? "1rem" : "1.2rem",
       color: "#6b7280"
     }
   }, "Tutorials, tips, and insights from Android development")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     style: {
       display: "grid",
-      gridTemplateColumns: "repeat(2, 1fr)",
-      gap: "2rem"
+      gridTemplateColumns: isMobile ? "1fr" : "repeat(2, 1fr)",
+      gap: isMobile ? "1.5rem" : "2rem"
     }
   }, androidBlogPosts.map((post, index) => /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_ui_card__WEBPACK_IMPORTED_MODULE_1__["default"], {
     key: index,
     onClick: () => {/* Handle blog post click */},
     style: {
-      height: "250px",
+      height: "auto",
+      minHeight: isMobile ? "auto" : "250px",
       display: "flex",
       flexDirection: "column",
       justifyContent: "space-between"
@@ -1093,7 +1174,7 @@ const WritingSection = () => {
     }
   }, post.category), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h4", {
     style: {
-      fontSize: "1.3rem",
+      fontSize: isMobile ? "1.1rem" : "1.3rem",
       marginBottom: "1rem",
       fontWeight: "600",
       color: "#1f2937",
@@ -1103,14 +1184,14 @@ const WritingSection = () => {
     style: {
       color: "#6b7280",
       lineHeight: "1.5",
-      fontSize: "1rem"
+      fontSize: isMobile ? "0.9rem" : "1rem"
     }
   }, post.excerpt)), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     style: {
       display: "flex",
       justifyContent: "space-between",
       alignItems: "center",
-      fontSize: "0.85rem",
+      fontSize: "0.8rem",
       color: "#9ca3af",
       fontWeight: "500",
       marginTop: "1rem"

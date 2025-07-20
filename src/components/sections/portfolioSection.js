@@ -1,10 +1,12 @@
 // src/components/Sections/PortfolioSection.js
-import React, { useState } from "react"
+import React, { useState, useRef, useEffect } from "react"
 import Card from "../ui/card"
 import Button from "../ui/buttons"
 
 const PortfolioSection = () => {
   const [selectedCategory, setSelectedCategory] = useState('all')
+  const isMobile = typeof window !== 'undefined' ? window.innerWidth < 768 : false
+  const isTablet = typeof window !== 'undefined' ? window.innerWidth < 1024 : false
 
   const categories = {
     all: 'All Projects',
@@ -133,177 +135,244 @@ const PortfolioSection = () => {
     }
   }
 
-  const ProjectCard = ({ project }) => (
-    <Card style={{
-      height: "auto",
-      display: "flex",
-      flexDirection: "column",
-      transition: "all 0.2s ease"
-    }}>
-      {/* Project Header */}
-      <div style={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        marginBottom: "1rem"
-      }}>
+  // Simple ProjectCard Component
+  const ProjectCard = ({ project, index }) => {
+    const [isExpanded, setIsExpanded] = useState(false)
+    const [isHovered, setIsHovered] = useState(false)
+
+    return (
+      <Card
+        style={{
+          height: "auto",
+          display: "flex",
+          flexDirection: "column",
+          padding: isMobile ? "1.5rem" : "2rem",
+          transition: "all 0.3s ease",
+          transform: isHovered ? "translateY(-4px)" : "translateY(0)",
+          boxShadow: isHovered 
+            ? "0 12px 40px rgba(0,0,0,0.15)" 
+            : "0 4px 6px rgba(0,0,0,0.05)"
+        }}
+        onMouseEnter={() => !isMobile && setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+      >
+        {/* Project Header */}
         <div style={{
           display: "flex",
           alignItems: "center",
-          gap: "1rem"
+          justifyContent: "space-between",
+          marginBottom: "1rem",
+          flexDirection: isMobile ? "column" : "row",
+          gap: isMobile ? "1rem" : "0"
         }}>
-          <div style={{ fontSize: "3rem" }}>
-            {project.image}
-          </div>
-          <div>
-            <h3 style={{
-              fontSize: "1.4rem",
-              fontWeight: "600",
-              color: "#1f2937",
-              marginBottom: "0.5rem"
-            }}>
-              {project.title}
-            </h3>
-            <div style={{
-              display: "inline-block",
-              background: getStatusColor(project.status),
-              color: "white",
-              padding: "0.25rem 0.75rem",
-              borderRadius: "12px",
-              fontSize: "0.75rem",
-              fontWeight: "600"
-            }}>
-              {project.status}
+          <div style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "1rem",
+            width: "100%"
+          }}>
+            {/* Project Icon */}
+            <div 
+              style={{ 
+                fontSize: isMobile ? "2.5rem" : "3rem",
+                flexShrink: 0,
+                transition: "transform 0.3s ease",
+                cursor: "pointer",
+                transform: isHovered ? "scale(1.1)" : "scale(1)"
+              }}
+            >
+              {project.image}
+            </div>
+            
+            <div style={{ flex: 1 }}>
+              <h3 style={{
+                fontSize: isMobile ? "1.2rem" : "1.4rem",
+                fontWeight: "600",
+                color: "#1f2937",
+                marginBottom: "0.5rem",
+                lineHeight: "1.2"
+              }}>
+                {project.title}
+              </h3>
+              
+              {/* Status Badge */}
+              <div style={{
+                display: "inline-block",
+                background: getStatusColor(project.status),
+                color: "white",
+                padding: "0.25rem 0.75rem",
+                borderRadius: "12px",
+                fontSize: "0.75rem",
+                fontWeight: "600",
+                position: "relative"
+              }}>
+                {project.status}
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Description */}
-      <p style={{
-        fontSize: "1rem",
-        color: "#4b5563",
-        lineHeight: "1.6",
-        marginBottom: "1.5rem"
-      }}>
-        {project.description}
-      </p>
+        {/* Description */}
+        <p style={{
+          fontSize: isMobile ? "0.9rem" : "1rem",
+          color: "#4b5563",
+          lineHeight: "1.6",
+          marginBottom: "1.5rem"
+        }}>
+          {project.description}
+        </p>
 
-      {/* Highlights */}
-      <div style={{ marginBottom: "1.5rem" }}>
-        <h4 style={{
-          fontSize: "0.9rem",
-          fontWeight: "600",
-          color: "#374151",
-          marginBottom: "0.75rem"
-        }}>
-          Project Highlights:
-        </h4>
-        <div style={{
-          display: "flex",
-          flexWrap: "wrap",
-          gap: "0.5rem"
-        }}>
-          {project.highlights.map(highlight => (
-            <span key={highlight} style={{
-              background: "#34a853",
-              color: "white",
-              padding: "0.25rem 0.75rem",
-              borderRadius: "12px",
-              fontSize: "0.75rem",
-              fontWeight: "500"
-            }}>
-              {highlight}
-            </span>
-          ))}
+        {/* Highlights */}
+        <div style={{ marginBottom: "1.5rem" }}>
+          <h4 style={{
+            fontSize: "0.9rem",
+            fontWeight: "600",
+            color: "#374151",
+            marginBottom: "0.75rem"
+          }}>
+            Project Highlights:
+          </h4>
+          <div style={{
+            display: "flex",
+            flexWrap: "wrap",
+            gap: "0.5rem"
+          }}>
+            {project.highlights.map((highlight) => (
+              <span 
+                key={highlight} 
+                style={{
+                  background: "#34a853",
+                  color: "white",
+                  padding: "0.25rem 0.75rem",
+                  borderRadius: "12px",
+                  fontSize: "0.75rem",
+                  fontWeight: "500",
+                  cursor: "default",
+                  display: "inline-block"
+                }}
+              >
+                {highlight}
+              </span>
+            ))}
+          </div>
         </div>
-      </div>
 
-      {/* Technologies */}
-      <div style={{ marginBottom: "1.5rem" }}>
-        <div style={{
-          display: "flex",
-          flexWrap: "wrap",
-          gap: "0.5rem"
-        }}>
-          {project.technologies.map(tech => (
-            <span key={tech} style={{
-              background: "#f3f4f6",
+        {/* Technologies */}
+        <div style={{ marginBottom: "1.5rem" }}>
+          <div style={{
+            display: "flex",
+            flexWrap: "wrap",
+            gap: "0.5rem"
+          }}>
+            {project.technologies.map((tech) => (
+              <span 
+                key={tech} 
+                style={{
+                  background: "#f3f4f6",
+                  color: "#374151",
+                  padding: "0.25rem 0.75rem",
+                  borderRadius: "12px",
+                  fontSize: "0.75rem",
+                  fontWeight: "500",
+                  cursor: "default",
+                  display: "inline-block"
+                }}
+              >
+                {tech}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        {/* Features Section */}
+        <div style={{ marginBottom: "1.5rem", flex: 1 }}>
+          <button
+            onClick={() => setIsExpanded(!isExpanded)}
+            style={{
+              background: "none",
+              border: "none",
+              fontSize: "0.9rem",
+              fontWeight: "600",
               color: "#374151",
-              padding: "0.25rem 0.75rem",
-              borderRadius: "12px",
-              fontSize: "0.75rem",
-              fontWeight: "500"
+              marginBottom: "0.75rem",
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              gap: "0.5rem",
+              padding: 0
+            }}
+          >
+            Key Features:
+            <span style={{
+              transition: "transform 0.3s ease",
+              transform: isExpanded ? "rotate(180deg)" : "rotate(0deg)"
             }}>
-              {tech}
+              ▼
             </span>
-          ))}
+          </button>
+          
+          <div style={{
+            maxHeight: isExpanded ? "200px" : "80px",
+            overflow: "hidden",
+            transition: "max-height 0.4s ease"
+          }}>
+            <ul style={{
+              fontSize: "0.85rem",
+              color: "#6b7280",
+              lineHeight: "1.5",
+              paddingLeft: "1rem",
+              margin: 0
+            }}>
+              {project.features.map((feature, featureIndex) => (
+                <li 
+                  key={featureIndex} 
+                  style={{ 
+                    marginBottom: "0.25rem",
+                    opacity: isExpanded ? 1 : (featureIndex < 2 ? 1 : 0.3),
+                    transition: "opacity 0.3s ease"
+                  }}
+                >
+                  {feature}
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
-      </div>
 
-      {/* Features */}
-      <div style={{ marginBottom: "1.5rem", flex: 1 }}>
-        <h4 style={{
-          fontSize: "0.9rem",
-          fontWeight: "600",
-          color: "#374151",
-          marginBottom: "0.75rem"
+        {/* Action Buttons */}
+        <div style={{
+          display: "flex",
+          gap: "1rem",
+          marginTop: "auto",
+          flexDirection: isMobile ? "column" : "row"
         }}>
-          Key Features:
-        </h4>
-        <ul style={{
-          fontSize: "0.85rem",
-          color: "#6b7280",
-          lineHeight: "1.5",
-          paddingLeft: "1rem",
-          margin: 0
-        }}>
-          {project.features.slice(0, 3).map((feature, index) => (
-            <li key={index} style={{ marginBottom: "0.25rem" }}>
-              {feature}
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      {/* Action Buttons */}
-      <div style={{
-        display: "flex",
-        gap: "1rem",
-        marginTop: "auto"
-      }}>
-        <Button
-          variant="primary"
-          style={{
-            background: "#1f2937",
-            padding: "0.75rem 1.5rem",
-            fontSize: "0.9rem",
-            flex: 1
-          }}
-          onClick={() => window.open(project.githubUrl, '_blank')}
-        >
-          🐙 View Code
-        </Button>
-        <Button
-          variant="secondary"
-          style={{
-            padding: "0.75rem 1.5rem",
-            fontSize: "0.9rem",
-            flex: 1
-          }}
-          onClick={() => {/* Handle demo/preview */}}
-        >
-          📱 Preview
-        </Button>
-      </div>
-    </Card>
-  )
+          <Button
+            variant="primary"
+            style={{
+              background: "#1f2937",
+              flex: 1
+            }}
+            onClick={() => window.open(project.githubUrl, '_blank')}
+          >
+            🐙 View Code
+          </Button>
+          <Button
+            variant="secondary"
+            style={{ flex: 1 }}
+            onClick={() => {/* Handle demo/preview */}}
+          >
+            📱 Preview
+          </Button>
+        </div>
+      </Card>
+    )
+  }
 
   return (
     <div style={{
       maxWidth: "1200px",
       margin: "0 auto",
-      padding: "3rem 2rem 2rem",
+      padding: isMobile ? "2rem 1rem" : "3rem 2rem 2rem",
       minHeight: "100%",
       display: "flex",
       flexDirection: "column"
@@ -311,10 +380,10 @@ const PortfolioSection = () => {
       {/* Header */}
       <div style={{ 
         textAlign: "center",
-        marginBottom: "3rem"
+        marginBottom: isMobile ? "2rem" : "3rem"
       }}>
         <h2 style={{ 
-          fontSize: "3rem", 
+          fontSize: isMobile ? "2rem" : "3rem",
           marginBottom: "1rem",
           fontWeight: "700",
           color: "#1f2937"
@@ -322,10 +391,11 @@ const PortfolioSection = () => {
           My Android Projects
         </h2>
         <p style={{ 
-          fontSize: "1.2rem", 
+          fontSize: isMobile ? "1rem" : "1.2rem",
           color: "#6b7280",
           maxWidth: "600px",
-          margin: "0 auto"
+          margin: "0 auto",
+          lineHeight: "1.6"
         }}>
           Personal projects showcasing Android development skills, learning journey, 
           and exploration of modern Android technologies
@@ -336,8 +406,10 @@ const PortfolioSection = () => {
       <div style={{
         display: "flex",
         justifyContent: "center",
-        gap: "1rem",
-        marginBottom: "3rem"
+        gap: isMobile ? "0.5rem" : "1rem",
+        marginBottom: isMobile ? "2rem" : "3rem",
+        flexWrap: "wrap",
+        padding: isMobile ? "0 0.5rem" : "0"
       }}>
         {Object.entries(categories).map(([key, label]) => (
           <button
@@ -347,12 +419,27 @@ const PortfolioSection = () => {
               background: selectedCategory === key ? "#34a853" : "transparent",
               color: selectedCategory === key ? "white" : "#6b7280",
               border: selectedCategory === key ? "none" : "2px solid #e5e7eb",
-              padding: "0.75rem 1.5rem",
+              padding: isMobile ? "0.5rem 1rem" : "0.75rem 1.5rem",
               borderRadius: "25px",
-              fontSize: "0.9rem",
+              fontSize: isMobile ? "0.8rem" : "0.9rem",
               fontWeight: "600",
               cursor: "pointer",
-              transition: "all 0.2s ease"
+              transition: "all 0.3s ease",
+              minWidth: isMobile ? "auto" : "120px",
+              textAlign: "center",
+              boxShadow: selectedCategory === key ? "0 4px 12px rgba(52, 168, 83, 0.3)" : "none"
+            }}
+            onMouseEnter={(e) => {
+              if (!isMobile && selectedCategory !== key) {
+                e.target.style.transform = "translateY(-2px)"
+                e.target.style.borderColor = "#34a853"
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (selectedCategory !== key) {
+                e.target.style.transform = "translateY(0)"
+                e.target.style.borderColor = "#e5e7eb"
+              }
             }}
           >
             {label}
@@ -363,12 +450,14 @@ const PortfolioSection = () => {
       {/* Projects Grid */}
       <div style={{
         display: "grid",
-        gridTemplateColumns: "repeat(auto-fit, minmax(400px, 1fr))",
-        gap: "2rem",
+        gridTemplateColumns: isMobile ? "1fr" : 
+                            isTablet ? "1fr" : 
+                            "repeat(auto-fit, minmax(400px, 1fr))",
+        gap: isMobile ? "1.5rem" : "2rem",
         marginBottom: "3rem"
       }}>
-        {filteredProjects.map(project => (
-          <ProjectCard key={project.id} project={project} />
+        {filteredProjects.map((project, index) => (
+          <ProjectCard key={project.id} project={project} index={index} />
         ))}
       </div>
 
@@ -377,11 +466,11 @@ const PortfolioSection = () => {
         marginTop: "3rem",
         background: "#f8fafc",
         borderRadius: "16px",
-        padding: "2rem",
+        padding: isMobile ? "1.5rem" : "2rem",
         border: "1px solid #e2e8f0"
       }}>
         <h3 style={{
-          fontSize: "1.5rem",
+          fontSize: isMobile ? "1.2rem" : "1.5rem",
           fontWeight: "600",
           color: "#1f2937",
           textAlign: "center",
@@ -391,78 +480,45 @@ const PortfolioSection = () => {
         </h3>
         <div style={{
           display: "grid",
-          gridTemplateColumns: "repeat(4, 1fr)",
-          gap: "2rem",
+          gridTemplateColumns: isMobile ? "repeat(2, 1fr)" : "repeat(4, 1fr)",
+          gap: isMobile ? "1.5rem" : "2rem",
           textAlign: "center"
         }}>
-          <div>
-            <div style={{
-              fontSize: "2.5rem",
-              fontWeight: "700",
-              color: "#34a853",
-              marginBottom: "0.5rem"
-            }}>
-              6
+          {[
+            { number: "6", label: "Projects Built" },
+            { number: "8+", label: "Technologies Learned" },
+            { number: "2+", label: "Years Learning" },
+            { number: "100%", label: "Passion Driven" }
+          ].map((stat, index) => (
+            <div key={index}>
+              <div style={{
+                fontSize: isMobile ? "2rem" : "2.5rem",
+                fontWeight: "700",
+                color: "#34a853",
+                marginBottom: "0.5rem",
+                transition: "transform 0.3s ease",
+                cursor: "default"
+              }}
+              onMouseEnter={(e) => {
+                if (!isMobile) {
+                  e.target.style.transform = "scale(1.1)"
+                }
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.transform = "scale(1)"
+              }}
+              >
+                {stat.number}
+              </div>
+              <div style={{
+                fontSize: isMobile ? "0.8rem" : "0.9rem",
+                color: "#6b7280",
+                fontWeight: "500"
+              }}>
+                {stat.label}
+              </div>
             </div>
-            <div style={{
-              fontSize: "0.9rem",
-              color: "#6b7280",
-              fontWeight: "500"
-            }}>
-              Projects Built
-            </div>
-          </div>
-          <div>
-            <div style={{
-              fontSize: "2.5rem",
-              fontWeight: "700",
-              color: "#34a853",
-              marginBottom: "0.5rem"
-            }}>
-              8+
-            </div>
-            <div style={{
-              fontSize: "0.9rem",
-              color: "#6b7280",
-              fontWeight: "500"
-            }}>
-              Technologies Learned
-            </div>
-          </div>
-          <div>
-            <div style={{
-              fontSize: "2.5rem",
-              fontWeight: "700",
-              color: "#34a853",
-              marginBottom: "0.5rem"
-            }}>
-              2+
-            </div>
-            <div style={{
-              fontSize: "0.9rem",
-              color: "#6b7280",
-              fontWeight: "500"
-            }}>
-              Years Learning
-            </div>
-          </div>
-          <div>
-            <div style={{
-              fontSize: "2.5rem",
-              fontWeight: "700",
-              color: "#34a853",
-              marginBottom: "0.5rem"
-            }}>
-              100%
-            </div>
-            <div style={{
-              fontSize: "0.9rem",
-              color: "#6b7280",
-              fontWeight: "500"
-            }}>
-              Passion Driven
-            </div>
-          </div>
+          ))}
         </div>
       </div>
     </div>

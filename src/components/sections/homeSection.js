@@ -8,35 +8,37 @@ const HomeSection = ({ setActiveSection }) => {
     "Firebase", "Room", "Retrofit", "Coroutines"
   ]
 
+  const isMobile = window.innerWidth < 768
+
   return (
     <div style={{
       display: "grid",
-      gridTemplateColumns: "1fr 1fr",
-      gap: "4rem",
+      gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
+      gap: isMobile ? "2rem" : "4rem",
       alignItems: "center",
       height: "100%",
       maxWidth: "1200px",
       margin: "0 auto",
-      padding: "2rem"
+      padding: isMobile ? "2rem 1rem" : "2rem"
     }}>
-      {/* Left Column - Text Content */}
-      <div>
+      {/* Text Content */}
+      <div style={{ order: isMobile ? 2 : 1 }}>
         <div style={{
           display: "inline-block",
-          background: "#34a853", // Android green
+          background: "#34a853",
           color: "white",
           padding: "0.5rem 1rem",
           borderRadius: "6px",
           fontSize: "0.85rem",
           fontWeight: "600",
-          marginBottom: "2rem"
+          marginBottom: "1.5rem"
         }}>
           🤖 Open to Android Projects
         </div>
         
         <h1 style={{ 
-          fontSize: "3.5rem", 
-          marginBottom: "1.5rem",
+          fontSize: isMobile ? "2.5rem" : "3.5rem",
+          marginBottom: "1rem",
           fontWeight: "700",
           lineHeight: "1.1",
           color: "#1f2937"
@@ -45,8 +47,8 @@ const HomeSection = ({ setActiveSection }) => {
         </h1>
         
         <h2 style={{
-          fontSize: "2rem",
-          marginBottom: "2rem",
+          fontSize: isMobile ? "1.5rem" : "2rem",
+          marginBottom: "1.5rem",
           fontWeight: "400",
           color: "#6b7280",
           lineHeight: "1.3"
@@ -55,11 +57,10 @@ const HomeSection = ({ setActiveSection }) => {
         </h2>
         
         <p style={{ 
-          fontSize: "1.2rem", 
-          marginBottom: "3rem",
+          fontSize: isMobile ? "1rem" : "1.2rem",
+          marginBottom: "2rem",
           color: "#4b5563",
-          lineHeight: "1.6",
-          maxWidth: "500px"
+          lineHeight: "1.6"
         }}>
           I craft native Android applications that deliver exceptional user experiences. 
           Passionate about clean architecture, modern Android development, and building 
@@ -69,14 +70,19 @@ const HomeSection = ({ setActiveSection }) => {
         <div style={{ 
           display: "flex", 
           gap: "1rem",
-          marginBottom: "2rem"
+          marginBottom: "2rem",
+          flexDirection: isMobile ? "column" : "row"
         }}>
-          <Button variant="primary" style={{ background: "#34a853" }}>
+          <Button variant="primary" style={{ 
+            background: "#34a853",
+            width: isMobile ? "100%" : "auto"
+          }}>
             View My Apps
           </Button>
           <Button 
             variant="secondary"
             onClick={() => setActiveSection('writing')}
+            style={{ width: isMobile ? "100%" : "auto" }}
           >
             Read Android Blog
           </Button>
@@ -104,29 +110,30 @@ const HomeSection = ({ setActiveSection }) => {
         </div>
       </div>
       
-      {/* Right Column - Android Visual */}
+      {/* Visual Element */}
       <div style={{
         background: "#f8fafc",
         borderRadius: "16px",
-        padding: "3rem",
+        padding: isMobile ? "2rem" : "3rem",
         textAlign: "center",
-        border: "1px solid #e2e8f0"
+        border: "1px solid #e2e8f0",
+        order: isMobile ? 1 : 2
       }}>
         <div style={{ 
-          fontSize: "6rem", 
-          marginBottom: "2rem"
+          fontSize: isMobile ? "4rem" : "6rem",
+          marginBottom: "1.5rem"
         }}>
           📱
         </div>
         <div style={{
           display: "grid",
           gridTemplateColumns: "1fr 1fr",
-          gap: "2rem",
+          gap: isMobile ? "1rem" : "2rem",
           textAlign: "center"
         }}>
           <div>
             <div style={{ 
-              fontSize: "2.5rem", 
+              fontSize: isMobile ? "2rem" : "2.5rem",
               fontWeight: "700",
               color: "#34a853",
               marginBottom: "0.5rem"
@@ -134,7 +141,7 @@ const HomeSection = ({ setActiveSection }) => {
               5+
             </div>
             <div style={{ 
-              fontSize: "0.9rem", 
+              fontSize: "0.8rem", 
               color: "#6b7280",
               fontWeight: "500"
             }}>
@@ -143,7 +150,7 @@ const HomeSection = ({ setActiveSection }) => {
           </div>
           <div>
             <div style={{ 
-              fontSize: "2.5rem", 
+              fontSize: isMobile ? "2rem" : "2.5rem",
               fontWeight: "700",
               color: "#34a853",
               marginBottom: "0.5rem"
@@ -151,7 +158,7 @@ const HomeSection = ({ setActiveSection }) => {
               25+
             </div>
             <div style={{ 
-              fontSize: "0.9rem", 
+              fontSize: "0.8rem", 
               color: "#6b7280",
               fontWeight: "500"
             }}>

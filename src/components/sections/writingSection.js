@@ -2,6 +2,8 @@ import React from "react"
 import Card from "../ui/card"
 
 const WritingSection = () => {
+  const isMobile = window.innerWidth < 768
+  
   const androidBlogPosts = [
     {
       title: "Building Custom Views with Jetpack Compose",
@@ -37,7 +39,7 @@ const WritingSection = () => {
     <div style={{
       maxWidth: "1200px",
       margin: "0 auto",
-      padding: "3rem 2rem",
+      padding: isMobile ? "2rem 1rem" : "3rem 2rem",
       height: "100%",
       display: "flex",
       flexDirection: "column",
@@ -45,10 +47,10 @@ const WritingSection = () => {
     }}>
       <div style={{ 
         textAlign: "center",
-        marginBottom: "3rem"
+        marginBottom: isMobile ? "2rem" : "3rem"
       }}>
         <h2 style={{ 
-          fontSize: "3rem", 
+          fontSize: isMobile ? "2rem" : "3rem",
           marginBottom: "1rem",
           fontWeight: "700",
           color: "#1f2937"
@@ -56,7 +58,7 @@ const WritingSection = () => {
           Android Development Blog
         </h2>
         <p style={{ 
-          fontSize: "1.2rem", 
+          fontSize: isMobile ? "1rem" : "1.2rem",
           color: "#6b7280"
         }}>
           Tutorials, tips, and insights from Android development
@@ -65,15 +67,16 @@ const WritingSection = () => {
 
       <div style={{
         display: "grid",
-        gridTemplateColumns: "repeat(2, 1fr)",
-        gap: "2rem"
+        gridTemplateColumns: isMobile ? "1fr" : "repeat(2, 1fr)",
+        gap: isMobile ? "1.5rem" : "2rem"
       }}>
         {androidBlogPosts.map((post, index) => (
           <Card 
             key={index}
             onClick={() => {/* Handle blog post click */}}
             style={{
-              height: "250px",
+              height: "auto",
+              minHeight: isMobile ? "auto" : "250px",
               display: "flex",
               flexDirection: "column",
               justifyContent: "space-between"
@@ -93,7 +96,7 @@ const WritingSection = () => {
                 {post.category}
               </div>
               <h4 style={{ 
-                fontSize: "1.3rem", 
+                fontSize: isMobile ? "1.1rem" : "1.3rem",
                 marginBottom: "1rem",
                 fontWeight: "600",
                 color: "#1f2937",
@@ -104,7 +107,7 @@ const WritingSection = () => {
               <p style={{ 
                 color: "#6b7280",
                 lineHeight: "1.5",
-                fontSize: "1rem"
+                fontSize: isMobile ? "0.9rem" : "1rem"
               }}>
                 {post.excerpt}
               </p>
@@ -113,7 +116,7 @@ const WritingSection = () => {
               display: "flex",
               justifyContent: "space-between",
               alignItems: "center",
-              fontSize: "0.85rem",
+              fontSize: "0.8rem",
               color: "#9ca3af",
               fontWeight: "500",
               marginTop: "1rem"

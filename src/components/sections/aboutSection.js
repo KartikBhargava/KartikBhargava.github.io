@@ -1,6 +1,8 @@
 import React from "react"
 
 const AboutSection = () => {
+  const isMobile = window.innerWidth < 768
+  
   const quickFacts = [
     { icon: "📍", label: "Based in India" },
     { icon: "🎓", label: "Computer Science" },
@@ -11,29 +13,34 @@ const AboutSection = () => {
     <div style={{
       maxWidth: "1200px",
       margin: "0 auto",
-      padding: "3rem 2rem",
+      padding: isMobile ? "2rem 1rem" : "3rem 2rem",
       height: "100%",
       display: "flex",
       alignItems: "center"
     }}>
       <div style={{
         display: "grid",
-        gridTemplateColumns: "2fr 1fr",
-        gap: "4rem",
+        gridTemplateColumns: isMobile ? "1fr" : "2fr 1fr",
+        gap: isMobile ? "2rem" : "4rem",
         alignItems: "center",
         width: "100%"
       }}>
-        <div>
+        <div style={{ order: isMobile ? 2 : 1 }}>
           <h2 style={{ 
-            fontSize: "3rem", 
-            marginBottom: "2rem",
+            fontSize: isMobile ? "2rem" : "3rem",
+            marginBottom: "1.5rem",
             fontWeight: "700",
             color: "#1f2937"
           }}>
             About Me
           </h2>
           
-          <div style={{ fontSize: "1.2rem", color: "#4b5563", lineHeight: "1.7", marginBottom: "2rem" }}>
+          <div style={{ 
+            fontSize: isMobile ? "1rem" : "1.2rem",
+            color: "#4b5563", 
+            lineHeight: "1.7", 
+            marginBottom: "2rem" 
+          }}>
             <p style={{ marginBottom: "1.5rem" }}>
               I'm a passionate Android developer with over 5 years of experience building 
               native Android applications. I specialize in modern Android development using 
@@ -54,7 +61,7 @@ const AboutSection = () => {
 
           <div style={{ marginTop: "2rem" }}>
             <h3 style={{ 
-              fontSize: "1.3rem", 
+              fontSize: isMobile ? "1.1rem" : "1.3rem",
               fontWeight: "600", 
               color: "#1f2937", 
               marginBottom: "1rem" 
@@ -63,7 +70,7 @@ const AboutSection = () => {
             </h3>
             <div style={{
               display: "grid",
-              gridTemplateColumns: "1fr 1fr",
+              gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
               gap: "1rem"
             }}>
               <div>
@@ -105,25 +112,36 @@ const AboutSection = () => {
         <div style={{
           background: "#f8fafc",
           borderRadius: "16px",
-          padding: "2rem",
+          padding: isMobile ? "1.5rem" : "2rem",
           border: "1px solid #e2e8f0",
-          textAlign: "center"
+          textAlign: "center",
+          order: isMobile ? 1 : 2
         }}>
           <h3 style={{ 
-            fontSize: "1.5rem", 
+            fontSize: isMobile ? "1.2rem" : "1.5rem",
             fontWeight: "600", 
             color: "#1f2937", 
-            marginBottom: "2rem" 
+            marginBottom: "1.5rem" 
           }}>
             Quick Facts
           </h3>
-          <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
+          <div style={{ 
+            display: "flex", 
+            flexDirection: isMobile ? "row" : "column",
+            justifyContent: isMobile ? "space-around" : "center",
+            gap: isMobile ? "1rem" : "1.5rem"
+          }}>
             {quickFacts.map((fact, index) => (
-              <div key={index}>
-                <div style={{ fontSize: "1.8rem", fontWeight: "700", color: "#34a853" }}>
+              <div key={index} style={{ textAlign: "center" }}>
+                <div style={{ fontSize: "1.5rem", fontWeight: "700", color: "#34a853" }}>
                   {fact.icon}
                 </div>
-                <p style={{ fontSize: "0.9rem", color: "#6b7280", marginTop: "0.5rem" }}>
+                <p style={{ 
+                  fontSize: "0.8rem", 
+                  color: "#6b7280", 
+                  marginTop: "0.5rem",
+                  whiteSpace: isMobile ? "nowrap" : "normal"
+                }}>
                   {fact.label}
                 </p>
               </div>
@@ -138,7 +156,7 @@ const AboutSection = () => {
             borderRadius: "8px",
             color: "white"
           }}>
-            <div style={{ fontSize: "1.2rem", fontWeight: "600", marginBottom: "0.5rem" }}>
+            <div style={{ fontSize: "1rem", fontWeight: "600", marginBottom: "0.5rem" }}>
               Latest Target
             </div>
             <div style={{ fontSize: "0.9rem" }}>
