@@ -4,7 +4,7 @@ const AboutSection = () => {
   const quickFacts = [
     { icon: "📍", label: "Based in India" },
     { icon: "🎓", label: "Computer Science" },
-    { icon: "☕", label: "Coffee Enthusiast" }
+    { icon: "🤖", label: "Android Enthusiast" }
   ]
 
   return (
@@ -35,19 +35,20 @@ const AboutSection = () => {
           
           <div style={{ fontSize: "1.2rem", color: "#4b5563", lineHeight: "1.7", marginBottom: "2rem" }}>
             <p style={{ marginBottom: "1.5rem" }}>
-              I'm a passionate full-stack developer with over 5 years of experience building 
-              scalable web applications and digital solutions. I love working with modern 
-              technologies and helping businesses transform their ideas into reality.
+              I'm a passionate Android developer with over 5 years of experience building 
+              native Android applications. I specialize in modern Android development using 
+              Kotlin, Jetpack Compose, and clean architecture patterns.
             </p>
             
             <p style={{ marginBottom: "1.5rem" }}>
-              When I'm not coding, you'll find me writing technical articles, contributing 
-              to open source projects, or exploring the latest trends in web development.
+              From concept to Play Store, I've guided numerous apps through their entire 
+              lifecycle. I love working with the latest Android technologies and creating 
+              smooth, performant user experiences.
             </p>
             
             <p>
-              I believe in writing clean, maintainable code and creating user experiences 
-              that truly matter.
+              When I'm not coding, you'll find me writing about Android development, 
+              contributing to open source Android libraries, or exploring new Android features.
             </p>
           </div>
 
@@ -58,7 +59,7 @@ const AboutSection = () => {
               color: "#1f2937", 
               marginBottom: "1rem" 
             }}>
-              Skills & Expertise
+              Android Expertise
             </h3>
             <div style={{
               display: "grid",
@@ -67,18 +68,34 @@ const AboutSection = () => {
             }}>
               <div>
                 <h4 style={{ fontSize: "1rem", fontWeight: "600", color: "#374151", marginBottom: "0.5rem" }}>
-                  Frontend
+                  Native Android
                 </h4>
                 <p style={{ fontSize: "0.9rem", color: "#6b7280" }}>
-                  React, Next.js, TypeScript, Tailwind CSS
+                  Kotlin, Jetpack Compose, Material Design
                 </p>
               </div>
               <div>
                 <h4 style={{ fontSize: "1rem", fontWeight: "600", color: "#374151", marginBottom: "0.5rem" }}>
-                  Backend
+                  Architecture & Tools
                 </h4>
                 <p style={{ fontSize: "0.9rem", color: "#6b7280" }}>
-                  Node.js, Python, PostgreSQL, MongoDB
+                  MVVM, Clean Architecture, Room, Retrofit
+                </p>
+              </div>
+              <div>
+                <h4 style={{ fontSize: "1rem", fontWeight: "600", color: "#374151", marginBottom: "0.5rem" }}>
+                  Backend Integration
+                </h4>
+                <p style={{ fontSize: "0.9rem", color: "#6b7280" }}>
+                  REST APIs, Firebase, GraphQL, Coroutines
+                </p>
+              </div>
+              <div>
+                <h4 style={{ fontSize: "1rem", fontWeight: "600", color: "#374151", marginBottom: "0.5rem" }}>
+                  Testing & CI/CD
+                </h4>
+                <p style={{ fontSize: "0.9rem", color: "#6b7280" }}>
+                  JUnit, Espresso, GitHub Actions, Play Console
                 </p>
               </div>
             </div>
@@ -103,7 +120,7 @@ const AboutSection = () => {
           <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
             {quickFacts.map((fact, index) => (
               <div key={index}>
-                <div style={{ fontSize: "1.8rem", fontWeight: "700", color: "#3b82f6" }}>
+                <div style={{ fontSize: "1.8rem", fontWeight: "700", color: "#34a853" }}>
                   {fact.icon}
                 </div>
                 <p style={{ fontSize: "0.9rem", color: "#6b7280", marginTop: "0.5rem" }}>
@@ -111,6 +128,22 @@ const AboutSection = () => {
                 </p>
               </div>
             ))}
+          </div>
+          
+          {/* Android Version Badge */}
+          <div style={{
+            marginTop: "2rem",
+            padding: "1rem",
+            background: "#34a853",
+            borderRadius: "8px",
+            color: "white"
+          }}>
+            <div style={{ fontSize: "1.2rem", fontWeight: "600", marginBottom: "0.5rem" }}>
+              Latest Target
+            </div>
+            <div style={{ fontSize: "0.9rem" }}>
+              Android 14 (API 34)
+            </div>
           </div>
         </div>
       </div>

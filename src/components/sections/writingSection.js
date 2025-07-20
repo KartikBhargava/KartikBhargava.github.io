@@ -2,30 +2,34 @@ import React from "react"
 import Card from "../ui/card"
 
 const WritingSection = () => {
-  const blogPosts = [
+  const androidBlogPosts = [
     {
-      title: "Understanding Modern React Patterns",
-      excerpt: "A comprehensive guide to the latest React patterns and best practices for building scalable applications.",
+      title: "Building Custom Views with Jetpack Compose",
+      excerpt: "Learn how to create reusable custom UI components using Jetpack Compose's powerful composition model.",
       date: "Dec 15, 2024",
-      readTime: "8 min read"
+      readTime: "10 min read",
+      category: "Jetpack Compose"
     },
     {
-      title: "Building Performant Node.js APIs",
-      excerpt: "Essential techniques for creating fast, scalable, and maintainable backend services with Node.js.",
+      title: "Clean Architecture in Android Apps",
+      excerpt: "Implementing MVVM pattern with Repository and UseCase layers for maintainable Android applications.",
       date: "Nov 28, 2024",
-      readTime: "12 min read"
+      readTime: "15 min read",
+      category: "Architecture"
     },
     {
-      title: "The Future of Web Development",
-      excerpt: "Exploring emerging trends, tools, and methodologies shaping the next generation of web applications.",
+      title: "Advanced Kotlin Coroutines in Android",
+      excerpt: "Mastering async programming with coroutines, flows, and structured concurrency in Android development.",
       date: "Nov 15, 2024",
-      readTime: "6 min read"
+      readTime: "12 min read",
+      category: "Kotlin"
     },
     {
-      title: "Microservices Architecture Guide",
-      excerpt: "Lessons learned from implementing microservices at scale, including common pitfalls and solutions.",
+      title: "Room Database Best Practices",
+      excerpt: "Efficient local data storage with Room, including migrations, relationships, and performance optimization.",
       date: "Oct 30, 2024",
-      readTime: "15 min read"
+      readTime: "8 min read",
+      category: "Database"
     }
   ]
 
@@ -49,13 +53,13 @@ const WritingSection = () => {
           fontWeight: "700",
           color: "#1f2937"
         }}>
-          Latest Writing
+          Android Development Blog
         </h2>
         <p style={{ 
           fontSize: "1.2rem", 
           color: "#6b7280"
         }}>
-          Thoughts on technology, development, and design
+          Tutorials, tips, and insights from Android development
         </p>
       </div>
 
@@ -64,18 +68,30 @@ const WritingSection = () => {
         gridTemplateColumns: "repeat(2, 1fr)",
         gap: "2rem"
       }}>
-        {blogPosts.map((post, index) => (
+        {androidBlogPosts.map((post, index) => (
           <Card 
             key={index}
             onClick={() => {/* Handle blog post click */}}
             style={{
-              height: "220px",
+              height: "250px",
               display: "flex",
               flexDirection: "column",
               justifyContent: "space-between"
             }}
           >
             <div>
+              <div style={{
+                display: "inline-block",
+                background: "#34a853",
+                color: "white",
+                padding: "0.25rem 0.75rem",
+                borderRadius: "4px",
+                fontSize: "0.75rem",
+                fontWeight: "600",
+                marginBottom: "1rem"
+              }}>
+                {post.category}
+              </div>
               <h4 style={{ 
                 fontSize: "1.3rem", 
                 marginBottom: "1rem",
@@ -103,7 +119,7 @@ const WritingSection = () => {
               marginTop: "1rem"
             }}>
               <span>{post.date} • {post.readTime}</span>
-              <span style={{ fontSize: "1.2rem", color: "#3b82f6" }}>→</span>
+              <span style={{ fontSize: "1.2rem", color: "#34a853" }}>→</span>
             </div>
           </Card>
         ))}

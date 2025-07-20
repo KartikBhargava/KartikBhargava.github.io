@@ -3,7 +3,10 @@ import Button from "../ui/buttons"
 import TechPill from "../ui/techPill"
 
 const HomeSection = ({ setActiveSection }) => {
-  const technologies = ["React", "Node.js", "TypeScript", "Python", "AWS", "Docker"]
+  const androidTechnologies = [
+    "Kotlin", "Java", "Jetpack Compose", "Android Studio", 
+    "Firebase", "Room", "Retrofit", "Coroutines"
+  ]
 
   return (
     <div style={{
@@ -20,7 +23,7 @@ const HomeSection = ({ setActiveSection }) => {
       <div>
         <div style={{
           display: "inline-block",
-          background: "#3b82f6",
+          background: "#34a853", // Android green
           color: "white",
           padding: "0.5rem 1rem",
           borderRadius: "6px",
@@ -28,7 +31,7 @@ const HomeSection = ({ setActiveSection }) => {
           fontWeight: "600",
           marginBottom: "2rem"
         }}>
-          ✨ Available for work
+          🤖 Open to Android Projects
         </div>
         
         <h1 style={{ 
@@ -48,7 +51,7 @@ const HomeSection = ({ setActiveSection }) => {
           color: "#6b7280",
           lineHeight: "1.3"
         }}>
-          Full Stack Developer & Tech Enthusiast
+          Android Developer & Mobile App Architect
         </h2>
         
         <p style={{ 
@@ -58,8 +61,9 @@ const HomeSection = ({ setActiveSection }) => {
           lineHeight: "1.6",
           maxWidth: "500px"
         }}>
-          I build digital experiences that matter. Passionate about clean code, 
-          user-centered design, and sharing knowledge with the developer community.
+          I craft native Android applications that deliver exceptional user experiences. 
+          Passionate about clean architecture, modern Android development, and building 
+          apps that users love.
         </p>
         
         <div style={{ 
@@ -67,18 +71,18 @@ const HomeSection = ({ setActiveSection }) => {
           gap: "1rem",
           marginBottom: "2rem"
         }}>
-          <Button variant="primary">
-            View My Work
+          <Button variant="primary" style={{ background: "#34a853" }}>
+            View My Apps
           </Button>
           <Button 
             variant="secondary"
             onClick={() => setActiveSection('writing')}
           >
-            Read Blog
+            Read Android Blog
           </Button>
         </div>
 
-        {/* Tech Stack */}
+        {/* Android Tech Stack */}
         <div style={{ marginTop: "2rem" }}>
           <p style={{ 
             fontSize: "0.9rem", 
@@ -86,21 +90,21 @@ const HomeSection = ({ setActiveSection }) => {
             marginBottom: "1rem",
             fontWeight: "600"
           }}>
-            Technologies I work with:
+            Android technologies I work with:
           </p>
           <div style={{
             display: "flex",
             flexWrap: "wrap",
             gap: "0.75rem"
           }}>
-            {technologies.map(tech => (
+            {androidTechnologies.map(tech => (
               <TechPill key={tech}>{tech}</TechPill>
             ))}
           </div>
         </div>
       </div>
       
-      {/* Right Column - Visual Element */}
+      {/* Right Column - Android Visual */}
       <div style={{
         background: "#f8fafc",
         borderRadius: "16px",
@@ -112,7 +116,7 @@ const HomeSection = ({ setActiveSection }) => {
           fontSize: "6rem", 
           marginBottom: "2rem"
         }}>
-          👨‍💻
+          📱
         </div>
         <div style={{
           display: "grid",
@@ -124,7 +128,7 @@ const HomeSection = ({ setActiveSection }) => {
             <div style={{ 
               fontSize: "2.5rem", 
               fontWeight: "700",
-              color: "#3b82f6",
+              color: "#34a853",
               marginBottom: "0.5rem"
             }}>
               5+
@@ -134,24 +138,24 @@ const HomeSection = ({ setActiveSection }) => {
               color: "#6b7280",
               fontWeight: "500"
             }}>
-              Years Experience
+              Years Android Dev
             </div>
           </div>
           <div>
             <div style={{ 
               fontSize: "2.5rem", 
               fontWeight: "700",
-              color: "#3b82f6",
+              color: "#34a853",
               marginBottom: "0.5rem"
             }}>
-              50+
+              25+
             </div>
             <div style={{ 
               fontSize: "0.9rem", 
               color: "#6b7280",
               fontWeight: "500"
             }}>
-              Projects Built
+              Apps Published
             </div>
           </div>
         </div>

@@ -19,8 +19,12 @@ const Header = ({ activeSection, setActiveSection, sections }) => {
         <div style={{ 
           fontSize: "1.5rem",
           fontWeight: "700",
-          color: "#1f2937"
+          color: "#1f2937",
+          display: "flex",
+          alignItems: "center",
+          gap: "0.5rem"
         }}>
+          <span>🤖</span>
           Kartik Bhargava
         </div>
         <nav style={{ display: "flex", gap: "0.5rem" }}>
@@ -29,8 +33,8 @@ const Header = ({ activeSection, setActiveSection, sections }) => {
               key={key}
               onClick={() => setActiveSection(key)}
               style={{ 
-                color: activeSection === key ? "#3b82f6" : "#6b7280",
-                background: activeSection === key ? "#eff6ff" : "transparent",
+                color: activeSection === key ? "#34a853" : "#6b7280",
+                background: activeSection === key ? "rgba(52, 168, 83, 0.1)" : "transparent",
                 border: "none",
                 padding: "0.75rem 1.5rem",
                 borderRadius: "8px",
