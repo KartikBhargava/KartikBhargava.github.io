@@ -1,7 +1,23 @@
 import React from "react"
+import { useEffect, useState } from 'react'
 
 const AboutSection = () => {
-  const isMobile = window.innerWidth < 768
+   const [isMobile, setIsMobile] = useState(false)
+  useEffect(() => {
+      // Check if we're on the client side
+      const checkScreenSize = () => {
+        setIsMobile(window.innerWidth < 768)
+      }
+  
+      // Initial check
+      checkScreenSize()
+  
+      // Add event listener for window resize
+      window.addEventListener('resize', checkScreenSize)
+  
+      // Cleanup
+      return () => window.removeEventListener('resize', checkScreenSize)
+    }, [])
   
   const quickFacts = [
     { icon: "📍", label: "Based in India" },
