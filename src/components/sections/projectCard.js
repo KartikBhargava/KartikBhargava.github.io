@@ -1,13 +1,14 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import Card from "../ui/card"
 import Button from "../ui/buttons"
-import { useEffect, useState } from 'react'
 
 const ProjectCard = ({ project }) => {
   const [isExpanded, setIsExpanded] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
+  
   useEffect(() => {
-      // Check if we're on the client side
+    // Check if we're on the client side
+    if (typeof window !== 'undefined') {
       const checkScreenSize = () => {
         setIsMobile(window.innerWidth < 768)
       }
@@ -20,7 +21,8 @@ const ProjectCard = ({ project }) => {
   
       // Cleanup
       return () => window.removeEventListener('resize', checkScreenSize)
-    }, [])
+    }
+  }, [])
 
   const getStatusColor = (status) => {
     switch(status) {
@@ -30,6 +32,12 @@ const ProjectCard = ({ project }) => {
       case 'Experimental': return '#8b5cf6'
       case 'Learning Project': return '#ef4444'
       default: return '#6b7280'
+    }
+  }
+
+  const handleGithubClick = () => {
+    if (typeof window !== 'undefined' && project.githubUrl) {
+      window.open(project.githubUrl, '_blank')
     }
   }
 
@@ -152,7 +160,7 @@ const ProjectCard = ({ project }) => {
           flexWrap: "wrap",
           gap: "0.5rem"
         }}>
-          {project.highlights.map((highlight, index) => (
+          {project.highlights && project.highlights.map((highlight, index) => (
             <span 
               key={highlight} 
               style={{
@@ -188,7 +196,7 @@ const ProjectCard = ({ project }) => {
           flexWrap: "wrap",
           gap: "0.5rem"
         }}>
-          {project.technologies.map((tech, index) => (
+          {project.technologies && project.technologies.map((tech, index) => (
             <span 
               key={tech} 
               style={{
@@ -256,7 +264,7 @@ const ProjectCard = ({ project }) => {
             paddingLeft: "1rem",
             margin: 0
           }}>
-            {project.features.map((feature, index) => (
+            {project.features && project.features.map((feature, index) => (
               <li 
                 key={index} 
                 style={{ 
@@ -285,7 +293,7 @@ const ProjectCard = ({ project }) => {
             background: "#1f2937",
             flex: 1
           }}
-          onClick={() => window.open(project.githubUrl, '_blank')}
+          onClick={handleGithubClick}
         >
           🐙 View Code
         </Button>

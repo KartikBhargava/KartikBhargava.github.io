@@ -197,9 +197,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 
+
 const AboutSection = () => {
-  const [isMobile, setIsMobile] = useState(false);
-  useEffect(() => {
+  const {
+    0: isMobile,
+    1: setIsMobile
+  } = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
     // Check if we're on the client side
     const checkScreenSize = () => {
       setIsMobile(window.innerWidth < 768);
@@ -412,9 +416,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _ui_card__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../ui/card */ "./src/components/ui/card.js");
 
 
+
 const ContactSection = () => {
-  const [isMobile, setIsMobile] = useState(false);
-  useEffect(() => {
+  const {
+    0: isMobile,
+    1: setIsMobile
+  } = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
     // Check if we're on the client side
     const checkScreenSize = () => {
       setIsMobile(window.innerWidth < 768);
@@ -577,12 +585,16 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
 const HomeSection = ({
   setActiveSection
 }) => {
   const androidTechnologies = ["Kotlin", "Java", "Jetpack Compose", "Android Studio", "Firebase", "Room", "Retrofit", "Coroutines"];
-  const [isMobile, setIsMobile] = useState(false);
-  useEffect(() => {
+  const {
+    0: isMobile,
+    1: setIsMobile
+  } = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
     // Check if we're on the client side
     const checkScreenSize = () => {
       setIsMobile(window.innerWidth < 768);
@@ -1210,9 +1222,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _ui_card__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../ui/card */ "./src/components/ui/card.js");
 
 
+
 const WritingSection = () => {
-  const [isMobile, setIsMobile] = useState(false);
-  useEffect(() => {
+  const {
+    0: isMobile,
+    1: setIsMobile
+  } = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
     // Check if we're on the client side
     const checkScreenSize = () => {
       setIsMobile(window.innerWidth < 768);
