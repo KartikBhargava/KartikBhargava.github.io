@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "scripts": {
     "build": "gatsby build",
-    "develop": "gatsby develop", 
+    "develop": "gatsby develop",
     "start": "gatsby develop",
     "serve": "gatsby serve",
     "clean": "gatsby clean"
@@ -12,6 +12,7 @@
     "@mdx-js/mdx": "^3.1.0",
     "gatsby": "^5.0.0",
     "gatsby-plugin-image": "^3.14.0",
+    "gh-pages": "^6.3.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0"
   },

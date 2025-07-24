@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunktech_blog=self.webpackChunktech_blog||[]).push([[125],{3331:function(e,t,l){l.r(t);var n=l(6540);t.default=()=>n.createElement("div",{style:{padding:"2rem",fontFamily:"Arial, sans-serif",textAlign:"center"}},n.createElement("h1",null,"404 - Page Not Found"),n.createElement("p",null,"Sorry, the page you're looking for doesn't exist."),n.createElement("a",{href:"/",style:{color:"#0066cc"}},"← Go back home"))}}]);
+//# sourceMappingURL=component---src-pages-404-js-0af258ce72c8e4bb0bf2.js.map

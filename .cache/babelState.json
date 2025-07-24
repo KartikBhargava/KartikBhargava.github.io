@@ -7,6 +7,12 @@
           "options": {}
         },
         {
+          "name": "D:\\Gatsby\\tech-blog-kartik-bhargava\\node_modules\\gatsby-plugin-image\\dist\\babel-plugin-parse-static-images.js",
+          "options": {
+            "cacheDir": "D:\\Gatsby\\tech-blog-kartik-bhargava\\.cache\\caches\\gatsby-plugin-image"
+          }
+        },
+        {
           "name": "D:\\Gatsby\\tech-blog-kartik-bhargava\\node_modules\\@babel\\plugin-proposal-optional-chaining\\lib\\index.js",
           "options": {}
         },
@@ -40,6 +46,12 @@
         {
           "name": "@sigmacomputing/babel-plugin-lodash",
           "options": {}
+        },
+        {
+          "name": "D:\\Gatsby\\tech-blog-kartik-bhargava\\node_modules\\gatsby-plugin-image\\dist\\babel-plugin-parse-static-images.js",
+          "options": {
+            "cacheDir": "D:\\Gatsby\\tech-blog-kartik-bhargava\\.cache\\caches\\gatsby-plugin-image"
+          }
         },
         {
           "name": "D:\\Gatsby\\tech-blog-kartik-bhargava\\node_modules\\@babel\\plugin-proposal-optional-chaining\\lib\\index.js",
@@ -77,6 +89,12 @@
           "options": {}
         },
         {
+          "name": "D:\\Gatsby\\tech-blog-kartik-bhargava\\node_modules\\gatsby-plugin-image\\dist\\babel-plugin-parse-static-images.js",
+          "options": {
+            "cacheDir": "D:\\Gatsby\\tech-blog-kartik-bhargava\\.cache\\caches\\gatsby-plugin-image"
+          }
+        },
+        {
           "name": "D:\\Gatsby\\tech-blog-kartik-bhargava\\node_modules\\@babel\\plugin-proposal-optional-chaining\\lib\\index.js",
           "options": {}
         },
@@ -110,6 +128,12 @@
         {
           "name": "@sigmacomputing/babel-plugin-lodash",
           "options": {}
+        },
+        {
+          "name": "D:\\Gatsby\\tech-blog-kartik-bhargava\\node_modules\\gatsby-plugin-image\\dist\\babel-plugin-parse-static-images.js",
+          "options": {
+            "cacheDir": "D:\\Gatsby\\tech-blog-kartik-bhargava\\.cache\\caches\\gatsby-plugin-image"
+          }
         },
         {
           "name": "D:\\Gatsby\\tech-blog-kartik-bhargava\\node_modules\\@babel\\plugin-proposal-optional-chaining\\lib\\index.js",

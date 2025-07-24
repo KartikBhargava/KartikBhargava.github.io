@@ -1,148 +1,718 @@
-import React from "react"
-import Card from "../ui/card"
-import { useEffect, useState } from 'react'
+import React, { useState, useEffect } from "react"
+import Button from "../ui/buttons"
 
-const WritingSection = () => {
- const [isMobile, setIsMobile] = useState(false)
+const WritingSection = ({ darkMode = false }) => {
+  const [selectedCategory, setSelectedCategory] = useState('all')
+  const [isMobile, setIsMobile] = useState(false)
+
   useEffect(() => {
-      // Check if we're on the client side
-      const checkScreenSize = () => {
-        setIsMobile(window.innerWidth < 768)
-      }
-  
-      // Initial check
-      checkScreenSize()
-  
-      // Add event listener for window resize
-      window.addEventListener('resize', checkScreenSize)
-  
-      // Cleanup
-      return () => window.removeEventListener('resize', checkScreenSize)
-    }, [])
-  
-  const androidBlogPosts = [
-    {
-      title: "Building Custom Views with Jetpack Compose",
-      excerpt: "Learn how to create reusable custom UI components using Jetpack Compose's powerful composition model.",
-      date: "Dec 15, 2024",
-      readTime: "10 min read",
-      category: "Jetpack Compose"
+    if (typeof window !== 'undefined') {
+      const checkMobile = () => setIsMobile(window.innerWidth < 768)
+      checkMobile()
+      window.addEventListener('resize', checkMobile)
+      return () => window.removeEventListener('resize', checkMobile)
+    }
+  }, [])
+
+  // Modern theme colors
+  const theme = {
+    light: {
+      background: '#ffffff',
+      surface: '#ffffff',
+      text: '#0f172a',
+      textSecondary: '#64748b',
+      textLight: '#94a3b8',
+      border: '#e2e8f0',
+      primary: '#3b82f6',
+      success: '#10b981',
+      warning: '#f59e0b',
+      purple: '#8b5cf6',
+      pink: '#ec4899'
     },
+    dark: {
+      background: '#0f172a',
+      surface: '#1e293b',
+      text: '#f8fafc',
+      textSecondary: '#cbd5e1',
+      textLight: '#94a3b8',
+      border: '#334155',
+      primary: '#60a5fa',
+      success: '#34d399',
+      warning: '#fbbf24',
+      purple: '#a78bfa',
+      pink: '#f472b6'
+    }
+  }
+
+  const currentTheme = darkMode ? theme.dark : theme.light
+
+  const categories = {
+    all: 'All Posts',
+    android: 'Android',
+    architecture: 'Architecture',
+    tutorials: 'Tutorials',
+    thoughts: 'Thoughts'
+  }
+
+  const blogPosts = [
     {
-      title: "Clean Architecture in Android Apps",
-      excerpt: "Implementing MVVM pattern with Repository and UseCase layers for maintainable Android applications.",
-      date: "Nov 28, 2024",
-      readTime: "15 min read",
-      category: "Architecture"
-    },
-    {
-      title: "Advanced Kotlin Coroutines in Android",
-      excerpt: "Mastering async programming with coroutines, flows, and structured concurrency in Android development.",
-      date: "Nov 15, 2024",
-      readTime: "12 min read",
-      category: "Kotlin"
-    },
-    {
-      title: "Room Database Best Practices",
-      excerpt: "Efficient local data storage with Room, including migrations, relationships, and performance optimization.",
-      date: "Oct 30, 2024",
+      id: 1,
+      title: "Building Modern Android Apps with Jetpack Compose",
+      category: "android",
+      excerpt: "Explore how Jetpack Compose revolutionizes Android UI development with declarative programming, making it easier to build beautiful and responsive user interfaces.",
+      content: "In this comprehensive guide, we'll dive deep into Jetpack Compose and learn how to build modern Android applications...",
+      tags: ["Jetpack Compose", "Android", "UI/UX", "Kotlin"],
       readTime: "8 min read",
-      category: "Database"
+      publishDate: "2024-01-15",
+      featured: true,
+      image: "📱",
+      gradient: `linear-gradient(135deg, ${currentTheme.primary} 0%, ${currentTheme.purple} 100%)`
+    },
+    {
+      id: 2,
+      title: "Clean Architecture in Android: A Practical Guide",
+      category: "architecture",
+      excerpt: "Learn how to implement Clean Architecture principles in Android applications to create maintainable, testable, and scalable codebases.",
+      content: "Clean Architecture has become a cornerstone of modern Android development. In this article, we'll explore...",
+      tags: ["Clean Architecture", "MVVM", "Design Patterns", "Best Practices"],
+      readTime: "12 min read",
+      publishDate: "2024-01-10",
+      featured: true,
+      image: "🏗️",
+      gradient: `linear-gradient(135deg, ${currentTheme.success} 0%, ${currentTheme.primary} 100%)`
+    },
+    {
+      id: 3,
+      title: "Mastering Room Database: Tips and Tricks",
+      category: "tutorials",
+      excerpt: "Discover advanced Room database techniques, including complex queries, migrations, and performance optimization strategies for Android apps.",
+      content: "Room is Android's recommended database solution. Let's explore advanced techniques that will make you a Room expert...",
+      tags: ["Room", "Database", "SQLite", "Android"],
+      readTime: "10 min read",
+      publishDate: "2024-01-05",
+      featured: false,
+      image: "🗄️",
+      gradient: `linear-gradient(135deg, ${currentTheme.warning} 0%, ${currentTheme.pink} 100%)`
+    },
+    {
+      id: 4,
+      title: "The Future of Android Development",
+      category: "thoughts",
+      excerpt: "My thoughts on where Android development is heading, including emerging technologies, new frameworks, and industry trends to watch.",
+      content: "As we look ahead to the future of Android development, several exciting trends are emerging...",
+      tags: ["Future Tech", "Android", "Industry Trends", "Opinion"],
+      readTime: "6 min read",
+      publishDate: "2024-01-01",
+      featured: false,
+      image: "🔮",
+      gradient: `linear-gradient(135deg, ${currentTheme.purple} 0%, ${currentTheme.pink} 100%)`
+    },
+    {
+      id: 5,
+      title: "State Management in Jetpack Compose",
+      category: "android",
+      excerpt: "Understanding state management patterns in Jetpack Compose, from simple local state to complex app-wide state solutions.",
+      content: "State management is crucial in Jetpack Compose applications. Let's explore different approaches and when to use them...",
+      tags: ["State Management", "Jetpack Compose", "Architecture", "Kotlin"],
+      readTime: "9 min read",
+      publishDate: "2023-12-28",
+      featured: true,
+      image: "⚡",
+      gradient: `linear-gradient(135deg, ${currentTheme.primary} 0%, ${currentTheme.success} 100%)`
+    },
+    {
+      id: 6,
+      title: "Testing Android Apps: A Complete Guide",
+      category: "tutorials",
+      excerpt: "Comprehensive guide to testing Android applications, covering unit tests, integration tests, and UI tests with modern testing frameworks.",
+      content: "Testing is essential for robust Android applications. This guide covers everything from basic unit tests to advanced UI testing...",
+      tags: ["Testing", "JUnit", "Espresso", "Quality Assurance"],
+      readTime: "15 min read",
+      publishDate: "2023-12-20",
+      featured: false,
+      image: "🧪",
+      gradient: `linear-gradient(135deg, ${currentTheme.success} 0%, ${currentTheme.warning} 100%)`
     }
   ]
 
-  return (
-    <div style={{
-      maxWidth: "1200px",
-      margin: "0 auto",
-      padding: isMobile ? "2rem 1rem" : "3rem 2rem",
-      height: "100%",
-      display: "flex",
-      flexDirection: "column",
-      justifyContent: "center"
-    }}>
-      <div style={{ 
-        textAlign: "center",
-        marginBottom: isMobile ? "2rem" : "3rem"
-      }}>
-        <h2 style={{ 
-          fontSize: isMobile ? "2rem" : "3rem",
-          marginBottom: "1rem",
-          fontWeight: "700",
-          color: "#1f2937"
-        }}>
-          Android Development Blog
-        </h2>
-        <p style={{ 
-          fontSize: isMobile ? "1rem" : "1.2rem",
-          color: "#6b7280"
-        }}>
-          Tutorials, tips, and insights from Android development
-        </p>
-      </div>
+  const filteredPosts = selectedCategory === 'all' 
+    ? blogPosts 
+    : blogPosts.filter(post => post.category === selectedCategory)
 
-      <div style={{
-        display: "grid",
-        gridTemplateColumns: isMobile ? "1fr" : "repeat(2, 1fr)",
-        gap: isMobile ? "1.5rem" : "2rem"
-      }}>
-        {androidBlogPosts.map((post, index) => (
-          <Card 
-            key={index}
-            onClick={() => {/* Handle blog post click */}}
-            style={{
-              height: "auto",
-              minHeight: isMobile ? "auto" : "250px",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "space-between"
-            }}
-          >
-            <div>
+  const featuredPosts = blogPosts.filter(post => post.featured)
+
+  const getCategoryColor = (category) => {
+    switch(category) {
+      case 'android': return currentTheme.primary
+      case 'architecture': return currentTheme.success
+      case 'tutorials': return currentTheme.warning
+      case 'thoughts': return currentTheme.purple
+      default: return currentTheme.textLight
+    }
+  }
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString)
+    return date.toLocaleDateString('en-US', { 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    })
+  }
+
+  // Blog Post Card Component
+  const BlogPostCard = ({ post, index, featured = false }) => {
+    const [isHovered, setIsHovered] = useState(false)
+
+    return (
+      <article
+        style={{
+          background: `linear-gradient(135deg, ${currentTheme.surface} 0%, ${post.gradient}05 100%)`,
+          borderRadius: featured ? "24px" : "20px",
+          padding: featured ? (isMobile ? "2.5rem" : "3rem") : (isMobile ? "2rem" : "2.5rem"),
+          border: `1px solid ${currentTheme.border}`,
+          transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
+          transform: isHovered ? "translateY(-8px)" : "translateY(0)",
+          boxShadow: isHovered 
+            ? (darkMode ? "0 20px 40px rgba(0,0,0,0.3)" : "0 20px 40px rgba(0,0,0,0.1)")
+            : (darkMode ? "0 4px 6px rgba(0,0,0,0.2)" : "0 4px 6px rgba(0,0,0,0.05)"),
+          position: "relative",
+          overflow: "hidden",
+          cursor: "pointer",
+          animation: `slideInUp 0.6s ease ${index * 0.1}s both`
+        }}
+        onMouseEnter={() => !isMobile && setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+      >
+        {/* Top gradient border */}
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          height: featured ? '4px' : '3px',
+          background: post.gradient,
+          borderRadius: featured ? '24px 24px 0 0' : '20px 20px 0 0'
+        }} />
+
+        {/* Background pattern */}
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundImage: `radial-gradient(circle at 2px 2px, ${currentTheme.primary}${darkMode ? '05' : '03'} 1px, transparent 0)`,
+          backgroundSize: '20px 20px',
+          opacity: 0.3
+        }} />
+
+        <div style={{ position: 'relative', zIndex: 1 }}>
+          {/* Post Header */}
+          <div style={{
+            display: "flex",
+            alignItems: "flex-start",
+            gap: "1rem",
+            marginBottom: "1.5rem"
+          }}>
+            {/* Post Icon */}
+            <div style={{
+              fontSize: featured ? (isMobile ? "3rem" : "3.5rem") : (isMobile ? "2.5rem" : "3rem"),
+              flexShrink: 0,
+              transition: "transform 0.3s ease",
+              transform: isHovered ? "scale(1.1) rotate(5deg)" : "scale(1)"
+            }}>
+              {post.image}
+            </div>
+
+            <div style={{ flex: 1 }}>
+              {/* Category Badge */}
               <div style={{
                 display: "inline-block",
-                background: "#34a853",
+                background: getCategoryColor(post.category),
                 color: "white",
-                padding: "0.25rem 0.75rem",
-                borderRadius: "4px",
-                fontSize: "0.75rem",
+                padding: "0.5rem 1rem",
+                borderRadius: "25px",
+                fontSize: "0.8rem",
                 fontWeight: "600",
-                marginBottom: "1rem"
+                marginBottom: "1rem",
+                textTransform: "capitalize"
               }}>
                 {post.category}
               </div>
-              <h4 style={{ 
-                fontSize: isMobile ? "1.1rem" : "1.3rem",
-                marginBottom: "1rem",
-                fontWeight: "600",
-                color: "#1f2937",
-                lineHeight: "1.3"
+
+              {/* Title */}
+              <h3 style={{
+                fontSize: featured ? (isMobile ? "1.6rem" : "2rem") : (isMobile ? "1.3rem" : "1.5rem"),
+                fontWeight: "700",
+                color: currentTheme.text,
+                marginBottom: "0.75rem",
+                lineHeight: "1.3",
+                transition: "color 0.2s ease"
               }}>
                 {post.title}
-              </h4>
-              <p style={{ 
-                color: "#6b7280",
-                lineHeight: "1.5",
-                fontSize: isMobile ? "0.9rem" : "1rem"
+              </h3>
+
+              {/* Meta Info */}
+              <div style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "1rem",
+                fontSize: "0.85rem",
+                color: currentTheme.textSecondary,
+                marginBottom: "1rem"
               }}>
-                {post.excerpt}
-              </p>
+                <span>{formatDate(post.publishDate)}</span>
+                <span>•</span>
+                <span>{post.readTime}</span>
+                {featured && (
+                  <>
+                    <span>•</span>
+                    <span style={{
+                      background: `${currentTheme.warning}20`,
+                      color: currentTheme.warning,
+                      padding: "0.25rem 0.5rem",
+                      borderRadius: "12px",
+                      fontSize: "0.75rem",
+                      fontWeight: "600"
+                    }}>
+                      ⭐ Featured
+                    </span>
+                  </>
+                )}
+              </div>
             </div>
+          </div>
+
+          {/* Excerpt */}
+          <p style={{
+            fontSize: isMobile ? "1rem" : "1.1rem",
+            color: currentTheme.textSecondary,
+            lineHeight: "1.7",
+            marginBottom: "1.5rem"
+          }}>
+            {post.excerpt}
+          </p>
+
+          {/* Tags */}
+          <div style={{
+            display: "flex",
+            flexWrap: "wrap",
+            gap: "0.5rem",
+            marginBottom: "1.5rem"
+          }}>
+            {post.tags.map((tag, tagIndex) => (
+              <span
+                key={tag}
+                style={{
+                  background: darkMode ? `${currentTheme.primary}15` : `${currentTheme.primary}10`,
+                  color: currentTheme.text,
+                  border: `1px solid ${currentTheme.border}`,
+                  padding: "0.4rem 0.8rem",
+                  borderRadius: "12px",
+                  fontSize: "0.8rem",
+                  fontWeight: "500",
+                  transition: "all 0.2s ease",
+                  animation: `fadeInUp 0.3s ease ${tagIndex * 0.05 + 0.2}s both`
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.background = darkMode ? `${currentTheme.primary}25` : `${currentTheme.primary}20`
+                  e.target.style.transform = "scale(1.05)"
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.background = darkMode ? `${currentTheme.primary}15` : `${currentTheme.primary}10`
+                  e.target.style.transform = "scale(1)"
+                }}
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+
+          {/* Read More Button */}
+          <Button
+            variant="outline"
+            style={{
+              border: `2px solid ${currentTheme.primary}`,
+              color: currentTheme.primary,
+              padding: "0.75rem 1.5rem",
+              borderRadius: "12px",
+              fontSize: "0.9rem",
+              fontWeight: "600",
+              background: "transparent",
+              transition: "all 0.3s ease",
+              width: isMobile ? "100%" : "auto"
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.background = currentTheme.primary
+              e.target.style.color = "#ffffff"
+              e.target.style.transform = "translateY(-2px)"
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.background = "transparent"
+              e.target.style.color = currentTheme.primary
+              e.target.style.transform = "translateY(0)"
+            }}
+            onClick={() => {/* Handle read more */}}
+          >
+            Read Article →
+          </Button>
+        </div>
+      </article>
+    )
+  }
+
+  return (
+    <div style={{
+      background: currentTheme.background,
+      color: currentTheme.text,
+      minHeight: "100vh",
+      padding: isMobile ? "2rem 1rem" : "3rem 2rem"
+    }}>
+      <div style={{
+        maxWidth: "1200px",
+        margin: "0 auto"
+      }}>
+        {/* Header */}
+        <div style={{ 
+          textAlign: "center",
+          marginBottom: isMobile ? "3rem" : "4rem",
+          animation: 'fadeInUp 0.6s ease'
+        }}>
+          <div style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: "0.5rem",
+            background: `linear-gradient(135deg, ${currentTheme.success} 0%, ${currentTheme.primary} 100%)`,
+            color: "white",
+            padding: "0.75rem 1.5rem",
+            borderRadius: "50px",
+            fontSize: "0.9rem",
+            fontWeight: "600",
+            marginBottom: "2rem",
+            boxShadow: `0 4px 14px 0 ${currentTheme.success}39`
+          }}>
+            <span style={{ fontSize: '1.1rem' }}>✍️</span>
+            Tech Blog & Articles
+          </div>
+
+          {/* FIXED title using CSS classes */}
+          <h2 
+            className={`gradient-title ${darkMode ? 'dark-mode' : 'light-mode'}`}
+            style={{ 
+              fontSize: isMobile ? "2.5rem" : "3.5rem",
+              fontWeight: "800",
+              marginBottom: "1.5rem",
+              lineHeight: "1.2"
+            }}
+          >
+            Android Development Blog
+          </h2>
+          
+          <p style={{ 
+            fontSize: isMobile ? "1.1rem" : "1.3rem",
+            color: currentTheme.textSecondary,
+            maxWidth: "700px",
+            margin: "0 auto",
+            lineHeight: "1.7"
+          }}>
+            Insights, tutorials, and thoughts on <strong style={{color: currentTheme.text}}>Android development</strong>, 
+            mobile architecture, and the latest in mobile technology
+          </p>
+        </div>
+
+        {/* Featured Posts Section */}
+        {featuredPosts.length > 0 && (
+          <div style={{
+            marginBottom: isMobile ? "3rem" : "4rem",
+            animation: 'fadeInUp 0.6s ease 0.2s both'
+          }}>
+            <h3 style={{
+              fontSize: isMobile ? "1.5rem" : "1.8rem",
+              fontWeight: "700",
+              color: currentTheme.text,
+              marginBottom: "2rem",
+              display: "flex",
+              alignItems: "center",
+              gap: "0.5rem"
+            }}>
+              <span style={{fontSize: '1.2rem'}}>⭐</span>
+              Featured Articles
+            </h3>
+            
+            <div style={{
+              display: "grid",
+              gridTemplateColumns: isMobile ? "1fr" : "repeat(auto-fit, minmax(400px, 1fr))",
+              gap: isMobile ? "2rem" : "2.5rem"
+            }}>
+              {featuredPosts.slice(0, 2).map((post, index) => (
+                <BlogPostCard key={post.id} post={post} index={index} featured={true} />
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Category Filter */}
+        <div style={{
+          display: "flex",
+          justifyContent: "center",
+          gap: isMobile ? "0.5rem" : "1rem",
+          marginBottom: isMobile ? "2rem" : "3rem",
+          flexWrap: "wrap",
+          animation: 'fadeInUp 0.6s ease 0.4s both'
+        }}>
+          <div style={{
+            display: "flex",
+            gap: "0.5rem",
+            background: currentTheme.surface,
+            padding: "0.5rem",
+            borderRadius: "50px",
+            border: `1px solid ${currentTheme.border}`,
+            boxShadow: darkMode 
+              ? "0 4px 6px rgba(0, 0, 0, 0.2)" 
+              : "0 4px 6px rgba(0, 0, 0, 0.05)",
+            flexWrap: "wrap",
+            justifyContent: "center"
+          }}>
+            {Object.entries(categories).map(([key, label]) => (
+              <button
+                key={key}
+                onClick={() => setSelectedCategory(key)}
+                style={{
+                  background: selectedCategory === key 
+                    ? `linear-gradient(135deg, ${currentTheme.primary} 0%, ${currentTheme.purple} 100%)`
+                    : "transparent",
+                  color: selectedCategory === key ? "white" : currentTheme.text,
+                  border: "none",
+                  padding: isMobile ? "0.75rem 1rem" : "0.75rem 1.25rem",
+                  borderRadius: "25px",
+                  fontSize: isMobile ? "0.8rem" : "0.9rem",
+                  fontWeight: "600",
+                  cursor: "pointer",
+                  transition: "all 0.3s ease",
+                  textAlign: "center",
+                  boxShadow: selectedCategory === key 
+                    ? `0 4px 12px ${currentTheme.primary}30` 
+                    : "none"
+                }}
+                onMouseEnter={(e) => {
+                  if (!isMobile && selectedCategory !== key) {
+                    e.target.style.transform = "translateY(-2px)"
+                    e.target.style.background = `${currentTheme.primary}10`
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (selectedCategory !== key) {
+                    e.target.style.transform = "translateY(0)"
+                    e.target.style.background = "transparent"
+                  }
+                }}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* All Posts Grid */}
+        <div style={{
+          marginBottom: "4rem",
+          animation: 'fadeInUp 0.6s ease 0.6s both'
+        }}>
+          <h3 style={{
+            fontSize: isMobile ? "1.3rem" : "1.6rem",
+            fontWeight: "700",
+            color: currentTheme.text,
+            marginBottom: "2rem",
+            display: "flex",
+            alignItems: "center",
+            gap: "0.5rem"
+          }}>
+            <span style={{fontSize: '1.1rem'}}>📚</span>
+            {selectedCategory === 'all' ? 'All Articles' : `${categories[selectedCategory]} Articles`}
+          </h3>
+          
+          <div style={{
+            display: "grid",
+            gridTemplateColumns: isMobile ? "1fr" : "repeat(auto-fit, minmax(350px, 1fr))",
+            gap: isMobile ? "1.5rem" : "2rem"
+          }}>
+            {filteredPosts.map((post, index) => (
+              <BlogPostCard key={post.id} post={post} index={index} />
+            ))}
+          </div>
+        </div>
+
+        {/* Newsletter Signup */}
+        <div style={{
+          background: `linear-gradient(135deg, ${currentTheme.primary} 0%, ${currentTheme.purple} 100%)`,
+          borderRadius: "24px",
+          padding: isMobile ? "2.5rem" : "3rem",
+          textAlign: "center",
+          color: "white",
+          position: "relative",
+          overflow: "hidden",
+          animation: 'fadeInUp 0.6s ease 0.8s both'
+        }}>
+          {/* Background Pattern */}
+          <div style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundImage: 'radial-gradient(circle at 2px 2px, rgba(255,255,255,0.1) 1px, transparent 0)',
+            backgroundSize: '24px 24px',
+            opacity: 0.3
+          }} />
+
+          <div style={{ position: "relative", zIndex: 1 }}>
+            <div style={{
+              fontSize: isMobile ? "3rem" : "4rem",
+              marginBottom: "1.5rem"
+            }}>📧</div>
+            
+            <h3 style={{
+              fontSize: isMobile ? "1.5rem" : "2rem",
+              fontWeight: "700",
+              marginBottom: "1rem"
+            }}>
+              Stay Updated
+            </h3>
+            
+            <p style={{
+              fontSize: isMobile ? "1rem" : "1.1rem",
+              opacity: 0.9,
+              marginBottom: "2rem",
+              maxWidth: "500px",
+              margin: "0 auto 2rem"
+            }}>
+              Get the latest Android development insights, tutorials, and tips delivered directly to your inbox.
+            </p>
+            
             <div style={{
               display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              fontSize: "0.8rem",
-              color: "#9ca3af",
-              fontWeight: "500",
-              marginTop: "1rem"
+              gap: "1rem",
+              maxWidth: "400px",
+              margin: "0 auto",
+              flexDirection: isMobile ? "column" : "row"
             }}>
-              <span>{post.date} • {post.readTime}</span>
-              <span style={{ fontSize: "1.2rem", color: "#34a853" }}>→</span>
+              <input
+                type="email"
+                placeholder="your.email@example.com"
+                style={{
+                  flex: 1,
+                  padding: "1rem",
+                  borderRadius: "12px",
+                  border: "none",
+                  fontSize: "1rem",
+                  background: "rgba(255, 255, 255, 0.9)",
+                  color: currentTheme.text
+                }}
+              />
+              <Button
+                variant="primary"
+                style={{
+                  background: "rgba(255, 255, 255, 0.2)",
+                  border: "2px solid rgba(255, 255, 255, 0.3)",
+                  color: "white",
+                  padding: "1rem 1.5rem",
+                  borderRadius: "12px",
+                  fontSize: "1rem",
+                  fontWeight: "600",
+                  transition: "all 0.3s ease",
+                  whiteSpace: "nowrap"
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.background = "rgba(255, 255, 255, 0.3)"
+                  e.target.style.transform = "translateY(-2px)"
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.background = "rgba(255, 255, 255, 0.2)"
+                  e.target.style.transform = "translateY(0)"
+                }}
+              >
+                Subscribe
+              </Button>
             </div>
-          </Card>
-        ))}
+          </div>
+        </div>
       </div>
+
+      {/* Global CSS Animations */}
+      <style jsx global>{`
+        /* BULLETPROOF gradient text styles */
+        .gradient-title {
+          transition: color 0.3s ease !important;
+        }
+        
+        .gradient-title.light-mode {
+          color: #3b82f6 !important;
+          background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+        }
+        
+        .gradient-title.dark-mode {
+          color: #60a5fa !important;
+          background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+        }
+        
+        /* Fallback for browsers that don't support background-clip */
+        @supports not (background-clip: text) {
+          .gradient-title {
+            background: none !important;
+            -webkit-background-clip: unset !important;
+            -webkit-text-fill-color: unset !important;
+          }
+          
+          .gradient-title.light-mode {
+            color: #3b82f6 !important;
+          }
+          
+          .gradient-title.dark-mode {
+            color: #60a5fa !important;
+          }
+        }
+        
+        @keyframes fadeInUp {
+          from {
+            opacity: 0;
+            transform: translateY(30px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        
+        @keyframes slideInUp {
+          from {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        
+        @keyframes bounce {
+          0%, 20%, 50%, 80%, 100% {
+            transform: translateY(0);
+          }
+          40% {
+            transform: translateY(-5px);
+          }
+          60% {
+            transform: translateY(-2px);
+          }
+        }
+      `}</style>
     </div>
   )
 }
