@@ -1,35 +1,49 @@
-/* Reset and base styles */
+/* CRITICAL: WHITE BORDER REMOVAL */
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
-/* ADD THESE LINES TO REMOVE WHITE BORDER */
-html, body {
-  width: 100%;
-  height: 100%;
-  overflow-x: hidden; /* Prevent horizontal scroll */
+html {
+  width: 100% !important;
+  height: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow-x: hidden !important;
 }
 
-/* UPDATE YOUR EXISTING BODY STYLES */
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   line-height: 1.6;
   color: #333;
-  /* REMOVE OR COMMENT OUT THIS LINE - it's causing the white background */
-  /* background-color: #fafafa; */
-  /* ADD THESE INSTEAD */
+  width: 100vw !important;
+  min-height: 100vh !important;
   margin: 0 !important;
   padding: 0 !important;
+  overflow-x: hidden !important;
 }
 
-/* ADD THESE ROOT ELEMENT STYLES */
-#root, #__next, .app-container {
-  width: 100vw;
-  min-height: 100vh;
-  margin: 0;
-  padding: 0;
+/* GATSBY SPECIFIC ELEMENTS */
+#___gatsby,
+#gatsby-focus-wrapper {
+  width: 100vw !important;
+  min-height: 100vh !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow-x: hidden !important;
+}
+
+/* ROOT ELEMENTS */
+#root, 
+#__next, 
+.app-container,
+[data-reactroot] {
+  width: 100vw !important;
+  min-height: 100vh !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow-x: hidden !important;
 }
 
 /* Typography */
@@ -121,6 +135,180 @@ pre code {
   border-top: 1px solid #eee;
 }
 
+/* BULLETPROOF gradient text styles */
+.gradient-title {
+  transition: color 0.3s ease !important;
+}
+
+.gradient-title.light-mode {
+  color: #3b82f6 !important;
+  background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gradient-title.dark-mode {
+  color: #60a5fa !important;
+  background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Header gradient text styles */
+.header-gradient-title {
+  transition: color 0.3s ease !important;
+}
+
+.header-gradient-title.light-mode {
+  color: #3b82f6 !important;
+  background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.header-gradient-title.dark-mode {
+  color: #60a5fa !important;
+  background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Mobile menu gradient text */
+.mobile-header-gradient-title {
+  transition: color 0.3s ease !important;
+}
+
+.mobile-header-gradient-title.light-mode {
+  color: #3b82f6 !important;
+  background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.mobile-header-gradient-title.dark-mode {
+  color: #60a5fa !important;
+  background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Fallback for browsers that don't support background-clip */
+@supports not (background-clip: text) {
+  .gradient-title, 
+  .header-gradient-title, 
+  .mobile-header-gradient-title {
+    background: none !important;
+    -webkit-background-clip: unset !important;
+    -webkit-text-fill-color: unset !important;
+  }
+  
+  .gradient-title.light-mode, 
+  .header-gradient-title.light-mode, 
+  .mobile-header-gradient-title.light-mode {
+    color: #3b82f6 !important;
+  }
+  
+  .gradient-title.dark-mode, 
+  .header-gradient-title.dark-mode, 
+  .mobile-header-gradient-title.dark-mode {
+    color: #60a5fa !important;
+  }
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeInRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-8px);
+  }
+  60% {
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(5deg);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.02);
+  }
+}
+
 /* Responsive design */
 @media (max-width: 768px) {
   .blog-post {
@@ -131,11 +319,24 @@ pre code {
   h1 { font-size: 2rem; }
   h2 { font-size: 1.5rem; }
   
-  /* ADD MOBILE-SPECIFIC ROOT STYLES */
-  #root, #__next, .app-container {
-    width: 100vw;
-    min-height: 100vh;
-    margin: 0;
-    padding: 0;
+  /* MOBILE-SPECIFIC ROOT STYLES */
+  #___gatsby,
+  #gatsby-focus-wrapper,
+  #root, 
+  #__next, 
+  .app-container {
+    width: 100vw !important;
+    min-height: 100vh !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow-x: hidden !important;
+  }
+  
+  body, html {
+    width: 100vw !important;
+    min-height: 100vh !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow-x: hidden !important;
   }
 }

@@ -1116,7 +1116,7 @@ const IndexPage = () => {
     "name": "Kartik Bhargava",
     "jobTitle": "Android Developer",
     "url": "https://kartikbhargava.github.io",
-    "sameAs": ["https://github.com/KartikBhargava", "https://linkedin.com/in/kartik-bhargava"],
+    "sameAs": ["https://github.com/KartikBhargava", "https://linkedin.com/in/kartik-bhargava-39586611b"],
     "knowsAbout": ["Android", "Kotlin", "Jetpack Compose", "Mobile Development"]
   }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_components_layout_layout__WEBPACK_IMPORTED_MODULE_2__["default"], {
     activeSection: activeSection,

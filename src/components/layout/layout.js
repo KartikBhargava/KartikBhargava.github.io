@@ -11,6 +11,40 @@ const Layout = ({ children, activeSection, setActiveSection, sections, darkMode,
   const currentDarkMode = darkMode !== undefined ? darkMode : internalDarkMode
   const toggleDarkMode = setDarkMode || setInternalDarkMode
 
+  // SIMPLE WHITE BORDER REMOVAL
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      // Simple approach - just set body and html styles
+      document.body.style.margin = '0'
+      document.body.style.padding = '0'
+      document.body.style.width = '100vw'
+      document.body.style.minHeight = '100vh'
+      document.body.style.overflowX = 'hidden'
+      
+      document.documentElement.style.margin = '0'
+      document.documentElement.style.padding = '0'
+      document.documentElement.style.width = '100%'
+      document.documentElement.style.height = '100%'
+      
+      // Gatsby specific elements
+      const gatsbyWrapper = document.getElementById('___gatsby')
+      if (gatsbyWrapper) {
+        gatsbyWrapper.style.margin = '0'
+        gatsbyWrapper.style.padding = '0'
+        gatsbyWrapper.style.width = '100vw'
+        gatsbyWrapper.style.minHeight = '100vh'
+      }
+      
+      const focusWrapper = document.getElementById('gatsby-focus-wrapper')
+      if (focusWrapper) {
+        focusWrapper.style.margin = '0'
+        focusWrapper.style.padding = '0'
+        focusWrapper.style.width = '100%'
+        focusWrapper.style.minHeight = '100vh'
+      }
+    }
+  }, [])
+
   // Initialize dark mode if not controlled by parent
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -84,7 +118,9 @@ const Layout = ({ children, activeSection, setActiveSection, sections, darkMode,
         alignItems: 'center',
         justifyContent: 'center',
         background: currentTheme.bg,
-        color: currentTheme.text
+        color: currentTheme.text,
+        margin: 0,
+        padding: 0
       }}>
         <div style={{ textAlign: 'center' }}>
           <div style={{
@@ -123,14 +159,18 @@ const Layout = ({ children, activeSection, setActiveSection, sections, darkMode,
         <meta name="twitter:description" content="Technology, programming, and development insights" />
       </Helmet>
 
+      {/* MAIN CONTAINER - BACK TO NORMAL FLOW */}
       <div style={{ 
         fontFamily: "-apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif",
+        width: '100vw',
         minHeight: "100vh",
         background: currentTheme.bg,
         color: currentTheme.text,
         display: "flex",
         flexDirection: "column",
         transition: 'all 0.3s ease',
+        margin: 0,
+        padding: 0,
         // Ensure proper overflow handling for mobile
         overflow: isMobile ? 'auto' : 'hidden'
       }}>
@@ -163,7 +203,10 @@ const Layout = ({ children, activeSection, setActiveSection, sections, darkMode,
           // Ensure minimum height for mobile
           minHeight: isMobile ? 'calc(100vh - 80px)' : 'auto',
           // Enable momentum scrolling on iOS
-          WebkitOverflowScrolling: 'touch'
+          WebkitOverflowScrolling: 'touch',
+          width: '100%',
+          margin: 0,
+          padding: 0
         }}>
           {/* Background Pattern */}
           <div style={{
