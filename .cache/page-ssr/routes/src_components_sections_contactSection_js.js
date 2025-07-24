@@ -54,7 +54,8 @@ const ContactSection = ({
       success: '#10b981',
       warning: '#f59e0b',
       purple: '#8b5cf6',
-      pink: '#ec4899'
+      pink: '#ec4899',
+      badgeGradient: 'linear-gradient(135deg, #10b981 0%, #3b82f6 100%)'
     },
     dark: {
       background: '#0f172a',
@@ -67,7 +68,8 @@ const ContactSection = ({
       success: '#34d399',
       warning: '#fbbf24',
       purple: '#a78bfa',
-      pink: '#f472b6'
+      pink: '#f472b6',
+      badgeGradient: 'linear-gradient(135deg, #34d399 0%, #60a5fa 100%)'
     }
   };
   const currentTheme = darkMode ? theme.dark : theme.light;
@@ -119,7 +121,7 @@ const ContactSection = ({
       display: "inline-flex",
       alignItems: "center",
       gap: "0.5rem",
-      background: `linear-gradient(135deg, ${currentTheme.success} 0%, ${currentTheme.primary} 100%)`,
+      background: currentTheme.badgeGradient,
       color: "white",
       padding: "0.75rem 1.5rem",
       borderRadius: "50px",
@@ -133,14 +135,11 @@ const ContactSection = ({
       fontSize: '1.1rem'
     }
   }, "\uD83D\uDE80"), "Available for Projects"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h2", {
+    className: `gradient-title ${darkMode ? 'dark-mode' : 'light-mode'}`,
     style: {
       fontSize: isMobile ? "2.5rem" : "3.5rem",
-      marginBottom: "1.5rem",
       fontWeight: "800",
-      background: `linear-gradient(135deg, ${currentTheme.primary} 0%, ${currentTheme.purple} 100%)`,
-      WebkitBackgroundClip: 'text',
-      WebkitTextFillColor: 'transparent',
-      backgroundClip: 'text',
+      marginBottom: "1.5rem",
       lineHeight: "1.2",
       animation: 'fadeInUp 0.6s ease 0.2s both'
     }
@@ -184,7 +183,7 @@ const ContactSection = ({
       textAlign: isMobile ? "left" : "center",
       gap: isMobile ? "1.5rem" : "0",
       padding: isMobile ? "2rem" : "2.5rem",
-      background: `${method.gradient}10`,
+      background: darkMode ? `${method.gradient}15` : `${method.gradient}10`,
       border: `1px solid ${currentTheme.border}`,
       borderRadius: "20px",
       transition: "all 0.3s ease",
@@ -195,13 +194,13 @@ const ContactSection = ({
     },
     onMouseEnter: e => {
       e.currentTarget.style.transform = 'translateY(-8px) scale(1.02)';
-      e.currentTarget.style.boxShadow = '0 15px 35px rgba(0, 0, 0, 0.1)';
-      e.currentTarget.style.background = `${method.gradient}20`;
+      e.currentTarget.style.boxShadow = darkMode ? '0 15px 35px rgba(0, 0, 0, 0.2)' : '0 15px 35px rgba(0, 0, 0, 0.1)';
+      e.currentTarget.style.background = darkMode ? `${method.gradient}25` : `${method.gradient}20`;
     },
     onMouseLeave: e => {
       e.currentTarget.style.transform = 'translateY(0) scale(1)';
       e.currentTarget.style.boxShadow = 'none';
-      e.currentTarget.style.background = `${method.gradient}10`;
+      e.currentTarget.style.background = darkMode ? `${method.gradient}15` : `${method.gradient}10`;
     }
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     style: {
@@ -243,7 +242,7 @@ const ContactSection = ({
     }
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     style: {
-      background: `linear-gradient(135deg, ${currentTheme.surface} 0%, ${currentTheme.primary}05 100%)`,
+      background: darkMode ? `linear-gradient(135deg, ${currentTheme.surface} 0%, ${currentTheme.primary}10 100%)` : `linear-gradient(135deg, ${currentTheme.surface} 0%, ${currentTheme.primary}05 100%)`,
       textAlign: "center",
       padding: isMobile ? "2rem" : "2.5rem",
       borderRadius: "20px",
@@ -254,7 +253,7 @@ const ContactSection = ({
     },
     onMouseEnter: e => {
       e.currentTarget.style.transform = 'translateY(-4px)';
-      e.currentTarget.style.boxShadow = '0 10px 25px rgba(0, 0, 0, 0.1)';
+      e.currentTarget.style.boxShadow = darkMode ? '0 10px 25px rgba(0, 0, 0, 0.2)' : '0 10px 25px rgba(0, 0, 0, 0.1)';
     },
     onMouseLeave: e => {
       e.currentTarget.style.transform = 'translateY(0)';
@@ -267,7 +266,7 @@ const ContactSection = ({
       left: 0,
       right: 0,
       bottom: 0,
-      backgroundImage: `radial-gradient(circle at 2px 2px, ${currentTheme.primary}05 1px, transparent 0)`,
+      backgroundImage: `radial-gradient(circle at 2px 2px, ${currentTheme.primary}${darkMode ? '10' : '05'} 1px, transparent 0)`,
       backgroundSize: '16px 16px',
       opacity: 0.5
     }
@@ -370,7 +369,7 @@ const ContactSection = ({
     style: {
       display: "inline-flex",
       gap: "0.5rem",
-      background: `linear-gradient(135deg, ${currentTheme.primary}10 0%, ${currentTheme.purple}10 100%)`,
+      background: darkMode ? `linear-gradient(135deg, ${currentTheme.primary}15 0%, ${currentTheme.purple}15 100%)` : `linear-gradient(135deg, ${currentTheme.primary}10 0%, ${currentTheme.purple}10 100%)`,
       padding: "1rem 2rem",
       borderRadius: "50px",
       border: `1px solid ${currentTheme.border}`,
@@ -389,6 +388,44 @@ const ContactSection = ({
     jsx: true,
     global: true
   }, `
+        /* BULLETPROOF gradient text styles */
+        .gradient-title {
+          transition: color 0.3s ease !important;
+        }
+        
+        .gradient-title.light-mode {
+          color: #3b82f6 !important;
+          background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+        }
+        
+        .gradient-title.dark-mode {
+          color: #60a5fa !important;
+          background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+        }
+        
+        /* Fallback for browsers that don't support background-clip */
+        @supports not (background-clip: text) {
+          .gradient-title {
+            background: none !important;
+            -webkit-background-clip: unset !important;
+            -webkit-text-fill-color: unset !important;
+          }
+          
+          .gradient-title.light-mode {
+            color: #3b82f6 !important;
+          }
+          
+          .gradient-title.dark-mode {
+            color: #60a5fa !important;
+          }
+        }
+        
         @keyframes fadeInUp {
           from {
             opacity: 0;

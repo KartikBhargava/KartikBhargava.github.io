@@ -191,7 +191,7 @@ const PortfolioSection = ({
         border: `1px solid ${currentTheme.border}`,
         transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
         transform: isHovered ? "translateY(-8px)" : "translateY(0)",
-        boxShadow: isHovered ? "0 20px 40px rgba(0,0,0,0.1)" : "0 4px 6px rgba(0,0,0,0.05)",
+        boxShadow: isHovered ? darkMode ? "0 20px 40px rgba(0,0,0,0.3)" : "0 20px 40px rgba(0,0,0,0.1)" : darkMode ? "0 4px 6px rgba(0,0,0,0.2)" : "0 4px 6px rgba(0,0,0,0.05)",
         position: "relative",
         overflow: "hidden",
         animation: `slideInUp 0.6s ease ${index * 0.1}s both`
@@ -215,7 +215,7 @@ const PortfolioSection = ({
         left: 0,
         right: 0,
         bottom: 0,
-        backgroundImage: `radial-gradient(circle at 2px 2px, ${currentTheme.primary}03 1px, transparent 0)`,
+        backgroundImage: `radial-gradient(circle at 2px 2px, ${currentTheme.primary}${darkMode ? '08' : '03'} 1px, transparent 0)`,
         backgroundSize: '20px 20px',
         opacity: 0.5
       }
@@ -345,7 +345,7 @@ const PortfolioSection = ({
     }, project.technologies.map((tech, techIndex) => /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
       key: tech,
       style: {
-        background: `${currentTheme.primary}10`,
+        background: darkMode ? `${currentTheme.primary}15` : `${currentTheme.primary}10`,
         color: currentTheme.text,
         border: `1px solid ${currentTheme.border}`,
         padding: "0.4rem 0.8rem",
@@ -358,11 +358,11 @@ const PortfolioSection = ({
         animation: `slideInUp 0.3s ease ${techIndex * 0.05 + 0.4}s both`
       },
       onMouseEnter: e => {
-        e.target.style.background = `${currentTheme.primary}20`;
+        e.target.style.background = darkMode ? `${currentTheme.primary}25` : `${currentTheme.primary}20`;
         e.target.style.transform = "scale(1.05)";
       },
       onMouseLeave: e => {
-        e.target.style.background = `${currentTheme.primary}10`;
+        e.target.style.background = darkMode ? `${currentTheme.primary}15` : `${currentTheme.primary}10`;
         e.target.style.transform = "scale(1)";
       }
     }, tech)))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
@@ -440,9 +440,19 @@ const PortfolioSection = ({
         borderRadius: "12px",
         fontSize: "1rem",
         fontWeight: "600",
-        boxShadow: "0 4px 14px rgba(0, 0, 0, 0.1)"
+        boxShadow: "0 4px 14px rgba(0, 0, 0, 0.1)",
+        color: "white",
+        transition: "all 0.3s ease"
       },
-      onClick: handleGithubClick
+      onClick: handleGithubClick,
+      onMouseEnter: e => {
+        e.target.style.transform = "translateY(-2px)";
+        e.target.style.boxShadow = "0 8px 25px rgba(0, 0, 0, 0.15)";
+      },
+      onMouseLeave: e => {
+        e.target.style.transform = "translateY(0)";
+        e.target.style.boxShadow = "0 4px 14px rgba(0, 0, 0, 0.1)";
+      }
     }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
       style: {
         marginRight: '0.5rem'
@@ -457,9 +467,20 @@ const PortfolioSection = ({
         borderRadius: "12px",
         fontSize: "1rem",
         fontWeight: "600",
-        background: "transparent"
+        background: "transparent",
+        transition: "all 0.3s ease"
       },
-      onClick: () => {/* Handle demo/preview */}
+      onClick: () => {/* Handle demo/preview */},
+      onMouseEnter: e => {
+        e.target.style.background = currentTheme.primary;
+        e.target.style.color = "#ffffff";
+        e.target.style.transform = "translateY(-2px)";
+      },
+      onMouseLeave: e => {
+        e.target.style.background = "transparent";
+        e.target.style.color = currentTheme.primary;
+        e.target.style.transform = "translateY(0)";
+      }
     }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
       style: {
         marginRight: '0.5rem'
@@ -503,14 +524,11 @@ const PortfolioSection = ({
       fontSize: '1.1rem'
     }
   }, "\uD83D\uDCBC"), "My Work Portfolio"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h2", {
+    className: `gradient-title ${darkMode ? 'dark-mode' : 'light-mode'}`,
     style: {
       fontSize: isMobile ? "2.5rem" : "3.5rem",
-      marginBottom: "1.5rem",
       fontWeight: "800",
-      background: `linear-gradient(135deg, ${currentTheme.primary} 0%, ${currentTheme.purple} 100%)`,
-      WebkitBackgroundClip: 'text',
-      WebkitTextFillColor: 'transparent',
-      backgroundClip: 'text',
+      marginBottom: "1.5rem",
       lineHeight: "1.2"
     }
   }, "My Android Projects"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", {
@@ -543,7 +561,7 @@ const PortfolioSection = ({
       padding: "0.5rem",
       borderRadius: "50px",
       border: `1px solid ${currentTheme.border}`,
-      boxShadow: "0 4px 6px rgba(0, 0, 0, 0.05)",
+      boxShadow: darkMode ? "0 4px 6px rgba(0, 0, 0, 0.2)" : "0 4px 6px rgba(0, 0, 0, 0.05)",
       flexWrap: "wrap",
       justifyContent: "center"
     }
@@ -605,7 +623,7 @@ const PortfolioSection = ({
       left: 0,
       right: 0,
       bottom: 0,
-      backgroundImage: `radial-gradient(circle at 2px 2px, ${currentTheme.primary}05 1px, transparent 0)`,
+      backgroundImage: `radial-gradient(circle at 2px 2px, ${currentTheme.primary}${darkMode ? '08' : '05'} 1px, transparent 0)`,
       backgroundSize: '24px 24px',
       opacity: 0.5
     }
@@ -660,7 +678,7 @@ const PortfolioSection = ({
     key: index,
     style: {
       padding: "1.5rem",
-      background: `${stat.color}10`,
+      background: darkMode ? `${stat.color}15` : `${stat.color}10`,
       borderRadius: "16px",
       border: `1px solid ${currentTheme.border}`,
       transition: "all 0.3s ease",
@@ -670,12 +688,12 @@ const PortfolioSection = ({
     onMouseEnter: e => {
       if (!isMobile) {
         e.currentTarget.style.transform = "scale(1.05)";
-        e.currentTarget.style.background = `${stat.color}20`;
+        e.currentTarget.style.background = darkMode ? `${stat.color}25` : `${stat.color}20`;
       }
     },
     onMouseLeave: e => {
       e.currentTarget.style.transform = "scale(1)";
-      e.currentTarget.style.background = `${stat.color}10`;
+      e.currentTarget.style.background = darkMode ? `${stat.color}15` : `${stat.color}10`;
     }
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     style: {
@@ -699,6 +717,44 @@ const PortfolioSection = ({
     jsx: true,
     global: true
   }, `
+        /* BULLETPROOF gradient text styles */
+        .gradient-title {
+          transition: color 0.3s ease !important;
+        }
+        
+        .gradient-title.light-mode {
+          color: #3b82f6 !important;
+          background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+        }
+        
+        .gradient-title.dark-mode {
+          color: #60a5fa !important;
+          background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+        }
+        
+        /* Fallback for browsers that don't support background-clip */
+        @supports not (background-clip: text) {
+          .gradient-title {
+            background: none !important;
+            -webkit-background-clip: unset !important;
+            -webkit-text-fill-color: unset !important;
+          }
+          
+          .gradient-title.light-mode {
+            color: #3b82f6 !important;
+          }
+          
+          .gradient-title.dark-mode {
+            color: #60a5fa !important;
+          }
+        }
+        
         @keyframes fadeInUp {
           from {
             opacity: 0;
@@ -730,6 +786,24 @@ const PortfolioSection = ({
           }
           60% {
             transform: translateY(-2px);
+          }
+        }
+        
+        @keyframes float {
+          0%, 100% {
+            transform: translateY(0px);
+          }
+          50% {
+            transform: translateY(-5px);
+          }
+        }
+        
+        @keyframes pulse {
+          0%, 100% {
+            opacity: 1;
+          }
+          50% {
+            opacity: 0.8;
           }
         }
       `));

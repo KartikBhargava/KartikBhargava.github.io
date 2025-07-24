@@ -231,7 +231,7 @@ const IndexPage = () => {
             "url": "https://kartikbhargava.github.io",
             "sameAs": [
               "https://github.com/KartikBhargava",
-              "https://linkedin.com/in/kartik-bhargava"
+              "https://linkedin.com/in/kartik-bhargava-39586611b"
             ],
             "knowsAbout": ["Android", "Kotlin", "Jetpack Compose", "Mobile Development"]
           })}

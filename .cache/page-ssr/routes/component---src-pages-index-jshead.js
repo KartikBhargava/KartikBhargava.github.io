@@ -165,15 +165,11 @@ const Header = ({
       transition: 'all 0.3s ease'
     }
   }, "\uD83E\uDD16"), !mobile && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h1", {
+    className: `header-gradient-title ${darkMode ? 'dark-mode' : 'light-mode'}`,
     style: {
       fontSize: '1.3rem',
       fontWeight: '800',
-      color: currentTheme.text,
       margin: 0,
-      background: `linear-gradient(135deg, ${currentTheme.primary} 0%, ${currentTheme.purple} 100%)`,
-      WebkitBackgroundClip: 'text',
-      WebkitTextFillColor: 'transparent',
-      backgroundClip: 'text',
       lineHeight: '1.2'
     }
   }, "Kartik Bhargava"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", {
@@ -192,7 +188,7 @@ const Header = ({
       padding: '0.5rem',
       borderRadius: '16px',
       border: `1px solid ${currentTheme.border}`,
-      boxShadow: '0 4px 6px rgba(0, 0, 0, 0.05)'
+      boxShadow: darkMode ? '0 4px 6px rgba(0, 0, 0, 0.2)' : '0 4px 6px rgba(0, 0, 0, 0.05)'
     }
   }, Object.entries(sections).map(([key, label]) => /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", {
     key: key,
@@ -255,15 +251,15 @@ const Header = ({
       justifyContent: 'center',
       fontSize: '1.2rem',
       transition: 'all 0.2s ease',
-      boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05)'
+      boxShadow: darkMode ? '0 2px 4px rgba(0, 0, 0, 0.2)' : '0 2px 4px rgba(0, 0, 0, 0.05)'
     },
     onMouseEnter: e => {
       e.target.style.transform = 'scale(1.1)';
-      e.target.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.1)';
+      e.target.style.boxShadow = darkMode ? '0 4px 12px rgba(0, 0, 0, 0.3)' : '0 4px 12px rgba(0, 0, 0, 0.1)';
     },
     onMouseLeave: e => {
       e.target.style.transform = 'scale(1)';
-      e.target.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.05)';
+      e.target.style.boxShadow = darkMode ? '0 2px 4px rgba(0, 0, 0, 0.2)' : '0 2px 4px rgba(0, 0, 0, 0.05)';
     },
     "aria-label": `Switch to ${darkMode ? 'light' : 'dark'} mode`
   }, darkMode ? '🌞' : '🌙'), mobile && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", {
@@ -333,7 +329,7 @@ const Header = ({
       background: currentTheme.surface,
       borderRadius: '20px',
       border: `1px solid ${currentTheme.border}`,
-      boxShadow: '0 20px 40px rgba(0, 0, 0, 0.1)',
+      boxShadow: darkMode ? '0 20px 40px rgba(0, 0, 0, 0.3)' : '0 20px 40px rgba(0, 0, 0, 0.1)',
       padding: '1.5rem',
       minWidth: '220px',
       transform: isMenuOpen ? 'translateY(0) scale(1)' : 'translateY(-10px) scale(0.95)',
@@ -362,10 +358,10 @@ const Header = ({
       color: 'white'
     }
   }, "\uD83E\uDD16"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: `mobile-header-gradient-title ${darkMode ? 'dark-mode' : 'light-mode'}`,
     style: {
       fontSize: '0.9rem',
-      fontWeight: '700',
-      color: currentTheme.text
+      fontWeight: '700'
     }
   }, "Kartik Bhargava"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     style: {
@@ -448,6 +444,65 @@ const Header = ({
           to {
             opacity: 1;
             transform: translateX(0);
+          }
+        }
+        
+        /* BULLETPROOF gradient text styles for header */
+        .header-gradient-title {
+          transition: color 0.3s ease !important;
+        }
+        
+        .header-gradient-title.light-mode {
+          color: #3b82f6 !important;
+          background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+        }
+        
+        .header-gradient-title.dark-mode {
+          color: #60a5fa !important;
+          background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+        }
+        
+        /* Mobile menu gradient text */
+        .mobile-header-gradient-title {
+          transition: color 0.3s ease !important;
+        }
+        
+        .mobile-header-gradient-title.light-mode {
+          color: #3b82f6 !important;
+          background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+        }
+        
+        .mobile-header-gradient-title.dark-mode {
+          color: #60a5fa !important;
+          background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+        }
+        
+        /* Fallback for browsers that don't support background-clip */
+        @supports not (background-clip: text) {
+          .header-gradient-title, .mobile-header-gradient-title {
+            background: none !important;
+            -webkit-background-clip: unset !important;
+            -webkit-text-fill-color: unset !important;
+          }
+          
+          .header-gradient-title.light-mode, .mobile-header-gradient-title.light-mode {
+            color: #3b82f6 !important;
+          }
+          
+          .header-gradient-title.dark-mode, .mobile-header-gradient-title.dark-mode {
+            color: #60a5fa !important;
           }
         }
       `));

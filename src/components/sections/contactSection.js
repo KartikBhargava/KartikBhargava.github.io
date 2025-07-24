@@ -57,8 +57,8 @@ const ContactSection = ({ darkMode = false }) => {
     {
       icon: "📧",
       title: "Email",
-      description: "kartik.android@example.com",
-      href: "mailto:kartik.android@example.com",
+      description: "officialkartik07@gmail.com",
+      href: "mailto:officialkartik07@gmail.com",
       gradient: `linear-gradient(135deg, ${currentTheme.primary} 0%, ${currentTheme.purple} 100%)`,
       hoverColor: currentTheme.primary
     },
@@ -66,7 +66,7 @@ const ContactSection = ({ darkMode = false }) => {
       icon: "💼",
       title: "LinkedIn",
       description: "Connect professionally",
-      href: "https://linkedin.com/in/kartikbhargava",
+      href: "https://linkedin.com/in/kartik-bhargava-39586611b",
       gradient: `linear-gradient(135deg, ${currentTheme.success} 0%, ${currentTheme.primary} 100%)`,
       hoverColor: currentTheme.success
     },

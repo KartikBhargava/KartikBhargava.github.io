@@ -133,14 +133,11 @@ const AboutSection = ({
       animation: 'fadeInLeft 0.8s ease'
     }
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h2", {
+    className: `gradient-title ${darkMode ? 'dark-mode' : 'light-mode'}`,
     style: {
       fontSize: isMobile ? "2.5rem" : "3.5rem",
-      marginBottom: "1.5rem",
       fontWeight: "800",
-      background: `linear-gradient(135deg, ${currentTheme.primary} 0%, ${currentTheme.purple} 100%)`,
-      WebkitBackgroundClip: 'text',
-      WebkitTextFillColor: 'transparent',
-      backgroundClip: 'text',
+      marginBottom: "1.5rem",
       animation: 'fadeInUp 0.6s ease 0.2s both'
     }
   }, "About Me"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
@@ -204,7 +201,7 @@ const AboutSection = ({
     key: area.title,
     style: {
       padding: "1.5rem",
-      background: `${area.gradient}10`,
+      background: darkMode ? `${area.gradient}20` : `${area.gradient}10`,
       border: `1px solid ${currentTheme.border}`,
       borderRadius: "16px",
       transition: "all 0.3s ease",
@@ -215,13 +212,13 @@ const AboutSection = ({
     },
     onMouseEnter: e => {
       e.currentTarget.style.transform = 'translateY(-4px)';
-      e.currentTarget.style.boxShadow = '0 8px 25px rgba(0, 0, 0, 0.1)';
-      e.currentTarget.style.background = `${area.gradient}20`;
+      e.currentTarget.style.boxShadow = darkMode ? '0 8px 25px rgba(0, 0, 0, 0.3)' : '0 8px 25px rgba(0, 0, 0, 0.1)';
+      e.currentTarget.style.background = darkMode ? `${area.gradient}30` : `${area.gradient}20`;
     },
     onMouseLeave: e => {
       e.currentTarget.style.transform = 'translateY(0)';
       e.currentTarget.style.boxShadow = 'none';
-      e.currentTarget.style.background = `${area.gradient}10`;
+      e.currentTarget.style.background = darkMode ? `${area.gradient}20` : `${area.gradient}10`;
     }
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     style: {
@@ -260,7 +257,7 @@ const AboutSection = ({
     }
   }, area.description)))))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     style: {
-      background: `linear-gradient(135deg, ${currentTheme.surface} 0%, ${currentTheme.primary}05 100%)`,
+      background: darkMode ? `linear-gradient(135deg, ${currentTheme.surface} 0%, ${currentTheme.primary}10 100%)` : `linear-gradient(135deg, ${currentTheme.surface} 0%, ${currentTheme.primary}05 100%)`,
       borderRadius: "24px",
       padding: isMobile ? "2rem" : "2.5rem",
       border: `1px solid ${currentTheme.border}`,
@@ -269,7 +266,7 @@ const AboutSection = ({
       position: "relative",
       overflow: "hidden",
       animation: 'fadeInRight 0.8s ease 0.4s both',
-      boxShadow: '0 10px 25px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)'
+      boxShadow: darkMode ? '0 10px 25px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.1)' : '0 10px 25px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)'
     }
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     style: {
@@ -278,7 +275,7 @@ const AboutSection = ({
       left: 0,
       right: 0,
       bottom: 0,
-      backgroundImage: `radial-gradient(circle at 2px 2px, ${currentTheme.primary}08 1px, transparent 0)`,
+      backgroundImage: `radial-gradient(circle at 2px 2px, ${currentTheme.primary}${darkMode ? '15' : '08'} 1px, transparent 0)`,
       backgroundSize: '20px 20px',
       opacity: 0.5
     }
@@ -307,7 +304,7 @@ const AboutSection = ({
       textAlign: "center",
       padding: "1rem",
       borderRadius: "16px",
-      background: `${fact.color}10`,
+      background: darkMode ? `${fact.color}20` : `${fact.color}10`,
       border: `1px solid ${currentTheme.border}`,
       transition: "all 0.3s ease",
       cursor: "default",
@@ -315,11 +312,11 @@ const AboutSection = ({
     },
     onMouseEnter: e => {
       e.currentTarget.style.transform = 'scale(1.05)';
-      e.currentTarget.style.background = `${fact.color}20`;
+      e.currentTarget.style.background = darkMode ? `${fact.color}30` : `${fact.color}20`;
     },
     onMouseLeave: e => {
       e.currentTarget.style.transform = 'scale(1)';
-      e.currentTarget.style.background = `${fact.color}10`;
+      e.currentTarget.style.background = darkMode ? `${fact.color}20` : `${fact.color}10`;
     }
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     style: {
@@ -388,6 +385,44 @@ const AboutSection = ({
     jsx: true,
     global: true
   }, `
+        /* BULLETPROOF gradient text styles */
+        .gradient-title {
+          transition: color 0.3s ease !important;
+        }
+        
+        .gradient-title.light-mode {
+          color: #3b82f6 !important;
+          background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+        }
+        
+        .gradient-title.dark-mode {
+          color: #60a5fa !important;
+          background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+        }
+        
+        /* Fallback for browsers that don't support background-clip */
+        @supports not (background-clip: text) {
+          .gradient-title {
+            background: none !important;
+            -webkit-background-clip: unset !important;
+            -webkit-text-fill-color: unset !important;
+          }
+          
+          .gradient-title.light-mode {
+            color: #3b82f6 !important;
+          }
+          
+          .gradient-title.dark-mode {
+            color: #60a5fa !important;
+          }
+        }
+        
         @keyframes fadeInUp {
           from {
             opacity: 0;

@@ -7,8 +7,8 @@ module.exports = {
     social: {
       twitter: `@kartikbhargav18`,
       github: `KartikBhargava`,
-      linkedin: `kartik-bhargava`,
-      email: `your.email@gmail.com`
+      linkedin: `kartik-bhargava-39586611b`,
+      email: `officialkartik07@gmail.com`
     }
   },
   plugins: [

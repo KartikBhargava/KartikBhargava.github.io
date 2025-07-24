@@ -17,6 +17,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _ui_buttons__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../ui/buttons */ "./src/components/ui/buttons.js");
 /* harmony import */ var _ui_techPill__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../ui/techPill */ "./src/components/ui/techPill.js");
+// Updated Home Section with CSS class approach
 
 
 
@@ -46,21 +47,17 @@ const HomeSection = ({
     setIsVisible(true);
   }, []);
 
-  // Modern theme colors with proper dark mode support
+  // Theme colors
   const theme = {
     light: {
       background: '#ffffff',
       surface: '#ffffff',
       text: '#0f172a',
       textSecondary: '#64748b',
-      textLight: '#94a3b8',
       border: '#e2e8f0',
       primary: '#3b82f6',
       success: '#10b981',
-      warning: '#f59e0b',
       purple: '#8b5cf6',
-      // Light mode gradients
-      titleGradient: 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)',
       buttonGradient: 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)',
       badgeGradient: 'linear-gradient(135deg, #10b981 0%, #3b82f6 100%)'
     },
@@ -69,14 +66,10 @@ const HomeSection = ({
       surface: '#1e293b',
       text: '#f8fafc',
       textSecondary: '#cbd5e1',
-      textLight: '#94a3b8',
       border: '#334155',
       primary: '#60a5fa',
       success: '#34d399',
-      warning: '#fbbf24',
       purple: '#a78bfa',
-      // Dark mode gradients - brighter and more visible
-      titleGradient: 'linear-gradient(135deg, #60a5fa 0%, #a78bfa 100%)',
       buttonGradient: 'linear-gradient(135deg, #60a5fa 0%, #a78bfa 100%)',
       badgeGradient: 'linear-gradient(135deg, #34d399 0%, #60a5fa 100%)'
     }
@@ -116,32 +109,20 @@ const HomeSection = ({
       fontSize: "0.9rem",
       fontWeight: "600",
       marginBottom: "2rem",
-      boxShadow: `0 4px 14px 0 ${currentTheme.success}39`,
-      animation: 'pulse 2s infinite'
+      boxShadow: `0 4px 14px 0 ${currentTheme.success}39`
     }
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
     style: {
       fontSize: '1.1rem'
     }
   }, "\uD83E\uDD16"), "Open to Android Projects"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h1", {
+    className: `gradient-title ${darkMode ? 'dark-mode' : 'light-mode'}`,
     style: {
       fontSize: isMobile ? "3rem" : "4rem",
-      marginBottom: "1rem",
       fontWeight: "800",
       lineHeight: "1.1",
-      animation: 'fadeInUp 0.6s ease 0.2s both',
-      // Use solid color fallback for better compatibility
-      color: darkMode ? '#60a5fa' : '#3b82f6',
-      // Apply gradient as overlay
-      background: currentTheme.titleGradient,
-      WebkitBackgroundClip: 'text',
-      WebkitTextFillColor: 'transparent',
-      backgroundClip: 'text',
-      // Fallback for browsers that don't support background-clip
-      '@supports not (background-clip: text)': {
-        background: 'none',
-        color: currentTheme.primary
-      }
+      marginBottom: "1rem",
+      animation: 'fadeInUp 0.6s ease 0.2s both'
     }
   }, "Hi, I'm Kartik"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h2", {
     style: {
@@ -188,17 +169,9 @@ const HomeSection = ({
       borderRadius: '12px',
       boxShadow: `0 4px 14px 0 ${currentTheme.primary}39`,
       transition: 'all 0.3s ease',
-      color: 'white' // Ensure text is always white on gradient
+      color: 'white'
     },
-    onClick: () => setActiveSection('portfolio'),
-    onMouseEnter: e => {
-      e.target.style.transform = 'translateY(-2px)';
-      e.target.style.boxShadow = `0 8px 25px 0 ${currentTheme.primary}50`;
-    },
-    onMouseLeave: e => {
-      e.target.style.transform = 'translateY(0)';
-      e.target.style.boxShadow = `0 4px 14px 0 ${currentTheme.primary}39`;
-    }
+    onClick: () => setActiveSection('portfolio')
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
     style: {
       marginRight: '0.5rem'
@@ -216,16 +189,6 @@ const HomeSection = ({
       borderRadius: '12px',
       background: 'transparent',
       transition: 'all 0.3s ease'
-    },
-    onMouseEnter: e => {
-      e.target.style.background = currentTheme.primary;
-      e.target.style.color = '#ffffff';
-      e.target.style.transform = 'translateY(-2px)';
-    },
-    onMouseLeave: e => {
-      e.target.style.background = 'transparent';
-      e.target.style.color = currentTheme.primary;
-      e.target.style.transform = 'translateY(0)';
     }
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
     style: {
@@ -266,18 +229,6 @@ const HomeSection = ({
       transition: "all 0.3s ease",
       cursor: "default",
       animation: `slideInUp 0.5s ease ${index * 0.1}s both`
-    },
-    onMouseEnter: e => {
-      e.target.style.background = currentTheme.buttonGradient;
-      e.target.style.color = '#ffffff';
-      e.target.style.transform = 'translateY(-2px) scale(1.05)';
-      e.target.style.boxShadow = `0 4px 12px ${currentTheme.primary}30`;
-    },
-    onMouseLeave: e => {
-      e.target.style.background = darkMode ? `linear-gradient(135deg, ${currentTheme.primary}20 0%, ${currentTheme.purple}20 100%)` : `linear-gradient(135deg, ${currentTheme.primary}15 0%, ${currentTheme.purple}15 100%)`;
-      e.target.style.color = currentTheme.text;
-      e.target.style.transform = 'translateY(0) scale(1)';
-      e.target.style.boxShadow = 'none';
     }
   }, tech))))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     style: {
@@ -293,17 +244,6 @@ const HomeSection = ({
       boxShadow: darkMode ? '0 10px 25px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.1)' : '0 10px 25px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)'
     }
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    style: {
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      backgroundImage: `radial-gradient(circle at 2px 2px, ${currentTheme.primary}${darkMode ? '20' : '10'} 1px, transparent 0)`,
-      backgroundSize: '24px 24px',
-      opacity: 0.5
-    }
-  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     style: {
       fontSize: isMobile ? "4rem" : "5rem",
       marginBottom: "1.5rem",
@@ -360,28 +300,55 @@ const HomeSection = ({
       fontWeight: "600",
       opacity: 0.9
     }
-  }, "Apps Published"))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    style: {
-      position: 'absolute',
-      top: '20px',
-      right: '20px',
-      fontSize: '1.5rem',
-      opacity: 0.3,
-      animation: 'float 3s ease-in-out infinite'
-    }
-  }, "\u26A1"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    style: {
-      position: 'absolute',
-      bottom: '20px',
-      left: '20px',
-      fontSize: '1.5rem',
-      opacity: 0.3,
-      animation: 'float 3s ease-in-out infinite 1.5s'
-    }
-  }, "\uD83D\uDE80")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("style", {
+  }, "Apps Published")))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("style", {
     jsx: true,
     global: true
   }, `
+        /* BULLETPROOF gradient text styles */
+        .gradient-title {
+          /* Always ensure text is visible with solid color */
+          transition: color 0.3s ease !important;
+        }
+        
+        .gradient-title.light-mode {
+          color: #3b82f6 !important;
+          background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+        }
+        
+        .gradient-title.dark-mode {
+          color: #60a5fa !important;
+          background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+        }
+        
+        /* Fallback for browsers that don't support background-clip */
+        @supports not (background-clip: text) {
+          .gradient-title {
+            background: none !important;
+            -webkit-background-clip: unset !important;
+            -webkit-text-fill-color: unset !important;
+          }
+          
+          .gradient-title.light-mode {
+            color: #3b82f6 !important;
+          }
+          
+          .gradient-title.dark-mode {
+            color: #60a5fa !important;
+          }
+        }
+        
+        /* Force fallback during transitions to prevent strip bug */
+        .gradient-title.transitioning {
+          -webkit-text-fill-color: unset !important;
+          background: none !important;
+        }
+        
         @keyframes fadeInUp {
           from {
             opacity: 0;
@@ -435,34 +402,6 @@ const HomeSection = ({
           }
           60% {
             transform: translateY(-5px);
-          }
-        }
-        
-        @keyframes float {
-          0%, 100% {
-            transform: translateY(0px);
-          }
-          50% {
-            transform: translateY(-10px);
-          }
-        }
-        
-        @keyframes pulse {
-          0%, 100% {
-            box-shadow: 0 4px 14px 0 ${currentTheme.success}39;
-          }
-          50% {
-            box-shadow: 0 4px 20px 0 ${currentTheme.success}60;
-          }
-        }
-        
-        /* Fallback for browsers that don't support background-clip: text */
-        @supports not (background-clip: text) {
-          h1 {
-            background: none !important;
-            -webkit-background-clip: unset !important;
-            -webkit-text-fill-color: unset !important;
-            color: ${currentTheme.primary} !important;
           }
         }
       `));
