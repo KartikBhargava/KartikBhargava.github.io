@@ -299,7 +299,7 @@ const ContactSection = ({
     style: {
       color: currentTheme.primary
     }
-  }, "24 hours"), ". For urgent Android projects, LinkedIn is the fastest way to reach me."))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+  }, "12 hours"), ". For urgent Android projects, LinkedIn is the fastest way to reach me."))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     style: {
       background: `linear-gradient(135deg, ${currentTheme.success} 0%, ${currentTheme.primary} 100%)`,
       color: "white",

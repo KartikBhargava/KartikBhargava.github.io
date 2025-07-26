@@ -13,9 +13,12 @@ const Button = ({
   className = "",
   type = "button",
   ariaLabel,
+  onMouseEnter,
+  onMouseLeave,
   ...props 
 }) => {
   const [isPressed, setIsPressed] = useState(false)
+  const [isHovered, setIsHovered] = useState(false)
 
   const variants = {
     primary: {
@@ -93,43 +96,62 @@ const Button = ({
   const currentVariant = variants[variant]
   const currentSize = sizes[size]
 
-  const baseStyles = {
-    display: "inline-flex",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: "0.5rem",
-    fontWeight: "600",
-    fontFamily: "inherit",
-    cursor: disabled || loading ? "not-allowed" : "pointer",
-    transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
-    position: "relative",
-    overflow: "hidden",
-    userSelect: "none",
-    textDecoration: "none",
-    width: fullWidth ? "100%" : "auto",
-    opacity: disabled ? 0.6 : 1,
-    transform: isPressed && !disabled && !loading ? "translateY(1px)" : "translateY(0)",
-    ...currentSize,
-    ...style
-  }
-
-  const getStyles = () => {
-    if (loading || disabled) {
-      return {
-        ...baseStyles,
-        background: currentVariant.background,
-        color: currentVariant.color,
-        border: currentVariant.border || "none",
-        boxShadow: "none"
+  const getButtonStyles = () => {
+    let background = currentVariant.background
+    let color = currentVariant.color
+    
+    if (disabled || loading) {
+      // Keep original styles when disabled/loading
+    } else if (isPressed) {
+      background = currentVariant.activeBg || currentVariant.hoverBg || background
+    } else if (isHovered) {
+      background = currentVariant.hoverBg || background
+      if (currentVariant.hoverColor) {
+        color = currentVariant.hoverColor
       }
     }
 
     return {
-      ...baseStyles,
-      background: currentVariant.background,
-      color: currentVariant.color,
+      display: "inline-flex",
+      alignItems: "center",
+      justifyContent: "center",
+      gap: "0.5rem",
+      fontWeight: "600",
+      fontFamily: "inherit",
+      cursor: disabled || loading ? "not-allowed" : "pointer",
+      transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
+      position: "relative",
+      overflow: "hidden",
+      userSelect: "none",
+      textDecoration: "none",
+      width: fullWidth ? "100%" : "auto",
+      opacity: disabled ? 0.6 : 1,
+      transform: isPressed && !disabled && !loading ? "translateY(1px)" : "translateY(0)",
+      background,
+      color,
       border: currentVariant.border || "none",
-      boxShadow: currentVariant.shadow || "none"
+      boxShadow: (disabled || loading) ? "none" : (currentVariant.shadow || "none"),
+      ...currentSize,
+      ...style
+    }
+  }
+
+  const handleMouseEnter = (e) => {
+    if (!disabled && !loading) {
+      setIsHovered(true)
+    }
+    // Call any external onMouseEnter handler
+    if (onMouseEnter) {
+      onMouseEnter(e)
+    }
+  }
+
+  const handleMouseLeave = (e) => {
+    setIsHovered(false)
+    setIsPressed(false)
+    // Call any external onMouseLeave handler
+    if (onMouseLeave) {
+      onMouseLeave(e)
     }
   }
 
@@ -143,10 +165,6 @@ const Button = ({
     setIsPressed(false)
   }
 
-  const handleMouseLeave = () => {
-    setIsPressed(false)
-  }
-
   const handleClick = (e) => {
     if (disabled || loading) {
       e.preventDefault()
@@ -156,108 +174,88 @@ const Button = ({
   }
 
   return (
-    <button
-      type={type}
-      onClick={handleClick}
-      onMouseDown={handleMouseDown}
-      onMouseUp={handleMouseUp}
-      onMouseLeave={handleMouseLeave}
-      disabled={disabled || loading}
-      aria-label={ariaLabel || (typeof children === 'string' ? children : undefined)}
-      className={className}
-      style={getStyles()}
-      {...props}
-    >
-      {/* Hover effect overlay */}
-      <div
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          background: currentVariant.hoverBg || currentVariant.background,
-          opacity: 0,
-          transition: "opacity 0.2s ease",
-          pointerEvents: "none"
-        }}
-        className="button-hover-overlay"
-      />
-
-      {/* Ripple effect */}
-      <div
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          overflow: "hidden",
-          borderRadius: "inherit"
-        }}
-      >
-        <div
-          style={{
-            position: "absolute",
-            width: "100%",
-            height: "100%",
-            background: "radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%)",
-            transform: isPressed ? "scale(1)" : "scale(0)",
-            transition: "transform 0.3s ease",
-            pointerEvents: "none"
-          }}
-        />
-      </div>
-
-      {/* Loading spinner */}
-      {loading && (
-        <div
-          style={{
-            position: "absolute",
-            width: "16px",
-            height: "16px",
-            border: `2px solid transparent`,
-            borderTop: `2px solid currentColor`,
-            borderRadius: "50%",
-            animation: "spin 1s linear infinite"
-          }}
-        />
-      )}
-
-      {/* Content */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: "0.5rem",
-          opacity: loading ? 0 : 1,
-          transition: "opacity 0.2s ease"
-        }}
-      >
-        {icon && !loading && (
-          <span style={{ display: "flex", alignItems: "center" }}>
-            {icon}
-          </span>
-        )}
-        {children}
-      </div>
-
-      {/* Global styles for hover effects */}
+    <>
       <style jsx>{`
-        button:hover .button-hover-overlay {
-          opacity: 1;
-        }
-        
-        button:focus .button-hover-overlay {
-          opacity: 0.8;
-        }
-        
         @keyframes spin {
           0% { transform: rotate(0deg); }
           100% { transform: rotate(360deg); }
         }
       `}</style>
-    </button>
+      
+      <button
+        type={type}
+        onClick={handleClick}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        onMouseDown={handleMouseDown}
+        onMouseUp={handleMouseUp}
+        disabled={disabled || loading}
+        aria-label={ariaLabel || (typeof children === 'string' ? children : undefined)}
+        className={className}
+        style={getButtonStyles()}
+        {...props}
+      >
+        {/* Ripple effect */}
+        <div
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            overflow: "hidden",
+            borderRadius: "inherit",
+            pointerEvents: "none"
+          }}
+        >
+          <div
+            style={{
+              position: "absolute",
+              width: "100%",
+              height: "100%",
+              background: "radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%)",
+              transform: isPressed ? "scale(1)" : "scale(0)",
+              transition: "transform 0.3s ease",
+              pointerEvents: "none"
+            }}
+          />
+        </div>
+
+        {/* Loading spinner */}
+        {loading && (
+          <div
+            style={{
+              position: "absolute",
+              width: "16px",
+              height: "16px",
+              border: `2px solid transparent`,
+              borderTop: `2px solid currentColor`,
+              borderRadius: "50%",
+              animation: "spin 1s linear infinite"
+            }}
+          />
+        )}
+
+        {/* Content */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "0.5rem",
+            opacity: loading ? 0 : 1,
+            transition: "opacity 0.2s ease",
+            pointerEvents: "none"
+          }}
+        >
+          {icon && !loading && (
+            <span style={{ display: "flex", alignItems: "center" }}>
+              {icon}
+            </span>
+          )}
+          {children}
+        </div>
+      </button>
+    </>
   )
 }
 

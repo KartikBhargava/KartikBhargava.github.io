@@ -302,7 +302,7 @@ const ContactSection = ({ darkMode = false }) => {
               lineHeight: "1.6",
               margin: 0
             }}>
-              I typically respond within <strong style={{color: currentTheme.primary}}>24 hours</strong>. For urgent Android projects, 
+              I typically respond within <strong style={{color: currentTheme.primary}}>12 hours</strong>. For urgent Android projects, 
               LinkedIn is the fastest way to reach me.
             </p>
           </div>
