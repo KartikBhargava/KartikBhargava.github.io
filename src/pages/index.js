@@ -61,7 +61,7 @@ const IndexPage = () => {
       trackEvent('page_load', {
         initial_section: activeSection,
         user_agent: navigator.userAgent,
-        screen_resolution: `${window.width}x${window.height}`,
+        screen_resolution: `${window.screen.width}x${window.screen.height}`,
         viewport: `${window.innerWidth}x${window.innerHeight}`,
         event_category: 'system'
       })
@@ -183,7 +183,7 @@ const IndexPage = () => {
         })
       }
     }
-  }, [analyticsInitialized])
+  }, [analyticsInitialized]) // Only depend on analyticsInitialized
 
   // Listen for dark mode changes from Layout component
   useEffect(() => {
@@ -225,7 +225,7 @@ const IndexPage = () => {
         clearInterval(interval)
       }
     }
-  }, [darkMode, analyticsInitialized])
+  }, [darkMode, analyticsInitialized]) // Dependencies are correct
 
   // Preload next likely sections
   useEffect(() => {
@@ -247,7 +247,7 @@ const IndexPage = () => {
     
     const timer = setTimeout(preloadSections, 2000)
     return () => clearTimeout(timer)
-  }, [activeSection, analyticsInitialized])
+  }, [activeSection, analyticsInitialized]) // Added activeSection dependency
 
   // Handle keyboard navigation
   useEffect(() => {
