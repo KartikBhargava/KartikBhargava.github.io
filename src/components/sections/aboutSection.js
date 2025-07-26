@@ -1,4 +1,6 @@
+// Updated AboutSection with GA4 analytics integration
 import React, { useEffect, useState } from 'react'
+import { trackSectionView, trackEvent, trackTechnologyFilter } from '../../utils/analytics'
 
 const AboutSection = ({ darkMode = false }) => {
   const [isMobile, setIsMobile] = useState(false)
@@ -17,6 +19,8 @@ const AboutSection = ({ darkMode = false }) => {
 
   useEffect(() => {
     setIsVisible(true)
+    // Track about section view
+    trackSectionView('about')
   }, [])
 
   // Modern theme colors
@@ -84,6 +88,27 @@ const AboutSection = ({ darkMode = false }) => {
     }
   ]
 
+  // Analytics handlers
+  const handleExpertiseClick = (area) => {
+    trackEvent('expertise_area_click', {
+      area_title: area.title,
+      section: 'about',
+      event_category: 'engagement'
+    })
+  }
+
+  const handleQuickFactClick = (fact) => {
+    trackEvent('quick_fact_click', {
+      fact_label: fact.label,
+      section: 'about',
+      event_category: 'engagement'
+    })
+  }
+
+  const handleTechnologyMention = (technology) => {
+    trackTechnologyFilter(technology, 'about')
+  }
+
   return (
     <div style={{
       maxWidth: "1200px",
@@ -109,7 +134,6 @@ const AboutSection = ({ darkMode = false }) => {
           order: isMobile ? 2 : 1,
           animation: 'fadeInLeft 0.8s ease'
         }}>
-          {/* FIXED title using CSS classes */}
           <h2 
             className={`gradient-title ${darkMode ? 'dark-mode' : 'light-mode'}`}
             style={{ 
@@ -131,7 +155,10 @@ const AboutSection = ({ darkMode = false }) => {
           }}>
             <p style={{ marginBottom: "1.5rem" }}>
               I'm a <strong style={{color: currentTheme.text}}>passionate Android developer</strong> with over 5 years of experience building 
-              native Android applications. I specialize in <strong style={{color: currentTheme.primary}}>modern Android development</strong> using 
+              native Android applications. I specialize in <strong 
+                style={{color: currentTheme.primary, cursor: 'pointer'}}
+                onClick={() => handleTechnologyMention('modern_android')}
+              >modern Android development</strong> using 
               Kotlin, Jetpack Compose, and clean architecture patterns.
             </p>
             
@@ -171,13 +198,14 @@ const AboutSection = ({ darkMode = false }) => {
               {expertiseAreas.map((area, index) => (
                 <div 
                   key={area.title}
+                  onClick={() => handleExpertiseClick(area)}
                   style={{
                     padding: "1.5rem",
                     background: darkMode ? `${area.gradient}20` : `${area.gradient}10`,
                     border: `1px solid ${currentTheme.border}`,
                     borderRadius: "16px",
                     transition: "all 0.3s ease",
-                    cursor: "default",
+                    cursor: "pointer",
                     position: "relative",
                     overflow: "hidden",
                     animation: `slideInUp 0.5s ease ${index * 0.1 + 0.8}s both`
@@ -286,6 +314,7 @@ const AboutSection = ({ darkMode = false }) => {
             {quickFacts.map((fact, index) => (
               <div 
                 key={index} 
+                onClick={() => handleQuickFactClick(fact)}
                 style={{ 
                   textAlign: "center",
                   padding: "1rem",
@@ -293,7 +322,7 @@ const AboutSection = ({ darkMode = false }) => {
                   background: darkMode ? `${fact.color}20` : `${fact.color}10`,
                   border: `1px solid ${currentTheme.border}`,
                   transition: "all 0.3s ease",
-                  cursor: "default",
+                  cursor: "pointer",
                   animation: `fadeInUp 0.5s ease ${index * 0.2 + 1}s both`
                 }}
                 onMouseEnter={(e) => {
@@ -326,7 +355,14 @@ const AboutSection = ({ darkMode = false }) => {
           </div>
           
           {/* Android Version Badge */}
-          <div style={{
+          <div 
+            onClick={() => trackEvent('android_version_click', {
+              version: 'Android 14',
+              api_level: 34,
+              section: 'about',
+              event_category: 'engagement'
+            })}
+            style={{
             padding: "1.5rem",
             background: `linear-gradient(135deg, ${currentTheme.success} 0%, ${currentTheme.primary} 100%)`,
             borderRadius: "16px",
@@ -334,8 +370,19 @@ const AboutSection = ({ darkMode = false }) => {
             position: "relative",
             zIndex: 1,
             boxShadow: `0 4px 14px 0 ${currentTheme.success}30`,
-            animation: 'fadeInUp 0.6s ease 1.6s both'
-          }}>
+            animation: 'fadeInUp 0.6s ease 1.6s both',
+            cursor: "pointer",
+            transition: "all 0.3s ease"
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.transform = 'scale(1.05)'
+            e.currentTarget.style.boxShadow = `0 8px 20px 0 ${currentTheme.success}40`
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = 'scale(1)'
+            e.currentTarget.style.boxShadow = `0 4px 14px 0 ${currentTheme.success}30`
+          }}
+          >
             <div style={{ 
               fontSize: "1.1rem", 
               fontWeight: "700", 
@@ -379,7 +426,6 @@ const AboutSection = ({ darkMode = false }) => {
 
       {/* Global CSS Animations */}
       <style jsx global>{`
-        /* BULLETPROOF gradient text styles */
         .gradient-title {
           transition: color 0.3s ease !important;
         }
@@ -400,7 +446,6 @@ const AboutSection = ({ darkMode = false }) => {
           background-clip: text;
         }
         
-        /* Fallback for browsers that don't support background-clip */
         @supports not (background-clip: text) {
           .gradient-title {
             background: none !important;

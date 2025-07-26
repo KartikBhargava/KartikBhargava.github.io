@@ -1,5 +1,7 @@
+// Updated PortfolioSection with GA4 analytics integration
 import React, { useState, useEffect } from "react"
 import Button from "../ui/buttons"
+import { trackSectionView, trackProjectInteraction, trackTechnologyFilter, trackEvent } from '../../utils/analytics'
 
 const PortfolioSection = ({ darkMode = false }) => {
   const [selectedCategory, setSelectedCategory] = useState('all')
@@ -12,6 +14,11 @@ const PortfolioSection = ({ darkMode = false }) => {
       window.addEventListener('resize', checkMobile)
       return () => window.removeEventListener('resize', checkMobile)
     }
+  }, [])
+
+  useEffect(() => {
+    // Track portfolio section view
+    trackSectionView('portfolio')
   }, [])
 
   // Modern theme colors
@@ -107,60 +114,6 @@ const PortfolioSection = ({ darkMode = false }) => {
         "Performance optimization techniques"
       ],
       gradient: `linear-gradient(135deg, ${currentTheme.warning} 0%, ${currentTheme.pink} 100%)`
-    },
-    {
-      id: 4,
-      title: "RecipeBook",
-      category: "featured",
-      description: "Recipe management app with search, favorites, and meal planning. Built to practice Room database relationships and complex UI patterns.",
-      technologies: ["Kotlin", "Room", "Search", "Image Handling", "Data Persistence"],
-      image: "👨‍🍳",
-      githubUrl: "https://github.com/kartik/recipe-book",
-      status: "Completed",
-      highlights: ["Complex Database Relations", "Search Implementation", "Image Management"],
-      features: [
-        "Recipe storage with ingredients and steps",
-        "Advanced search and filtering",
-        "Favorites and meal planning",
-        "Image handling and storage"
-      ],
-      gradient: `linear-gradient(135deg, ${currentTheme.pink} 0%, ${currentTheme.purple} 100%)`
-    },
-    {
-      id: 5,
-      title: "AndroidMLKit",
-      category: "experimental",
-      description: "Exploring Android's ML Kit capabilities with text recognition, face detection, and barcode scanning. A hands-on project to learn machine learning on mobile.",
-      technologies: ["Kotlin", "ML Kit", "Camera2", "Image Processing", "Machine Learning"],
-      image: "🤖",
-      githubUrl: "https://github.com/kartik/android-mlkit",
-      status: "Experimental",
-      highlights: ["Machine Learning", "Camera Integration", "Real-time Processing"],
-      features: [
-        "Text recognition from camera and images",
-        "Face detection and analysis",
-        "Barcode and QR code scanning",
-        "Real-time processing optimization"
-      ],
-      gradient: `linear-gradient(135deg, ${currentTheme.purple} 0%, ${currentTheme.primary} 100%)`
-    },
-    {
-      id: 6,
-      title: "QuoteDaily",
-      category: "learning",
-      description: "Daily quotes app built while learning Clean Architecture principles. Features motivational quotes with sharing capabilities and daily notifications.",
-      technologies: ["Kotlin", "Clean Architecture", "UseCase Pattern", "Notifications", "SharedPreferences"],
-      image: "💭",
-      githubUrl: "https://github.com/kartik/quote-daily",
-      status: "Learning Project",
-      highlights: ["Clean Architecture", "Notification System", "Best Practices"],
-      features: [
-        "Daily quote delivery with notifications",
-        "Quote sharing and favorites",
-        "Clean Architecture implementation",
-        "Offline quote storage and caching"
-      ],
-      gradient: `linear-gradient(135deg, ${currentTheme.success} 0%, ${currentTheme.warning} 100%)`
     }
   ]
 
@@ -179,15 +132,73 @@ const PortfolioSection = ({ darkMode = false }) => {
     }
   }
 
-  // Enhanced ProjectCard Component
+  // Analytics handlers
+  const handleCategoryFilter = (category) => {
+    setSelectedCategory(category)
+    trackTechnologyFilter(categories[category], 'portfolio')
+    trackEvent('portfolio_filter', {
+      filter_type: 'category',
+      filter_value: category,
+      section: 'portfolio',
+      event_category: 'filter'
+    })
+  }
+
+  const handleProjectView = (project) => {
+    trackProjectInteraction('view_project', project.title, project.category)
+  }
+
+  const handleGithubClick = (project) => {
+    trackProjectInteraction('click_github', project.title, project.category)
+    if (project.githubUrl) {
+      window.open(project.githubUrl, '_blank')
+    }
+  }
+
+  const handleDemoClick = (project) => {
+    trackProjectInteraction('click_demo', project.title, project.category)
+  }
+
+  const handleTechnologyClick = (technology, projectName) => {
+    trackEvent('technology_click', {
+      technology: technology,
+      project: projectName,
+      section: 'portfolio',
+      event_category: 'engagement'
+    })
+  }
+
+  const handleFeatureExpand = (project, expanded) => {
+    trackEvent('project_feature_expand', {
+      project_name: project.title,
+      expanded: expanded,
+      section: 'portfolio',
+      event_category: 'engagement'
+    })
+  }
+
+  // Enhanced ProjectCard Component with Analytics
   const ProjectCard = ({ project, index }) => {
     const [isExpanded, setIsExpanded] = useState(false)
     const [isHovered, setIsHovered] = useState(false)
+    const [hasViewed, setHasViewed] = useState(false)
 
-    const handleGithubClick = () => {
-      if (typeof window !== 'undefined' && project.githubUrl) {
-        window.open(project.githubUrl, '_blank')
+    // Track when project comes into view
+    useEffect(() => {
+      if (!hasViewed) {
+        const timer = setTimeout(() => {
+          handleProjectView(project)
+          setHasViewed(true)
+        }, 1000) // Track after 1 second of being mounted
+
+        return () => clearTimeout(timer)
       }
+    }, [])
+
+    const handleExpandToggle = () => {
+      const newExpanded = !isExpanded
+      setIsExpanded(newExpanded)
+      handleFeatureExpand(project, newExpanded)
     }
 
     return (
@@ -237,56 +248,45 @@ const PortfolioSection = ({ darkMode = false }) => {
           <div style={{
             display: "flex",
             alignItems: "center",
-            justifyContent: "space-between",
-            marginBottom: "1.5rem",
-            flexDirection: isMobile ? "column" : "row",
-            gap: isMobile ? "1rem" : "0"
+            gap: "1rem",
+            marginBottom: "1.5rem"
           }}>
-            <div style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "1rem",
-              width: "100%"
-            }}>
-              {/* Project Icon */}
-              <div 
-                style={{ 
-                  fontSize: isMobile ? "3rem" : "3.5rem",
-                  flexShrink: 0,
-                  transition: "transform 0.3s ease",
-                  cursor: "pointer",
-                  transform: isHovered ? "scale(1.1) rotate(5deg)" : "scale(1)",
-                  animation: 'bounce 2s infinite'
-                }}
-              >
-                {project.image}
-              </div>
+            <div 
+              style={{ 
+                fontSize: isMobile ? "3rem" : "3.5rem",
+                flexShrink: 0,
+                transition: "transform 0.3s ease",
+                cursor: "pointer",
+                transform: isHovered ? "scale(1.1) rotate(5deg)" : "scale(1)",
+                animation: 'bounce 2s infinite'
+              }}
+              onClick={() => handleProjectView(project)}
+            >
+              {project.image}
+            </div>
+            
+            <div style={{ flex: 1 }}>
+              <h3 style={{
+                fontSize: isMobile ? "1.4rem" : "1.6rem",
+                fontWeight: "700",
+                color: currentTheme.text,
+                marginBottom: "0.75rem",
+                lineHeight: "1.3"
+              }}>
+                {project.title}
+              </h3>
               
-              <div style={{ flex: 1 }}>
-                <h3 style={{
-                  fontSize: isMobile ? "1.4rem" : "1.6rem",
-                  fontWeight: "700",
-                  color: currentTheme.text,
-                  marginBottom: "0.75rem",
-                  lineHeight: "1.3"
-                }}>
-                  {project.title}
-                </h3>
-                
-                {/* Status Badge */}
-                <div style={{
-                  display: "inline-block",
-                  background: getStatusColor(project.status),
-                  color: "white",
-                  padding: "0.5rem 1rem",
-                  borderRadius: "25px",
-                  fontSize: "0.8rem",
-                  fontWeight: "600",
-                  position: "relative",
-                  boxShadow: `0 2px 8px ${getStatusColor(project.status)}30`
-                }}>
-                  {project.status}
-                </div>
+              <div style={{
+                display: "inline-block",
+                background: getStatusColor(project.status),
+                color: "white",
+                padding: "0.5rem 1rem",
+                borderRadius: "25px",
+                fontSize: "0.8rem",
+                fontWeight: "600",
+                boxShadow: `0 2px 8px ${getStatusColor(project.status)}30`
+              }}>
+                {project.status}
               </div>
             </div>
           </div>
@@ -364,6 +364,7 @@ const PortfolioSection = ({ darkMode = false }) => {
               {project.technologies.map((tech, techIndex) => (
                 <span 
                   key={tech} 
+                  onClick={() => handleTechnologyClick(tech, project.title)}
                   style={{
                     background: darkMode ? `${currentTheme.primary}15` : `${currentTheme.primary}10`,
                     color: currentTheme.text,
@@ -372,7 +373,7 @@ const PortfolioSection = ({ darkMode = false }) => {
                     borderRadius: "12px",
                     fontSize: "0.8rem",
                     fontWeight: "500",
-                    cursor: "default",
+                    cursor: "pointer",
                     display: "inline-block",
                     transition: "all 0.2s ease",
                     animation: `slideInUp 0.3s ease ${techIndex * 0.05 + 0.4}s both`
@@ -395,7 +396,7 @@ const PortfolioSection = ({ darkMode = false }) => {
           {/* Features Section */}
           <div style={{ marginBottom: "2rem", flex: 1 }}>
             <button
-              onClick={() => setIsExpanded(!isExpanded)}
+              onClick={handleExpandToggle}
               style={{
                 background: "none",
                 border: "none",
@@ -477,15 +478,9 @@ const PortfolioSection = ({ darkMode = false }) => {
                 color: "white",
                 transition: "all 0.3s ease"
               }}
-              onClick={handleGithubClick}
-              onMouseEnter={(e) => {
-                e.target.style.transform = "translateY(-2px)"
-                e.target.style.boxShadow = "0 8px 25px rgba(0, 0, 0, 0.15)"
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.transform = "translateY(0)"
-                e.target.style.boxShadow = "0 4px 14px rgba(0, 0, 0, 0.1)"
-              }}
+              onClick={() => handleGithubClick(project)}
+              analyticsLabel="view_code"
+              analyticsSection="portfolio"
             >
               <span style={{marginRight: '0.5rem'}}>🐙</span>
               View Code
@@ -503,17 +498,9 @@ const PortfolioSection = ({ darkMode = false }) => {
                 background: "transparent",
                 transition: "all 0.3s ease"
               }}
-              onClick={() => {/* Handle demo/preview */}}
-              onMouseEnter={(e) => {
-                e.target.style.background = currentTheme.primary
-                e.target.style.color = "#ffffff"
-                e.target.style.transform = "translateY(-2px)"
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.background = "transparent"
-                e.target.style.color = currentTheme.primary
-                e.target.style.transform = "translateY(0)"
-              }}
+              onClick={() => handleDemoClick(project)}
+              analyticsLabel="view_demo"
+              analyticsSection="portfolio"
             >
               <span style={{marginRight: '0.5rem'}}>📱</span>
               Preview
@@ -558,7 +545,6 @@ const PortfolioSection = ({ darkMode = false }) => {
             My Work Portfolio
           </div>
 
-          {/* FIXED title using CSS classes */}
           <h2 
             className={`gradient-title ${darkMode ? 'dark-mode' : 'light-mode'}`}
             style={{ 
@@ -608,7 +594,7 @@ const PortfolioSection = ({ darkMode = false }) => {
             {Object.entries(categories).map(([key, label]) => (
               <button
                 key={key}
-                onClick={() => setSelectedCategory(key)}
+                onClick={() => handleCategoryFilter(key)}
                 style={{
                   background: selectedCategory === key 
                     ? `linear-gradient(135deg, ${currentTheme.primary} 0%, ${currentTheme.purple} 100%)`
@@ -626,18 +612,6 @@ const PortfolioSection = ({ darkMode = false }) => {
                   boxShadow: selectedCategory === key 
                     ? `0 4px 12px ${currentTheme.primary}30` 
                     : "none"
-                }}
-                onMouseEnter={(e) => {
-                  if (!isMobile && selectedCategory !== key) {
-                    e.target.style.transform = "translateY(-2px)"
-                    e.target.style.background = `${currentTheme.primary}10`
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (selectedCategory !== key) {
-                    e.target.style.transform = "translateY(0)"
-                    e.target.style.background = "transparent"
-                  }
                 }}
               >
                 {label}
@@ -657,110 +631,10 @@ const PortfolioSection = ({ darkMode = false }) => {
             <ProjectCard key={project.id} project={project} index={index} />
           ))}
         </div>
-
-        {/* Stats Section */}
-        <div style={{
-          background: `linear-gradient(135deg, ${currentTheme.surface} 0%, ${currentTheme.primary}03 100%)`,
-          borderRadius: "24px",
-          padding: isMobile ? "2rem" : "3rem",
-          border: `1px solid ${currentTheme.border}`,
-          textAlign: "center",
-          position: "relative",
-          overflow: "hidden",
-          animation: 'fadeInUp 0.6s ease 0.8s both'
-        }}>
-          {/* Background Pattern */}
-          <div style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backgroundImage: `radial-gradient(circle at 2px 2px, ${currentTheme.primary}${darkMode ? '08' : '05'} 1px, transparent 0)`,
-            backgroundSize: '24px 24px',
-            opacity: 0.5
-          }} />
-
-          <div style={{ position: "relative", zIndex: 1 }}>
-            <h3 style={{
-              fontSize: isMobile ? "1.5rem" : "2rem",
-              fontWeight: "700",
-              color: currentTheme.text,
-              marginBottom: "2rem",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "0.5rem"
-            }}>
-              <span style={{fontSize: '1.2rem'}}>📊</span>
-              My Android Learning Journey
-            </h3>
-            
-            <div style={{
-              display: "grid",
-              gridTemplateColumns: isMobile ? "repeat(2, 1fr)" : "repeat(4, 1fr)",
-              gap: isMobile ? "2rem" : "3rem",
-              textAlign: "center"
-            }}>
-              {[
-                { number: "6", label: "Projects Built", icon: "📱", color: currentTheme.primary },
-                { number: "8+", label: "Technologies Learned", icon: "🛠️", color: currentTheme.success },
-                { number: "2+", label: "Years Learning", icon: "📚", color: currentTheme.warning },
-                { number: "100%", label: "Passion Driven", icon: "❤️", color: currentTheme.pink }
-              ].map((stat, index) => (
-                <div 
-                  key={index}
-                  style={{
-                    padding: "1.5rem",
-                    background: darkMode ? `${stat.color}15` : `${stat.color}10`,
-                    borderRadius: "16px",
-                    border: `1px solid ${currentTheme.border}`,
-                    transition: "all 0.3s ease",
-                    cursor: "default",
-                    animation: `slideInUp 0.5s ease ${index * 0.1 + 1}s both`
-                  }}
-                  onMouseEnter={(e) => {
-                    if (!isMobile) {
-                      e.currentTarget.style.transform = "scale(1.05)"
-                      e.currentTarget.style.background = darkMode ? `${stat.color}25` : `${stat.color}20`
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = "scale(1)"
-                    e.currentTarget.style.background = darkMode ? `${stat.color}15` : `${stat.color}10`
-                  }}
-                >
-                  <div style={{
-                    fontSize: "2rem",
-                    marginBottom: "0.5rem"
-                  }}>
-                    {stat.icon}
-                  </div>
-                  <div style={{
-                    fontSize: isMobile ? "2rem" : "2.5rem",
-                    fontWeight: "800",
-                    color: stat.color,
-                    marginBottom: "0.5rem"
-                  }}>
-                    {stat.number}
-                  </div>
-                  <div style={{
-                    fontSize: isMobile ? "0.85rem" : "0.95rem",
-                    color: currentTheme.textSecondary,
-                    fontWeight: "600"
-                  }}>
-                    {stat.label}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
       </div>
 
       {/* Global CSS Animations */}
       <style jsx global>{`
-        /* BULLETPROOF gradient text styles */
         .gradient-title {
           transition: color 0.3s ease !important;
         }
@@ -781,7 +655,6 @@ const PortfolioSection = ({ darkMode = false }) => {
           background-clip: text;
         }
         
-        /* Fallback for browsers that don't support background-clip */
         @supports not (background-clip: text) {
           .gradient-title {
             background: none !important;
@@ -829,24 +702,6 @@ const PortfolioSection = ({ darkMode = false }) => {
           }
           60% {
             transform: translateY(-2px);
-          }
-        }
-        
-        @keyframes float {
-          0%, 100% {
-            transform: translateY(0px);
-          }
-          50% {
-            transform: translateY(-5px);
-          }
-        }
-        
-        @keyframes pulse {
-          0%, 100% {
-            opacity: 1;
-          }
-          50% {
-            opacity: 0.8;
           }
         }
       `}</style>

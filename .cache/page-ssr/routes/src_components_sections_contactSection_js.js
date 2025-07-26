@@ -15,6 +15,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _ui_buttons__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../ui/buttons */ "./src/components/ui/buttons.js");
+/* harmony import */ var _utils_analytics__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../utils/analytics */ "./src/utils/analytics.js");
+// Updated ContactSection with GA4 analytics integration
+
+
 
 const ContactSection = ({
   darkMode = false
@@ -39,6 +44,8 @@ const ContactSection = ({
   }, []);
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
     setIsVisible(true);
+    // Track contact section view
+    (0,_utils_analytics__WEBPACK_IMPORTED_MODULE_2__.trackSectionView)('contact');
   }, []);
 
   // Modern theme colors
@@ -95,6 +102,40 @@ const ContactSection = ({
     gradient: `linear-gradient(135deg, ${currentTheme.purple} 0%, ${currentTheme.pink} 100%)`,
     hoverColor: currentTheme.purple
   }];
+
+  // Analytics handlers
+  const handleContactClick = (method, url) => {
+    // Track the contact attempt
+    (0,_utils_analytics__WEBPACK_IMPORTED_MODULE_2__.trackContactAttempt)(method.title.toLowerCase(), url);
+
+    // Track as external link
+    (0,_utils_analytics__WEBPACK_IMPORTED_MODULE_2__.trackExternalLink)(method.title.toLowerCase(), url, 'contact_section');
+
+    // Track specific contact method
+    (0,_utils_analytics__WEBPACK_IMPORTED_MODULE_2__.trackEvent)('contact_method_click', {
+      method: method.title.toLowerCase(),
+      description: method.description,
+      section: 'contact',
+      event_category: 'contact'
+    });
+
+    // Open the link
+    window.open(url, '_blank');
+  };
+  const handleResponseTimeClick = () => {
+    (0,_utils_analytics__WEBPACK_IMPORTED_MODULE_2__.trackEvent)('response_time_info_click', {
+      section: 'contact',
+      info_type: 'response_time',
+      event_category: 'engagement'
+    });
+  };
+  const handleAvailabilityClick = () => {
+    (0,_utils_analytics__WEBPACK_IMPORTED_MODULE_2__.trackEvent)('availability_info_click', {
+      section: 'contact',
+      info_type: 'availability',
+      event_category: 'engagement'
+    });
+  };
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     style: {
       maxWidth: "900px",
@@ -165,15 +206,14 @@ const ContactSection = ({
       marginBottom: isMobile ? "3rem" : "4rem",
       animation: 'fadeInUp 0.6s ease 0.6s both'
     }
-  }, contactMethods.map((method, index) => /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("a", {
+  }, contactMethods.map((method, index) => /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     key: index,
-    href: method.href,
-    target: "_blank",
-    rel: "noopener noreferrer",
+    onClick: () => handleContactClick(method, method.href),
     style: {
       textDecoration: "none",
       color: "inherit",
-      display: "block"
+      display: "block",
+      cursor: "pointer"
     }
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     style: {
@@ -187,7 +227,6 @@ const ContactSection = ({
       border: `1px solid ${currentTheme.border}`,
       borderRadius: "20px",
       transition: "all 0.3s ease",
-      cursor: "pointer",
       position: "relative",
       overflow: "hidden",
       animation: `slideInUp 0.5s ease ${index * 0.1 + 0.8}s both`
@@ -241,6 +280,7 @@ const ContactSection = ({
       animation: 'fadeInUp 0.6s ease 1.2s both'
     }
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    onClick: handleResponseTimeClick,
     style: {
       background: darkMode ? `linear-gradient(135deg, ${currentTheme.surface} 0%, ${currentTheme.primary}10 100%)` : `linear-gradient(135deg, ${currentTheme.surface} 0%, ${currentTheme.primary}05 100%)`,
       textAlign: "center",
@@ -249,7 +289,8 @@ const ContactSection = ({
       border: `1px solid ${currentTheme.border}`,
       position: "relative",
       overflow: "hidden",
-      transition: "all 0.3s ease"
+      transition: "all 0.3s ease",
+      cursor: "pointer"
     },
     onMouseEnter: e => {
       e.currentTarget.style.transform = 'translateY(-4px)';
@@ -300,6 +341,7 @@ const ContactSection = ({
       color: currentTheme.primary
     }
   }, "12 hours"), ". For urgent Android projects, LinkedIn is the fastest way to reach me."))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    onClick: handleAvailabilityClick,
     style: {
       background: `linear-gradient(135deg, ${currentTheme.success} 0%, ${currentTheme.primary} 100%)`,
       color: "white",
@@ -309,7 +351,8 @@ const ContactSection = ({
       position: "relative",
       overflow: "hidden",
       boxShadow: `0 4px 14px 0 ${currentTheme.success}30`,
-      transition: "all 0.3s ease"
+      transition: "all 0.3s ease",
+      cursor: "pointer"
     },
     onMouseEnter: e => {
       e.currentTarget.style.transform = 'translateY(-4px) scale(1.02)';
@@ -366,6 +409,11 @@ const ContactSection = ({
       marginBottom: "1.5rem"
     }
   }, "Ready to start your Android project? Let's discuss your ideas!"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    onClick: () => (0,_utils_analytics__WEBPACK_IMPORTED_MODULE_2__.trackEvent)('cta_response_time_click', {
+      section: 'contact',
+      cta_type: 'response_time_info',
+      event_category: 'engagement'
+    }),
     style: {
       display: "inline-flex",
       gap: "0.5rem",
@@ -373,7 +421,15 @@ const ContactSection = ({
       padding: "1rem 2rem",
       borderRadius: "50px",
       border: `1px solid ${currentTheme.border}`,
-      animation: 'pulse 3s infinite'
+      animation: 'pulse 3s infinite',
+      cursor: "pointer",
+      transition: "all 0.3s ease"
+    },
+    onMouseEnter: e => {
+      e.currentTarget.style.transform = 'scale(1.05)';
+    },
+    onMouseLeave: e => {
+      e.currentTarget.style.transform = 'scale(1)';
     }
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
     style: {
@@ -388,7 +444,6 @@ const ContactSection = ({
     jsx: true,
     global: true
   }, `
-        /* BULLETPROOF gradient text styles */
         .gradient-title {
           transition: color 0.3s ease !important;
         }
@@ -409,7 +464,6 @@ const ContactSection = ({
           background-clip: text;
         }
         
-        /* Fallback for browsers that don't support background-clip */
         @supports not (background-clip: text) {
           .gradient-title {
             background: none !important;
@@ -473,6 +527,502 @@ const ContactSection = ({
       `));
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (ContactSection);
+
+/***/ }),
+
+/***/ "./src/components/ui/buttons.js":
+/*!**************************************!*\
+  !*** ./src/components/ui/buttons.js ***!
+  \**************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   DangerButton: () => (/* binding */ DangerButton),
+/* harmony export */   GhostButton: () => (/* binding */ GhostButton),
+/* harmony export */   IconButton: () => (/* binding */ IconButton),
+/* harmony export */   OutlineButton: () => (/* binding */ OutlineButton),
+/* harmony export */   PrimaryButton: () => (/* binding */ PrimaryButton),
+/* harmony export */   SecondaryButton: () => (/* binding */ SecondaryButton),
+/* harmony export */   SuccessButton: () => (/* binding */ SuccessButton),
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+
+const Button = ({
+  children,
+  variant = "primary",
+  size = "medium",
+  onClick,
+  disabled = false,
+  loading = false,
+  icon,
+  fullWidth = false,
+  style = {},
+  className = "",
+  type = "button",
+  ariaLabel,
+  onMouseEnter,
+  onMouseLeave,
+  ...props
+}) => {
+  const {
+    0: isPressed,
+    1: setIsPressed
+  } = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
+  const {
+    0: isHovered,
+    1: setIsHovered
+  } = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
+  const variants = {
+    primary: {
+      background: "linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)",
+      color: "#ffffff",
+      border: "none",
+      hoverBg: "linear-gradient(135deg, #2563eb 0%, #1e40af 100%)",
+      activeBg: "linear-gradient(135deg, #1d4ed8 0%, #1e3a8a 100%)",
+      shadow: "0 4px 14px 0 rgba(59, 130, 246, 0.39)"
+    },
+    secondary: {
+      background: "transparent",
+      color: "#374151",
+      border: "2px solid #e5e7eb",
+      hoverBg: "#f9fafb",
+      activeBg: "#f3f4f6",
+      shadow: "0 2px 8px 0 rgba(0, 0, 0, 0.1)"
+    },
+    outline: {
+      background: "transparent",
+      color: "#3b82f6",
+      border: "2px solid #3b82f6",
+      hoverBg: "#3b82f6",
+      hoverColor: "#ffffff",
+      activeBg: "#1d4ed8",
+      shadow: "none"
+    },
+    ghost: {
+      background: "transparent",
+      color: "#6b7280",
+      border: "none",
+      hoverBg: "#f3f4f6",
+      activeBg: "#e5e7eb",
+      shadow: "none"
+    },
+    danger: {
+      background: "linear-gradient(135deg, #ef4444 0%, #dc2626 100%)",
+      color: "#ffffff",
+      border: "none",
+      hoverBg: "linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)",
+      activeBg: "linear-gradient(135deg, #b91c1c 0%, #991b1b 100%)",
+      shadow: "0 4px 14px 0 rgba(239, 68, 68, 0.39)"
+    },
+    success: {
+      background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+      color: "#ffffff",
+      border: "none",
+      hoverBg: "linear-gradient(135deg, #059669 0%, #047857 100%)",
+      activeBg: "linear-gradient(135deg, #047857 0%, #065f46 100%)",
+      shadow: "0 4px 14px 0 rgba(16, 185, 129, 0.39)"
+    }
+  };
+  const sizes = {
+    small: {
+      padding: "0.5rem 1rem",
+      fontSize: "0.875rem",
+      borderRadius: "6px",
+      height: "36px"
+    },
+    medium: {
+      padding: "0.75rem 1.5rem",
+      fontSize: "1rem",
+      borderRadius: "8px",
+      height: "44px"
+    },
+    large: {
+      padding: "1rem 2rem",
+      fontSize: "1.125rem",
+      borderRadius: "10px",
+      height: "52px"
+    }
+  };
+  const currentVariant = variants[variant];
+  const currentSize = sizes[size];
+  const getButtonStyles = () => {
+    let background = currentVariant.background;
+    let color = currentVariant.color;
+    if (disabled || loading) {
+      // Keep original styles when disabled/loading
+    } else if (isPressed) {
+      background = currentVariant.activeBg || currentVariant.hoverBg || background;
+    } else if (isHovered) {
+      background = currentVariant.hoverBg || background;
+      if (currentVariant.hoverColor) {
+        color = currentVariant.hoverColor;
+      }
+    }
+    return {
+      display: "inline-flex",
+      alignItems: "center",
+      justifyContent: "center",
+      gap: "0.5rem",
+      fontWeight: "600",
+      fontFamily: "inherit",
+      cursor: disabled || loading ? "not-allowed" : "pointer",
+      transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
+      position: "relative",
+      overflow: "hidden",
+      userSelect: "none",
+      textDecoration: "none",
+      width: fullWidth ? "100%" : "auto",
+      opacity: disabled ? 0.6 : 1,
+      transform: isPressed && !disabled && !loading ? "translateY(1px)" : "translateY(0)",
+      background,
+      color,
+      border: currentVariant.border || "none",
+      boxShadow: disabled || loading ? "none" : currentVariant.shadow || "none",
+      ...currentSize,
+      ...style
+    };
+  };
+  const handleMouseEnter = e => {
+    if (!disabled && !loading) {
+      setIsHovered(true);
+    }
+    // Call any external onMouseEnter handler
+    if (onMouseEnter) {
+      onMouseEnter(e);
+    }
+  };
+  const handleMouseLeave = e => {
+    setIsHovered(false);
+    setIsPressed(false);
+    // Call any external onMouseLeave handler
+    if (onMouseLeave) {
+      onMouseLeave(e);
+    }
+  };
+  const handleMouseDown = () => {
+    if (!disabled && !loading) {
+      setIsPressed(true);
+    }
+  };
+  const handleMouseUp = () => {
+    setIsPressed(false);
+  };
+  const handleClick = e => {
+    if (disabled || loading) {
+      e.preventDefault();
+      return;
+    }
+    onClick === null || onClick === void 0 ? void 0 : onClick(e);
+  };
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("style", {
+    jsx: true
+  }, `
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+      `), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", Object.assign({
+    type: type,
+    onClick: handleClick,
+    onMouseEnter: handleMouseEnter,
+    onMouseLeave: handleMouseLeave,
+    onMouseDown: handleMouseDown,
+    onMouseUp: handleMouseUp,
+    disabled: disabled || loading,
+    "aria-label": ariaLabel || (typeof children === 'string' ? children : undefined),
+    className: className,
+    style: getButtonStyles()
+  }, props), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    style: {
+      position: "absolute",
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      overflow: "hidden",
+      borderRadius: "inherit",
+      pointerEvents: "none"
+    }
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    style: {
+      position: "absolute",
+      width: "100%",
+      height: "100%",
+      background: "radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%)",
+      transform: isPressed ? "scale(1)" : "scale(0)",
+      transition: "transform 0.3s ease",
+      pointerEvents: "none"
+    }
+  })), loading && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    style: {
+      position: "absolute",
+      width: "16px",
+      height: "16px",
+      border: `2px solid transparent`,
+      borderTop: `2px solid currentColor`,
+      borderRadius: "50%",
+      animation: "spin 1s linear infinite"
+    }
+  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    style: {
+      display: "flex",
+      alignItems: "center",
+      gap: "0.5rem",
+      opacity: loading ? 0 : 1,
+      transition: "opacity 0.2s ease",
+      pointerEvents: "none"
+    }
+  }, icon && !loading && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
+    style: {
+      display: "flex",
+      alignItems: "center"
+    }
+  }, icon), children)));
+};
+
+// Preset button components for common use cases
+const PrimaryButton = props => /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(Button, Object.assign({
+  variant: "primary"
+}, props));
+const SecondaryButton = props => /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(Button, Object.assign({
+  variant: "secondary"
+}, props));
+const OutlineButton = props => /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(Button, Object.assign({
+  variant: "outline"
+}, props));
+const GhostButton = props => /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(Button, Object.assign({
+  variant: "ghost"
+}, props));
+const DangerButton = props => /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(Button, Object.assign({
+  variant: "danger"
+}, props));
+const SuccessButton = props => /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(Button, Object.assign({
+  variant: "success"
+}, props));
+
+// Icon button component
+const IconButton = ({
+  icon,
+  ...props
+}) => /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(Button, Object.assign({
+  style: {
+    padding: "0.75rem",
+    width: "44px",
+    height: "44px",
+    borderRadius: "50%",
+    ...props.style
+  }
+}, props), icon);
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Button);
+
+/***/ }),
+
+/***/ "./src/utils/analytics.js":
+/*!********************************!*\
+  !*** ./src/utils/analytics.js ***!
+  \********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   GA_TRACKING_ID: () => (/* binding */ GA_TRACKING_ID),
+/* harmony export */   initGA4: () => (/* binding */ initGA4),
+/* harmony export */   trackBlogInteraction: () => (/* binding */ trackBlogInteraction),
+/* harmony export */   trackButtonClick: () => (/* binding */ trackButtonClick),
+/* harmony export */   trackContactAttempt: () => (/* binding */ trackContactAttempt),
+/* harmony export */   trackDownload: () => (/* binding */ trackDownload),
+/* harmony export */   trackError: () => (/* binding */ trackError),
+/* harmony export */   trackEvent: () => (/* binding */ trackEvent),
+/* harmony export */   trackExternalLink: () => (/* binding */ trackExternalLink),
+/* harmony export */   trackPagePerformance: () => (/* binding */ trackPagePerformance),
+/* harmony export */   trackProjectInteraction: () => (/* binding */ trackProjectInteraction),
+/* harmony export */   trackScrollDepth: () => (/* binding */ trackScrollDepth),
+/* harmony export */   trackSearch: () => (/* binding */ trackSearch),
+/* harmony export */   trackSectionView: () => (/* binding */ trackSectionView),
+/* harmony export */   trackTechnologyFilter: () => (/* binding */ trackTechnologyFilter),
+/* harmony export */   trackThemeToggle: () => (/* binding */ trackThemeToggle)
+/* harmony export */ });
+const GA_TRACKING_ID = 'G-3TK5H4EPYR'; // Replace with your actual GA4 tracking ID
+
+// Initialize Google Analytics 4
+const initGA4 = () => {
+  // Only initialize if we're in the browser and haven't already loaded
+  if (typeof window === 'undefined' || window.gtag) return;
+
+  // Load the Google Analytics script
+  const script = document.createElement('script');
+  script.async = true;
+  script.src = `https://www.googletagmanager.com/gtag/js?id=${GA_TRACKING_ID}`;
+  document.head.appendChild(script);
+
+  // Initialize the dataLayer and gtag function
+  window.dataLayer = window.dataLayer || [];
+  function gtag() {
+    window.dataLayer.push(arguments);
+  }
+  window.gtag = gtag;
+
+  // Configure GA4
+  gtag('js', new Date());
+  gtag('config', GA_TRACKING_ID, {
+    page_title: document.title,
+    page_location: window.location.href,
+    // Enhanced measurement settings
+    send_page_view: true,
+    allow_google_signals: true,
+    allow_ad_personalization_signals: false // Set to true if you want ad personalization
+  });
+  console.log('GA4 initialized successfully');
+};
+
+// Generic event tracking function
+const trackEvent = (eventName, parameters = {}) => {
+  if (typeof window !== 'undefined' && window.gtag) {
+    window.gtag('event', eventName, {
+      // Add default parameters
+      timestamp: new Date().toISOString(),
+      page_location: window.location.href,
+      page_title: document.title,
+      ...parameters
+    });
+    console.log('GA4 Event:', eventName, parameters);
+  }
+};
+
+// Section Navigation Tracking
+const trackSectionView = (sectionName, fromSection = null) => {
+  trackEvent('section_view', {
+    section_name: sectionName,
+    from_section: fromSection,
+    event_category: 'navigation'
+  });
+};
+
+// Button Click Tracking
+const trackButtonClick = (buttonName, section, buttonType = 'primary') => {
+  trackEvent('button_click', {
+    button_name: buttonName,
+    section: section,
+    button_type: buttonType,
+    event_category: 'engagement'
+  });
+};
+
+// Project Interaction Tracking
+const trackProjectInteraction = (action, projectName, projectCategory = '') => {
+  trackEvent('project_interaction', {
+    action: action,
+    // 'view', 'click_github', 'click_demo', 'expand_details'
+    project_name: projectName,
+    project_category: projectCategory,
+    event_category: 'portfolio'
+  });
+};
+
+// Blog Interaction Tracking
+const trackBlogInteraction = (action, postTitle = '', category = '') => {
+  trackEvent('blog_interaction', {
+    action: action,
+    // 'read_article', 'filter_category', 'subscribe'
+    post_title: postTitle,
+    blog_category: category,
+    event_category: 'blog'
+  });
+};
+
+// Contact Method Tracking
+const trackContactAttempt = (method, destination = '') => {
+  trackEvent('contact_attempt', {
+    contact_method: method,
+    // 'email', 'linkedin', 'github'
+    destination: destination,
+    event_category: 'contact'
+  });
+};
+
+// External Link Tracking
+const trackExternalLink = (linkType, destination, context = '') => {
+  trackEvent('external_link_click', {
+    link_type: linkType,
+    destination: destination,
+    context: context,
+    event_category: 'outbound'
+  });
+};
+
+// Technology Filter Tracking
+const trackTechnologyFilter = (technology, section) => {
+  trackEvent('technology_filter', {
+    technology: technology,
+    section: section,
+    event_category: 'filter'
+  });
+};
+
+// Search Tracking (if you add search functionality)
+const trackSearch = (searchTerm, section, resultsCount = 0) => {
+  trackEvent('search', {
+    search_term: searchTerm,
+    section: section,
+    results_count: resultsCount,
+    event_category: 'search'
+  });
+};
+
+// Download/Resume Tracking
+const trackDownload = (fileName, fileType = '') => {
+  trackEvent('file_download', {
+    file_name: fileName,
+    file_type: fileType,
+    event_category: 'download'
+  });
+};
+
+// Theme Toggle Tracking
+const trackThemeToggle = newTheme => {
+  trackEvent('theme_toggle', {
+    theme: newTheme,
+    // 'dark' or 'light'
+    event_category: 'ui_interaction'
+  });
+};
+
+// Scroll Depth Tracking
+const trackScrollDepth = (depth, section) => {
+  trackEvent('scroll_depth', {
+    scroll_depth: depth,
+    // percentage
+    section: section,
+    event_category: 'engagement'
+  });
+};
+
+// Page Performance Tracking
+const trackPagePerformance = () => {
+  if (typeof window !== 'undefined' && 'performance' in window) {
+    var _performance$getEntri;
+    const navigation = performance.getEntriesByType('navigation')[0];
+    trackEvent('page_performance', {
+      load_time: Math.round(navigation.loadEventEnd - navigation.loadEventStart),
+      dom_content_loaded: Math.round(navigation.domContentLoadedEventEnd - navigation.domContentLoadedEventStart),
+      first_contentful_paint: Math.round(((_performance$getEntri = performance.getEntriesByName('first-contentful-paint')[0]) === null || _performance$getEntri === void 0 ? void 0 : _performance$getEntri.startTime) || 0),
+      event_category: 'performance'
+    });
+  }
+};
+
+// Error Tracking
+const trackError = (error, errorContext = '') => {
+  trackEvent('javascript_error', {
+    error_message: error.message,
+    error_context: errorContext,
+    user_agent: navigator.userAgent,
+    event_category: 'error'
+  });
+};
 
 /***/ })
 

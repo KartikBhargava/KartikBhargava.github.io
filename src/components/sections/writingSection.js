@@ -1,5 +1,7 @@
+// Updated WritingSection with GA4 analytics integration
 import React, { useState, useEffect } from "react"
 import Button from "../ui/buttons"
+import { trackSectionView, trackBlogInteraction, trackTechnologyFilter, trackEvent } from '../../utils/analytics'
 
 const WritingSection = ({ darkMode = false }) => {
   const [selectedCategory, setSelectedCategory] = useState('all')
@@ -12,6 +14,11 @@ const WritingSection = ({ darkMode = false }) => {
       window.addEventListener('resize', checkMobile)
       return () => window.removeEventListener('resize', checkMobile)
     }
+  }, [])
+
+  useEffect(() => {
+    // Track writing section view
+    trackSectionView('writing')
   }, [])
 
   // Modern theme colors
@@ -60,7 +67,6 @@ const WritingSection = ({ darkMode = false }) => {
       title: "Building Modern Android Apps with Jetpack Compose",
       category: "android",
       excerpt: "Explore how Jetpack Compose revolutionizes Android UI development with declarative programming, making it easier to build beautiful and responsive user interfaces.",
-      content: "In this comprehensive guide, we'll dive deep into Jetpack Compose and learn how to build modern Android applications...",
       tags: ["Jetpack Compose", "Android", "UI/UX", "Kotlin"],
       readTime: "8 min read",
       publishDate: "2024-01-15",
@@ -73,7 +79,6 @@ const WritingSection = ({ darkMode = false }) => {
       title: "Clean Architecture in Android: A Practical Guide",
       category: "architecture",
       excerpt: "Learn how to implement Clean Architecture principles in Android applications to create maintainable, testable, and scalable codebases.",
-      content: "Clean Architecture has become a cornerstone of modern Android development. In this article, we'll explore...",
       tags: ["Clean Architecture", "MVVM", "Design Patterns", "Best Practices"],
       readTime: "12 min read",
       publishDate: "2024-01-10",
@@ -86,52 +91,12 @@ const WritingSection = ({ darkMode = false }) => {
       title: "Mastering Room Database: Tips and Tricks",
       category: "tutorials",
       excerpt: "Discover advanced Room database techniques, including complex queries, migrations, and performance optimization strategies for Android apps.",
-      content: "Room is Android's recommended database solution. Let's explore advanced techniques that will make you a Room expert...",
       tags: ["Room", "Database", "SQLite", "Android"],
       readTime: "10 min read",
       publishDate: "2024-01-05",
       featured: false,
       image: "🗄️",
       gradient: `linear-gradient(135deg, ${currentTheme.warning} 0%, ${currentTheme.pink} 100%)`
-    },
-    {
-      id: 4,
-      title: "The Future of Android Development",
-      category: "thoughts",
-      excerpt: "My thoughts on where Android development is heading, including emerging technologies, new frameworks, and industry trends to watch.",
-      content: "As we look ahead to the future of Android development, several exciting trends are emerging...",
-      tags: ["Future Tech", "Android", "Industry Trends", "Opinion"],
-      readTime: "6 min read",
-      publishDate: "2024-01-01",
-      featured: false,
-      image: "🔮",
-      gradient: `linear-gradient(135deg, ${currentTheme.purple} 0%, ${currentTheme.pink} 100%)`
-    },
-    {
-      id: 5,
-      title: "State Management in Jetpack Compose",
-      category: "android",
-      excerpt: "Understanding state management patterns in Jetpack Compose, from simple local state to complex app-wide state solutions.",
-      content: "State management is crucial in Jetpack Compose applications. Let's explore different approaches and when to use them...",
-      tags: ["State Management", "Jetpack Compose", "Architecture", "Kotlin"],
-      readTime: "9 min read",
-      publishDate: "2023-12-28",
-      featured: true,
-      image: "⚡",
-      gradient: `linear-gradient(135deg, ${currentTheme.primary} 0%, ${currentTheme.success} 100%)`
-    },
-    {
-      id: 6,
-      title: "Testing Android Apps: A Complete Guide",
-      category: "tutorials",
-      excerpt: "Comprehensive guide to testing Android applications, covering unit tests, integration tests, and UI tests with modern testing frameworks.",
-      content: "Testing is essential for robust Android applications. This guide covers everything from basic unit tests to advanced UI testing...",
-      tags: ["Testing", "JUnit", "Espresso", "Quality Assurance"],
-      readTime: "15 min read",
-      publishDate: "2023-12-20",
-      featured: false,
-      image: "🧪",
-      gradient: `linear-gradient(135deg, ${currentTheme.success} 0%, ${currentTheme.warning} 100%)`
     }
   ]
 
@@ -160,9 +125,66 @@ const WritingSection = ({ darkMode = false }) => {
     })
   }
 
-  // Blog Post Card Component
+  // Analytics handlers
+  const handleCategoryFilter = (category) => {
+    setSelectedCategory(category)
+    trackBlogInteraction('filter_category', '', category)
+    trackTechnologyFilter(categories[category], 'blog')
+  }
+
+  const handleReadArticle = (post) => {
+    trackBlogInteraction('read_article', post.title, post.category)
+    trackEvent('blog_article_click', {
+      article_title: post.title,
+      article_category: post.category,
+      read_time: post.readTime,
+      is_featured: post.featured,
+      section: 'blog',
+      event_category: 'content'
+    })
+  }
+
+  const handleTagClick = (tag, postTitle) => {
+    trackEvent('blog_tag_click', {
+      tag: tag,
+      post_title: postTitle,
+      section: 'blog',
+      event_category: 'engagement'
+    })
+  }
+
+  const handleNewsletterSubscribe = (email) => {
+    trackBlogInteraction('newsletter_subscribe', '', '')
+    trackEvent('newsletter_subscription', {
+      email_provided: !!email,
+      section: 'blog',
+      event_category: 'conversion'
+    })
+  }
+
+  // Blog Post Card Component with Analytics
   const BlogPostCard = ({ post, index, featured = false }) => {
     const [isHovered, setIsHovered] = useState(false)
+    const [hasViewed, setHasViewed] = useState(false)
+
+    // Track when blog post comes into view
+    useEffect(() => {
+      if (!hasViewed) {
+        const timer = setTimeout(() => {
+          trackEvent('blog_post_viewed', {
+            post_title: post.title,
+            post_category: post.category,
+            is_featured: featured,
+            view_time: 2000, // 2 seconds
+            section: 'blog',
+            event_category: 'engagement'
+          })
+          setHasViewed(true)
+        }, 2000)
+
+        return () => clearTimeout(timer)
+      }
+    }, [])
 
     return (
       <article
@@ -227,7 +249,9 @@ const WritingSection = ({ darkMode = false }) => {
 
             <div style={{ flex: 1 }}>
               {/* Category Badge */}
-              <div style={{
+              <div 
+                onClick={() => handleCategoryFilter(post.category)}
+                style={{
                 display: "inline-block",
                 background: getCategoryColor(post.category),
                 color: "white",
@@ -236,8 +260,17 @@ const WritingSection = ({ darkMode = false }) => {
                 fontSize: "0.8rem",
                 fontWeight: "600",
                 marginBottom: "1rem",
-                textTransform: "capitalize"
-              }}>
+                textTransform: "capitalize",
+                cursor: "pointer",
+                transition: "all 0.3s ease"
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'scale(1.05)'
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'scale(1)'
+              }}
+              >
                 {post.category}
               </div>
 
@@ -304,6 +337,7 @@ const WritingSection = ({ darkMode = false }) => {
             {post.tags.map((tag, tagIndex) => (
               <span
                 key={tag}
+                onClick={() => handleTagClick(tag, post.title)}
                 style={{
                   background: darkMode ? `${currentTheme.primary}15` : `${currentTheme.primary}10`,
                   color: currentTheme.text,
@@ -313,6 +347,7 @@ const WritingSection = ({ darkMode = false }) => {
                   fontSize: "0.8rem",
                   fontWeight: "500",
                   transition: "all 0.2s ease",
+                  cursor: "pointer",
                   animation: `fadeInUp 0.3s ease ${tagIndex * 0.05 + 0.2}s both`
                 }}
                 onMouseEnter={(e) => {
@@ -343,17 +378,9 @@ const WritingSection = ({ darkMode = false }) => {
               transition: "all 0.3s ease",
               width: isMobile ? "100%" : "auto"
             }}
-            onMouseEnter={(e) => {
-              e.target.style.background = currentTheme.primary
-              e.target.style.color = "#ffffff"
-              e.target.style.transform = "translateY(-2px)"
-            }}
-            onMouseLeave={(e) => {
-              e.target.style.background = "transparent"
-              e.target.style.color = currentTheme.primary
-              e.target.style.transform = "translateY(0)"
-            }}
-            onClick={() => {/* Handle read more */}}
+            onClick={() => handleReadArticle(post)}
+            analyticsLabel="read_article"
+            analyticsSection="blog"
           >
             Read Article →
           </Button>
@@ -396,7 +423,6 @@ const WritingSection = ({ darkMode = false }) => {
             Tech Blog & Articles
           </div>
 
-          {/* FIXED title using CSS classes */}
           <h2 
             className={`gradient-title ${darkMode ? 'dark-mode' : 'light-mode'}`}
             style={{ 
@@ -477,7 +503,7 @@ const WritingSection = ({ darkMode = false }) => {
             {Object.entries(categories).map(([key, label]) => (
               <button
                 key={key}
-                onClick={() => setSelectedCategory(key)}
+                onClick={() => handleCategoryFilter(key)}
                 style={{
                   background: selectedCategory === key 
                     ? `linear-gradient(135deg, ${currentTheme.primary} 0%, ${currentTheme.purple} 100%)`
@@ -494,18 +520,6 @@ const WritingSection = ({ darkMode = false }) => {
                   boxShadow: selectedCategory === key 
                     ? `0 4px 12px ${currentTheme.primary}30` 
                     : "none"
-                }}
-                onMouseEnter={(e) => {
-                  if (!isMobile && selectedCategory !== key) {
-                    e.target.style.transform = "translateY(-2px)"
-                    e.target.style.background = `${currentTheme.primary}10`
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (selectedCategory !== key) {
-                    e.target.style.transform = "translateY(0)"
-                    e.target.style.background = "transparent"
-                  }
                 }}
               >
                 {label}
@@ -609,6 +623,13 @@ const WritingSection = ({ darkMode = false }) => {
                   background: "rgba(255, 255, 255, 0.9)",
                   color: currentTheme.text
                 }}
+                onChange={(e) => {
+                  trackEvent('newsletter_email_input', {
+                    has_content: e.target.value.length > 0,
+                    section: 'blog',
+                    event_category: 'engagement'
+                  })
+                }}
               />
               <Button
                 variant="primary"
@@ -623,14 +644,12 @@ const WritingSection = ({ darkMode = false }) => {
                   transition: "all 0.3s ease",
                   whiteSpace: "nowrap"
                 }}
-                onMouseEnter={(e) => {
-                  e.target.style.background = "rgba(255, 255, 255, 0.3)"
-                  e.target.style.transform = "translateY(-2px)"
+                onClick={(e) => {
+                  const email = e.target.closest('div').querySelector('input').value
+                  handleNewsletterSubscribe(email)
                 }}
-                onMouseLeave={(e) => {
-                  e.target.style.background = "rgba(255, 255, 255, 0.2)"
-                  e.target.style.transform = "translateY(0)"
-                }}
+                analyticsLabel="newsletter_subscribe"
+                analyticsSection="blog"
               >
                 Subscribe
               </Button>
@@ -641,7 +660,6 @@ const WritingSection = ({ darkMode = false }) => {
 
       {/* Global CSS Animations */}
       <style jsx global>{`
-        /* BULLETPROOF gradient text styles */
         .gradient-title {
           transition: color 0.3s ease !important;
         }
@@ -662,7 +680,6 @@ const WritingSection = ({ darkMode = false }) => {
           background-clip: text;
         }
         
-        /* Fallback for browsers that don't support background-clip */
         @supports not (background-clip: text) {
           .gradient-title {
             background: none !important;

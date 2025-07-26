@@ -1,4 +1,7 @@
+// Updated ContactSection with GA4 analytics integration
 import React, { useEffect, useState } from 'react'
+import Button from "../ui/buttons"
+import { trackSectionView, trackContactAttempt, trackExternalLink, trackEvent } from '../../utils/analytics'
 
 const ContactSection = ({ darkMode = false }) => {
   const [isMobile, setIsMobile] = useState(false)
@@ -17,6 +20,8 @@ const ContactSection = ({ darkMode = false }) => {
 
   useEffect(() => {
     setIsVisible(true)
+    // Track contact section view
+    trackSectionView('contact')
   }, [])
 
   // Modern theme colors
@@ -80,6 +85,42 @@ const ContactSection = ({ darkMode = false }) => {
     }
   ]
 
+  // Analytics handlers
+  const handleContactClick = (method, url) => {
+    // Track the contact attempt
+    trackContactAttempt(method.title.toLowerCase(), url)
+    
+    // Track as external link
+    trackExternalLink(method.title.toLowerCase(), url, 'contact_section')
+    
+    // Track specific contact method
+    trackEvent('contact_method_click', {
+      method: method.title.toLowerCase(),
+      description: method.description,
+      section: 'contact',
+      event_category: 'contact'
+    })
+
+    // Open the link
+    window.open(url, '_blank')
+  }
+
+  const handleResponseTimeClick = () => {
+    trackEvent('response_time_info_click', {
+      section: 'contact',
+      info_type: 'response_time',
+      event_category: 'engagement'
+    })
+  }
+
+  const handleAvailabilityClick = () => {
+    trackEvent('availability_info_click', {
+      section: 'contact',
+      info_type: 'availability',
+      event_category: 'engagement'
+    })
+  }
+
   return (
     <div style={{
       maxWidth: "900px",
@@ -118,7 +159,6 @@ const ContactSection = ({ darkMode = false }) => {
           Available for Projects
         </div>
 
-        {/* FIXED title using CSS classes */}
         <h2 
           className={`gradient-title ${darkMode ? 'dark-mode' : 'light-mode'}`}
           style={{ 
@@ -155,15 +195,14 @@ const ContactSection = ({ darkMode = false }) => {
         animation: 'fadeInUp 0.6s ease 0.6s both'
       }}>
         {contactMethods.map((method, index) => (
-          <a 
+          <div
             key={index}
-            href={method.href}
-            target="_blank"
-            rel="noopener noreferrer"
+            onClick={() => handleContactClick(method, method.href)}
             style={{
               textDecoration: "none",
               color: "inherit",
-              display: "block"
+              display: "block",
+              cursor: "pointer"
             }}
           >
             <div style={{
@@ -177,7 +216,6 @@ const ContactSection = ({ darkMode = false }) => {
               border: `1px solid ${currentTheme.border}`,
               borderRadius: "20px",
               transition: "all 0.3s ease",
-              cursor: "pointer",
               position: "relative",
               overflow: "hidden",
               animation: `slideInUp 0.5s ease ${index * 0.1 + 0.8}s both`
@@ -233,7 +271,7 @@ const ContactSection = ({ darkMode = false }) => {
                 </p>
               </div>
             </div>
-          </a>
+          </div>
         ))}
       </div>
 
@@ -244,7 +282,9 @@ const ContactSection = ({ darkMode = false }) => {
         gap: isMobile ? "1.5rem" : "2rem",
         animation: 'fadeInUp 0.6s ease 1.2s both'
       }}>
-        <div style={{
+        <div 
+          onClick={handleResponseTimeClick}
+          style={{
           background: darkMode 
             ? `linear-gradient(135deg, ${currentTheme.surface} 0%, ${currentTheme.primary}10 100%)`
             : `linear-gradient(135deg, ${currentTheme.surface} 0%, ${currentTheme.primary}05 100%)`,
@@ -254,7 +294,8 @@ const ContactSection = ({ darkMode = false }) => {
           border: `1px solid ${currentTheme.border}`,
           position: "relative",
           overflow: "hidden",
-          transition: "all 0.3s ease"
+          transition: "all 0.3s ease",
+          cursor: "pointer"
         }}
         onMouseEnter={(e) => {
           e.currentTarget.style.transform = 'translateY(-4px)'
@@ -308,7 +349,9 @@ const ContactSection = ({ darkMode = false }) => {
           </div>
         </div>
         
-        <div style={{
+        <div 
+          onClick={handleAvailabilityClick}
+          style={{
           background: `linear-gradient(135deg, ${currentTheme.success} 0%, ${currentTheme.primary} 100%)`,
           color: "white",
           textAlign: "center",
@@ -317,7 +360,8 @@ const ContactSection = ({ darkMode = false }) => {
           position: "relative",
           overflow: "hidden",
           boxShadow: `0 4px 14px 0 ${currentTheme.success}30`,
-          transition: "all 0.3s ease"
+          transition: "all 0.3s ease",
+          cursor: "pointer"
         }}
         onMouseEnter={(e) => {
           e.currentTarget.style.transform = 'translateY(-4px) scale(1.02)'
@@ -381,7 +425,13 @@ const ContactSection = ({ darkMode = false }) => {
         }}>
           Ready to start your Android project? Let's discuss your ideas!
         </p>
-        <div style={{
+        <div 
+          onClick={() => trackEvent('cta_response_time_click', {
+            section: 'contact',
+            cta_type: 'response_time_info',
+            event_category: 'engagement'
+          })}
+          style={{
           display: "inline-flex",
           gap: "0.5rem",
           background: darkMode 
@@ -390,8 +440,17 @@ const ContactSection = ({ darkMode = false }) => {
           padding: "1rem 2rem",
           borderRadius: "50px",
           border: `1px solid ${currentTheme.border}`,
-          animation: 'pulse 3s infinite'
-        }}>
+          animation: 'pulse 3s infinite',
+          cursor: "pointer",
+          transition: "all 0.3s ease"
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.transform = 'scale(1.05)'
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.transform = 'scale(1)'
+        }}
+        >
           <span style={{fontSize: '1.2rem'}}>💬</span>
           <span style={{color: currentTheme.textSecondary, fontWeight: '500'}}>
             Average response: 12 hours
@@ -401,7 +460,6 @@ const ContactSection = ({ darkMode = false }) => {
 
       {/* Global CSS Animations */}
       <style jsx global>{`
-        /* BULLETPROOF gradient text styles */
         .gradient-title {
           transition: color 0.3s ease !important;
         }
@@ -422,7 +480,6 @@ const ContactSection = ({ darkMode = false }) => {
           background-clip: text;
         }
         
-        /* Fallback for browsers that don't support background-clip */
         @supports not (background-clip: text) {
           .gradient-title {
             background: none !important;

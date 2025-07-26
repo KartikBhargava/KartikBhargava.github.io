@@ -16,6 +16,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _ui_buttons__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../ui/buttons */ "./src/components/ui/buttons.js");
+/* harmony import */ var _utils_analytics__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../utils/analytics */ "./src/utils/analytics.js");
+// Updated PortfolioSection with GA4 analytics integration
+
 
 
 const PortfolioSection = ({
@@ -36,6 +39,10 @@ const PortfolioSection = ({
       window.addEventListener('resize', checkMobile);
       return () => window.removeEventListener('resize', checkMobile);
     }
+  }, []);
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    // Track portfolio section view
+    (0,_utils_analytics__WEBPACK_IMPORTED_MODULE_2__.trackSectionView)('portfolio');
   }, []);
 
   // Modern theme colors
@@ -110,42 +117,6 @@ const PortfolioSection = ({
     highlights: ["UI Experiments", "Custom Components", "Learning Journey"],
     features: ["Custom UI components and layouts", "Animation experiments and prototypes", "State management patterns exploration", "Performance optimization techniques"],
     gradient: `linear-gradient(135deg, ${currentTheme.warning} 0%, ${currentTheme.pink} 100%)`
-  }, {
-    id: 4,
-    title: "RecipeBook",
-    category: "featured",
-    description: "Recipe management app with search, favorites, and meal planning. Built to practice Room database relationships and complex UI patterns.",
-    technologies: ["Kotlin", "Room", "Search", "Image Handling", "Data Persistence"],
-    image: "👨‍🍳",
-    githubUrl: "https://github.com/kartik/recipe-book",
-    status: "Completed",
-    highlights: ["Complex Database Relations", "Search Implementation", "Image Management"],
-    features: ["Recipe storage with ingredients and steps", "Advanced search and filtering", "Favorites and meal planning", "Image handling and storage"],
-    gradient: `linear-gradient(135deg, ${currentTheme.pink} 0%, ${currentTheme.purple} 100%)`
-  }, {
-    id: 5,
-    title: "AndroidMLKit",
-    category: "experimental",
-    description: "Exploring Android's ML Kit capabilities with text recognition, face detection, and barcode scanning. A hands-on project to learn machine learning on mobile.",
-    technologies: ["Kotlin", "ML Kit", "Camera2", "Image Processing", "Machine Learning"],
-    image: "🤖",
-    githubUrl: "https://github.com/kartik/android-mlkit",
-    status: "Experimental",
-    highlights: ["Machine Learning", "Camera Integration", "Real-time Processing"],
-    features: ["Text recognition from camera and images", "Face detection and analysis", "Barcode and QR code scanning", "Real-time processing optimization"],
-    gradient: `linear-gradient(135deg, ${currentTheme.purple} 0%, ${currentTheme.primary} 100%)`
-  }, {
-    id: 6,
-    title: "QuoteDaily",
-    category: "learning",
-    description: "Daily quotes app built while learning Clean Architecture principles. Features motivational quotes with sharing capabilities and daily notifications.",
-    technologies: ["Kotlin", "Clean Architecture", "UseCase Pattern", "Notifications", "SharedPreferences"],
-    image: "💭",
-    githubUrl: "https://github.com/kartik/quote-daily",
-    status: "Learning Project",
-    highlights: ["Clean Architecture", "Notification System", "Best Practices"],
-    features: ["Daily quote delivery with notifications", "Quote sharing and favorites", "Clean Architecture implementation", "Offline quote storage and caching"],
-    gradient: `linear-gradient(135deg, ${currentTheme.success} 0%, ${currentTheme.warning} 100%)`
   }];
   const filteredProjects = selectedCategory === 'all' ? projects : projects.filter(project => project.category === selectedCategory);
   const getStatusColor = status => {
@@ -165,7 +136,47 @@ const PortfolioSection = ({
     }
   };
 
-  // Enhanced ProjectCard Component
+  // Analytics handlers
+  const handleCategoryFilter = category => {
+    setSelectedCategory(category);
+    (0,_utils_analytics__WEBPACK_IMPORTED_MODULE_2__.trackTechnologyFilter)(categories[category], 'portfolio');
+    (0,_utils_analytics__WEBPACK_IMPORTED_MODULE_2__.trackEvent)('portfolio_filter', {
+      filter_type: 'category',
+      filter_value: category,
+      section: 'portfolio',
+      event_category: 'filter'
+    });
+  };
+  const handleProjectView = project => {
+    (0,_utils_analytics__WEBPACK_IMPORTED_MODULE_2__.trackProjectInteraction)('view_project', project.title, project.category);
+  };
+  const handleGithubClick = project => {
+    (0,_utils_analytics__WEBPACK_IMPORTED_MODULE_2__.trackProjectInteraction)('click_github', project.title, project.category);
+    if (project.githubUrl) {
+      window.open(project.githubUrl, '_blank');
+    }
+  };
+  const handleDemoClick = project => {
+    (0,_utils_analytics__WEBPACK_IMPORTED_MODULE_2__.trackProjectInteraction)('click_demo', project.title, project.category);
+  };
+  const handleTechnologyClick = (technology, projectName) => {
+    (0,_utils_analytics__WEBPACK_IMPORTED_MODULE_2__.trackEvent)('technology_click', {
+      technology: technology,
+      project: projectName,
+      section: 'portfolio',
+      event_category: 'engagement'
+    });
+  };
+  const handleFeatureExpand = (project, expanded) => {
+    (0,_utils_analytics__WEBPACK_IMPORTED_MODULE_2__.trackEvent)('project_feature_expand', {
+      project_name: project.title,
+      expanded: expanded,
+      section: 'portfolio',
+      event_category: 'engagement'
+    });
+  };
+
+  // Enhanced ProjectCard Component with Analytics
   const ProjectCard = ({
     project,
     index
@@ -178,10 +189,26 @@ const PortfolioSection = ({
       0: isHovered,
       1: setIsHovered
     } = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
-    const handleGithubClick = () => {
-      if (typeof window !== 'undefined' && project.githubUrl) {
-        window.open(project.githubUrl, '_blank');
+    const {
+      0: hasViewed,
+      1: setHasViewed
+    } = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
+
+    // Track when project comes into view
+    (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+      if (!hasViewed) {
+        const timer = setTimeout(() => {
+          handleProjectView(project);
+          setHasViewed(true);
+        }, 1000); // Track after 1 second of being mounted
+
+        return () => clearTimeout(timer);
       }
+    }, []);
+    const handleExpandToggle = () => {
+      const newExpanded = !isExpanded;
+      setIsExpanded(newExpanded);
+      handleFeatureExpand(project, newExpanded);
     };
     return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
       style: {
@@ -228,17 +255,8 @@ const PortfolioSection = ({
       style: {
         display: "flex",
         alignItems: "center",
-        justifyContent: "space-between",
-        marginBottom: "1.5rem",
-        flexDirection: isMobile ? "column" : "row",
-        gap: isMobile ? "1rem" : "0"
-      }
-    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-      style: {
-        display: "flex",
-        alignItems: "center",
         gap: "1rem",
-        width: "100%"
+        marginBottom: "1.5rem"
       }
     }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
       style: {
@@ -248,7 +266,8 @@ const PortfolioSection = ({
         cursor: "pointer",
         transform: isHovered ? "scale(1.1) rotate(5deg)" : "scale(1)",
         animation: 'bounce 2s infinite'
-      }
+      },
+      onClick: () => handleProjectView(project)
     }, project.image), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
       style: {
         flex: 1
@@ -270,10 +289,9 @@ const PortfolioSection = ({
         borderRadius: "25px",
         fontSize: "0.8rem",
         fontWeight: "600",
-        position: "relative",
         boxShadow: `0 2px 8px ${getStatusColor(project.status)}30`
       }
-    }, project.status)))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", {
+    }, project.status))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", {
       style: {
         fontSize: isMobile ? "1rem" : "1.1rem",
         color: currentTheme.textSecondary,
@@ -344,6 +362,7 @@ const PortfolioSection = ({
       }
     }, project.technologies.map((tech, techIndex) => /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
       key: tech,
+      onClick: () => handleTechnologyClick(tech, project.title),
       style: {
         background: darkMode ? `${currentTheme.primary}15` : `${currentTheme.primary}10`,
         color: currentTheme.text,
@@ -352,7 +371,7 @@ const PortfolioSection = ({
         borderRadius: "12px",
         fontSize: "0.8rem",
         fontWeight: "500",
-        cursor: "default",
+        cursor: "pointer",
         display: "inline-block",
         transition: "all 0.2s ease",
         animation: `slideInUp 0.3s ease ${techIndex * 0.05 + 0.4}s both`
@@ -371,7 +390,7 @@ const PortfolioSection = ({
         flex: 1
       }
     }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", {
-      onClick: () => setIsExpanded(!isExpanded),
+      onClick: handleExpandToggle,
       style: {
         background: "none",
         border: "none",
@@ -444,15 +463,9 @@ const PortfolioSection = ({
         color: "white",
         transition: "all 0.3s ease"
       },
-      onClick: handleGithubClick,
-      onMouseEnter: e => {
-        e.target.style.transform = "translateY(-2px)";
-        e.target.style.boxShadow = "0 8px 25px rgba(0, 0, 0, 0.15)";
-      },
-      onMouseLeave: e => {
-        e.target.style.transform = "translateY(0)";
-        e.target.style.boxShadow = "0 4px 14px rgba(0, 0, 0, 0.1)";
-      }
+      onClick: () => handleGithubClick(project),
+      analyticsLabel: "view_code",
+      analyticsSection: "portfolio"
     }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
       style: {
         marginRight: '0.5rem'
@@ -470,17 +483,9 @@ const PortfolioSection = ({
         background: "transparent",
         transition: "all 0.3s ease"
       },
-      onClick: () => {/* Handle demo/preview */},
-      onMouseEnter: e => {
-        e.target.style.background = currentTheme.primary;
-        e.target.style.color = "#ffffff";
-        e.target.style.transform = "translateY(-2px)";
-      },
-      onMouseLeave: e => {
-        e.target.style.background = "transparent";
-        e.target.style.color = currentTheme.primary;
-        e.target.style.transform = "translateY(0)";
-      }
+      onClick: () => handleDemoClick(project),
+      analyticsLabel: "view_demo",
+      analyticsSection: "portfolio"
     }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
       style: {
         marginRight: '0.5rem'
@@ -567,7 +572,7 @@ const PortfolioSection = ({
     }
   }, Object.entries(categories).map(([key, label]) => /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", {
     key: key,
-    onClick: () => setSelectedCategory(key),
+    onClick: () => handleCategoryFilter(key),
     style: {
       background: selectedCategory === key ? `linear-gradient(135deg, ${currentTheme.primary} 0%, ${currentTheme.purple} 100%)` : "transparent",
       color: selectedCategory === key ? "white" : currentTheme.text,
@@ -581,18 +586,6 @@ const PortfolioSection = ({
       minWidth: isMobile ? "auto" : "120px",
       textAlign: "center",
       boxShadow: selectedCategory === key ? `0 4px 12px ${currentTheme.primary}30` : "none"
-    },
-    onMouseEnter: e => {
-      if (!isMobile && selectedCategory !== key) {
-        e.target.style.transform = "translateY(-2px)";
-        e.target.style.background = `${currentTheme.primary}10`;
-      }
-    },
-    onMouseLeave: e => {
-      if (selectedCategory !== key) {
-        e.target.style.transform = "translateY(0)";
-        e.target.style.background = "transparent";
-      }
     }
   }, label)))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     style: {
@@ -605,119 +598,10 @@ const PortfolioSection = ({
     key: project.id,
     project: project,
     index: index
-  }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    style: {
-      background: `linear-gradient(135deg, ${currentTheme.surface} 0%, ${currentTheme.primary}03 100%)`,
-      borderRadius: "24px",
-      padding: isMobile ? "2rem" : "3rem",
-      border: `1px solid ${currentTheme.border}`,
-      textAlign: "center",
-      position: "relative",
-      overflow: "hidden",
-      animation: 'fadeInUp 0.6s ease 0.8s both'
-    }
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    style: {
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      backgroundImage: `radial-gradient(circle at 2px 2px, ${currentTheme.primary}${darkMode ? '08' : '05'} 1px, transparent 0)`,
-      backgroundSize: '24px 24px',
-      opacity: 0.5
-    }
-  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    style: {
-      position: "relative",
-      zIndex: 1
-    }
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h3", {
-    style: {
-      fontSize: isMobile ? "1.5rem" : "2rem",
-      fontWeight: "700",
-      color: currentTheme.text,
-      marginBottom: "2rem",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      gap: "0.5rem"
-    }
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
-    style: {
-      fontSize: '1.2rem'
-    }
-  }, "\uD83D\uDCCA"), "My Android Learning Journey"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    style: {
-      display: "grid",
-      gridTemplateColumns: isMobile ? "repeat(2, 1fr)" : "repeat(4, 1fr)",
-      gap: isMobile ? "2rem" : "3rem",
-      textAlign: "center"
-    }
-  }, [{
-    number: "6",
-    label: "Projects Built",
-    icon: "📱",
-    color: currentTheme.primary
-  }, {
-    number: "8+",
-    label: "Technologies Learned",
-    icon: "🛠️",
-    color: currentTheme.success
-  }, {
-    number: "2+",
-    label: "Years Learning",
-    icon: "📚",
-    color: currentTheme.warning
-  }, {
-    number: "100%",
-    label: "Passion Driven",
-    icon: "❤️",
-    color: currentTheme.pink
-  }].map((stat, index) => /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    key: index,
-    style: {
-      padding: "1.5rem",
-      background: darkMode ? `${stat.color}15` : `${stat.color}10`,
-      borderRadius: "16px",
-      border: `1px solid ${currentTheme.border}`,
-      transition: "all 0.3s ease",
-      cursor: "default",
-      animation: `slideInUp 0.5s ease ${index * 0.1 + 1}s both`
-    },
-    onMouseEnter: e => {
-      if (!isMobile) {
-        e.currentTarget.style.transform = "scale(1.05)";
-        e.currentTarget.style.background = darkMode ? `${stat.color}25` : `${stat.color}20`;
-      }
-    },
-    onMouseLeave: e => {
-      e.currentTarget.style.transform = "scale(1)";
-      e.currentTarget.style.background = darkMode ? `${stat.color}15` : `${stat.color}10`;
-    }
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    style: {
-      fontSize: "2rem",
-      marginBottom: "0.5rem"
-    }
-  }, stat.icon), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    style: {
-      fontSize: isMobile ? "2rem" : "2.5rem",
-      fontWeight: "800",
-      color: stat.color,
-      marginBottom: "0.5rem"
-    }
-  }, stat.number), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    style: {
-      fontSize: isMobile ? "0.85rem" : "0.95rem",
-      color: currentTheme.textSecondary,
-      fontWeight: "600"
-    }
-  }, stat.label))))))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("style", {
+  })))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("style", {
     jsx: true,
     global: true
   }, `
-        /* BULLETPROOF gradient text styles */
         .gradient-title {
           transition: color 0.3s ease !important;
         }
@@ -738,7 +622,6 @@ const PortfolioSection = ({
           background-clip: text;
         }
         
-        /* Fallback for browsers that don't support background-clip */
         @supports not (background-clip: text) {
           .gradient-title {
             background: none !important;
@@ -788,24 +671,6 @@ const PortfolioSection = ({
             transform: translateY(-2px);
           }
         }
-        
-        @keyframes float {
-          0%, 100% {
-            transform: translateY(0px);
-          }
-          50% {
-            transform: translateY(-5px);
-          }
-        }
-        
-        @keyframes pulse {
-          0%, 100% {
-            opacity: 1;
-          }
-          50% {
-            opacity: 0.8;
-          }
-        }
       `));
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (PortfolioSection);
@@ -845,11 +710,17 @@ const Button = ({
   className = "",
   type = "button",
   ariaLabel,
+  onMouseEnter,
+  onMouseLeave,
   ...props
 }) => {
   const {
     0: isPressed,
     1: setIsPressed
+  } = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
+  const {
+    0: isHovered,
+    1: setIsHovered
   } = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
   const variants = {
     primary: {
@@ -924,42 +795,59 @@ const Button = ({
   };
   const currentVariant = variants[variant];
   const currentSize = sizes[size];
-  const baseStyles = {
-    display: "inline-flex",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: "0.5rem",
-    fontWeight: "600",
-    fontFamily: "inherit",
-    cursor: disabled || loading ? "not-allowed" : "pointer",
-    transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
-    position: "relative",
-    overflow: "hidden",
-    userSelect: "none",
-    textDecoration: "none",
-    width: fullWidth ? "100%" : "auto",
-    opacity: disabled ? 0.6 : 1,
-    transform: isPressed && !disabled && !loading ? "translateY(1px)" : "translateY(0)",
-    ...currentSize,
-    ...style
-  };
-  const getStyles = () => {
-    if (loading || disabled) {
-      return {
-        ...baseStyles,
-        background: currentVariant.background,
-        color: currentVariant.color,
-        border: currentVariant.border || "none",
-        boxShadow: "none"
-      };
+  const getButtonStyles = () => {
+    let background = currentVariant.background;
+    let color = currentVariant.color;
+    if (disabled || loading) {
+      // Keep original styles when disabled/loading
+    } else if (isPressed) {
+      background = currentVariant.activeBg || currentVariant.hoverBg || background;
+    } else if (isHovered) {
+      background = currentVariant.hoverBg || background;
+      if (currentVariant.hoverColor) {
+        color = currentVariant.hoverColor;
+      }
     }
     return {
-      ...baseStyles,
-      background: currentVariant.background,
-      color: currentVariant.color,
+      display: "inline-flex",
+      alignItems: "center",
+      justifyContent: "center",
+      gap: "0.5rem",
+      fontWeight: "600",
+      fontFamily: "inherit",
+      cursor: disabled || loading ? "not-allowed" : "pointer",
+      transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
+      position: "relative",
+      overflow: "hidden",
+      userSelect: "none",
+      textDecoration: "none",
+      width: fullWidth ? "100%" : "auto",
+      opacity: disabled ? 0.6 : 1,
+      transform: isPressed && !disabled && !loading ? "translateY(1px)" : "translateY(0)",
+      background,
+      color,
       border: currentVariant.border || "none",
-      boxShadow: currentVariant.shadow || "none"
+      boxShadow: disabled || loading ? "none" : currentVariant.shadow || "none",
+      ...currentSize,
+      ...style
     };
+  };
+  const handleMouseEnter = e => {
+    if (!disabled && !loading) {
+      setIsHovered(true);
+    }
+    // Call any external onMouseEnter handler
+    if (onMouseEnter) {
+      onMouseEnter(e);
+    }
+  };
+  const handleMouseLeave = e => {
+    setIsHovered(false);
+    setIsPressed(false);
+    // Call any external onMouseLeave handler
+    if (onMouseLeave) {
+      onMouseLeave(e);
+    }
   };
   const handleMouseDown = () => {
     if (!disabled && !loading) {
@@ -969,9 +857,6 @@ const Button = ({
   const handleMouseUp = () => {
     setIsPressed(false);
   };
-  const handleMouseLeave = () => {
-    setIsPressed(false);
-  };
   const handleClick = e => {
     if (disabled || loading) {
       e.preventDefault();
@@ -979,16 +864,24 @@ const Button = ({
     }
     onClick === null || onClick === void 0 ? void 0 : onClick(e);
   };
-  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", Object.assign({
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("style", {
+    jsx: true
+  }, `
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+      `), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", Object.assign({
     type: type,
     onClick: handleClick,
+    onMouseEnter: handleMouseEnter,
+    onMouseLeave: handleMouseLeave,
     onMouseDown: handleMouseDown,
     onMouseUp: handleMouseUp,
-    onMouseLeave: handleMouseLeave,
     disabled: disabled || loading,
     "aria-label": ariaLabel || (typeof children === 'string' ? children : undefined),
     className: className,
-    style: getStyles()
+    style: getButtonStyles()
   }, props), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     style: {
       position: "absolute",
@@ -996,21 +889,9 @@ const Button = ({
       left: 0,
       right: 0,
       bottom: 0,
-      background: currentVariant.hoverBg || currentVariant.background,
-      opacity: 0,
-      transition: "opacity 0.2s ease",
-      pointerEvents: "none"
-    },
-    className: "button-hover-overlay"
-  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    style: {
-      position: "absolute",
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
       overflow: "hidden",
-      borderRadius: "inherit"
+      borderRadius: "inherit",
+      pointerEvents: "none"
     }
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     style: {
@@ -1038,29 +919,15 @@ const Button = ({
       alignItems: "center",
       gap: "0.5rem",
       opacity: loading ? 0 : 1,
-      transition: "opacity 0.2s ease"
+      transition: "opacity 0.2s ease",
+      pointerEvents: "none"
     }
   }, icon && !loading && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
     style: {
       display: "flex",
       alignItems: "center"
     }
-  }, icon), children), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("style", {
-    jsx: true
-  }, `
-        button:hover .button-hover-overlay {
-          opacity: 1;
-        }
-        
-        button:focus .button-hover-overlay {
-          opacity: 0.8;
-        }
-        
-        @keyframes spin {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
-        }
-      `));
+  }, icon), children)));
 };
 
 // Preset button components for common use cases
@@ -1097,6 +964,212 @@ const IconButton = ({
   }
 }, props), icon);
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Button);
+
+/***/ }),
+
+/***/ "./src/utils/analytics.js":
+/*!********************************!*\
+  !*** ./src/utils/analytics.js ***!
+  \********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   GA_TRACKING_ID: () => (/* binding */ GA_TRACKING_ID),
+/* harmony export */   initGA4: () => (/* binding */ initGA4),
+/* harmony export */   trackBlogInteraction: () => (/* binding */ trackBlogInteraction),
+/* harmony export */   trackButtonClick: () => (/* binding */ trackButtonClick),
+/* harmony export */   trackContactAttempt: () => (/* binding */ trackContactAttempt),
+/* harmony export */   trackDownload: () => (/* binding */ trackDownload),
+/* harmony export */   trackError: () => (/* binding */ trackError),
+/* harmony export */   trackEvent: () => (/* binding */ trackEvent),
+/* harmony export */   trackExternalLink: () => (/* binding */ trackExternalLink),
+/* harmony export */   trackPagePerformance: () => (/* binding */ trackPagePerformance),
+/* harmony export */   trackProjectInteraction: () => (/* binding */ trackProjectInteraction),
+/* harmony export */   trackScrollDepth: () => (/* binding */ trackScrollDepth),
+/* harmony export */   trackSearch: () => (/* binding */ trackSearch),
+/* harmony export */   trackSectionView: () => (/* binding */ trackSectionView),
+/* harmony export */   trackTechnologyFilter: () => (/* binding */ trackTechnologyFilter),
+/* harmony export */   trackThemeToggle: () => (/* binding */ trackThemeToggle)
+/* harmony export */ });
+const GA_TRACKING_ID = 'G-3TK5H4EPYR'; // Replace with your actual GA4 tracking ID
+
+// Initialize Google Analytics 4
+const initGA4 = () => {
+  // Only initialize if we're in the browser and haven't already loaded
+  if (typeof window === 'undefined' || window.gtag) return;
+
+  // Load the Google Analytics script
+  const script = document.createElement('script');
+  script.async = true;
+  script.src = `https://www.googletagmanager.com/gtag/js?id=${GA_TRACKING_ID}`;
+  document.head.appendChild(script);
+
+  // Initialize the dataLayer and gtag function
+  window.dataLayer = window.dataLayer || [];
+  function gtag() {
+    window.dataLayer.push(arguments);
+  }
+  window.gtag = gtag;
+
+  // Configure GA4
+  gtag('js', new Date());
+  gtag('config', GA_TRACKING_ID, {
+    page_title: document.title,
+    page_location: window.location.href,
+    // Enhanced measurement settings
+    send_page_view: true,
+    allow_google_signals: true,
+    allow_ad_personalization_signals: false // Set to true if you want ad personalization
+  });
+  console.log('GA4 initialized successfully');
+};
+
+// Generic event tracking function
+const trackEvent = (eventName, parameters = {}) => {
+  if (typeof window !== 'undefined' && window.gtag) {
+    window.gtag('event', eventName, {
+      // Add default parameters
+      timestamp: new Date().toISOString(),
+      page_location: window.location.href,
+      page_title: document.title,
+      ...parameters
+    });
+    console.log('GA4 Event:', eventName, parameters);
+  }
+};
+
+// Section Navigation Tracking
+const trackSectionView = (sectionName, fromSection = null) => {
+  trackEvent('section_view', {
+    section_name: sectionName,
+    from_section: fromSection,
+    event_category: 'navigation'
+  });
+};
+
+// Button Click Tracking
+const trackButtonClick = (buttonName, section, buttonType = 'primary') => {
+  trackEvent('button_click', {
+    button_name: buttonName,
+    section: section,
+    button_type: buttonType,
+    event_category: 'engagement'
+  });
+};
+
+// Project Interaction Tracking
+const trackProjectInteraction = (action, projectName, projectCategory = '') => {
+  trackEvent('project_interaction', {
+    action: action,
+    // 'view', 'click_github', 'click_demo', 'expand_details'
+    project_name: projectName,
+    project_category: projectCategory,
+    event_category: 'portfolio'
+  });
+};
+
+// Blog Interaction Tracking
+const trackBlogInteraction = (action, postTitle = '', category = '') => {
+  trackEvent('blog_interaction', {
+    action: action,
+    // 'read_article', 'filter_category', 'subscribe'
+    post_title: postTitle,
+    blog_category: category,
+    event_category: 'blog'
+  });
+};
+
+// Contact Method Tracking
+const trackContactAttempt = (method, destination = '') => {
+  trackEvent('contact_attempt', {
+    contact_method: method,
+    // 'email', 'linkedin', 'github'
+    destination: destination,
+    event_category: 'contact'
+  });
+};
+
+// External Link Tracking
+const trackExternalLink = (linkType, destination, context = '') => {
+  trackEvent('external_link_click', {
+    link_type: linkType,
+    destination: destination,
+    context: context,
+    event_category: 'outbound'
+  });
+};
+
+// Technology Filter Tracking
+const trackTechnologyFilter = (technology, section) => {
+  trackEvent('technology_filter', {
+    technology: technology,
+    section: section,
+    event_category: 'filter'
+  });
+};
+
+// Search Tracking (if you add search functionality)
+const trackSearch = (searchTerm, section, resultsCount = 0) => {
+  trackEvent('search', {
+    search_term: searchTerm,
+    section: section,
+    results_count: resultsCount,
+    event_category: 'search'
+  });
+};
+
+// Download/Resume Tracking
+const trackDownload = (fileName, fileType = '') => {
+  trackEvent('file_download', {
+    file_name: fileName,
+    file_type: fileType,
+    event_category: 'download'
+  });
+};
+
+// Theme Toggle Tracking
+const trackThemeToggle = newTheme => {
+  trackEvent('theme_toggle', {
+    theme: newTheme,
+    // 'dark' or 'light'
+    event_category: 'ui_interaction'
+  });
+};
+
+// Scroll Depth Tracking
+const trackScrollDepth = (depth, section) => {
+  trackEvent('scroll_depth', {
+    scroll_depth: depth,
+    // percentage
+    section: section,
+    event_category: 'engagement'
+  });
+};
+
+// Page Performance Tracking
+const trackPagePerformance = () => {
+  if (typeof window !== 'undefined' && 'performance' in window) {
+    var _performance$getEntri;
+    const navigation = performance.getEntriesByType('navigation')[0];
+    trackEvent('page_performance', {
+      load_time: Math.round(navigation.loadEventEnd - navigation.loadEventStart),
+      dom_content_loaded: Math.round(navigation.domContentLoadedEventEnd - navigation.domContentLoadedEventStart),
+      first_contentful_paint: Math.round(((_performance$getEntri = performance.getEntriesByName('first-contentful-paint')[0]) === null || _performance$getEntri === void 0 ? void 0 : _performance$getEntri.startTime) || 0),
+      event_category: 'performance'
+    });
+  }
+};
+
+// Error Tracking
+const trackError = (error, errorContext = '') => {
+  trackEvent('javascript_error', {
+    error_message: error.message,
+    error_context: errorContext,
+    user_agent: navigator.userAgent,
+    event_category: 'error'
+  });
+};
 
 /***/ })
 

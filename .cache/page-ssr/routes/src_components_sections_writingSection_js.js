@@ -16,6 +16,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _ui_buttons__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../ui/buttons */ "./src/components/ui/buttons.js");
+/* harmony import */ var _utils_analytics__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../utils/analytics */ "./src/utils/analytics.js");
+// Updated WritingSection with GA4 analytics integration
+
 
 
 const WritingSection = ({
@@ -36,6 +39,10 @@ const WritingSection = ({
       window.addEventListener('resize', checkMobile);
       return () => window.removeEventListener('resize', checkMobile);
     }
+  }, []);
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    // Track writing section view
+    (0,_utils_analytics__WEBPACK_IMPORTED_MODULE_2__.trackSectionView)('writing');
   }, []);
 
   // Modern theme colors
@@ -80,7 +87,6 @@ const WritingSection = ({
     title: "Building Modern Android Apps with Jetpack Compose",
     category: "android",
     excerpt: "Explore how Jetpack Compose revolutionizes Android UI development with declarative programming, making it easier to build beautiful and responsive user interfaces.",
-    content: "In this comprehensive guide, we'll dive deep into Jetpack Compose and learn how to build modern Android applications...",
     tags: ["Jetpack Compose", "Android", "UI/UX", "Kotlin"],
     readTime: "8 min read",
     publishDate: "2024-01-15",
@@ -92,7 +98,6 @@ const WritingSection = ({
     title: "Clean Architecture in Android: A Practical Guide",
     category: "architecture",
     excerpt: "Learn how to implement Clean Architecture principles in Android applications to create maintainable, testable, and scalable codebases.",
-    content: "Clean Architecture has become a cornerstone of modern Android development. In this article, we'll explore...",
     tags: ["Clean Architecture", "MVVM", "Design Patterns", "Best Practices"],
     readTime: "12 min read",
     publishDate: "2024-01-10",
@@ -104,49 +109,12 @@ const WritingSection = ({
     title: "Mastering Room Database: Tips and Tricks",
     category: "tutorials",
     excerpt: "Discover advanced Room database techniques, including complex queries, migrations, and performance optimization strategies for Android apps.",
-    content: "Room is Android's recommended database solution. Let's explore advanced techniques that will make you a Room expert...",
     tags: ["Room", "Database", "SQLite", "Android"],
     readTime: "10 min read",
     publishDate: "2024-01-05",
     featured: false,
     image: "🗄️",
     gradient: `linear-gradient(135deg, ${currentTheme.warning} 0%, ${currentTheme.pink} 100%)`
-  }, {
-    id: 4,
-    title: "The Future of Android Development",
-    category: "thoughts",
-    excerpt: "My thoughts on where Android development is heading, including emerging technologies, new frameworks, and industry trends to watch.",
-    content: "As we look ahead to the future of Android development, several exciting trends are emerging...",
-    tags: ["Future Tech", "Android", "Industry Trends", "Opinion"],
-    readTime: "6 min read",
-    publishDate: "2024-01-01",
-    featured: false,
-    image: "🔮",
-    gradient: `linear-gradient(135deg, ${currentTheme.purple} 0%, ${currentTheme.pink} 100%)`
-  }, {
-    id: 5,
-    title: "State Management in Jetpack Compose",
-    category: "android",
-    excerpt: "Understanding state management patterns in Jetpack Compose, from simple local state to complex app-wide state solutions.",
-    content: "State management is crucial in Jetpack Compose applications. Let's explore different approaches and when to use them...",
-    tags: ["State Management", "Jetpack Compose", "Architecture", "Kotlin"],
-    readTime: "9 min read",
-    publishDate: "2023-12-28",
-    featured: true,
-    image: "⚡",
-    gradient: `linear-gradient(135deg, ${currentTheme.primary} 0%, ${currentTheme.success} 100%)`
-  }, {
-    id: 6,
-    title: "Testing Android Apps: A Complete Guide",
-    category: "tutorials",
-    excerpt: "Comprehensive guide to testing Android applications, covering unit tests, integration tests, and UI tests with modern testing frameworks.",
-    content: "Testing is essential for robust Android applications. This guide covers everything from basic unit tests to advanced UI testing...",
-    tags: ["Testing", "JUnit", "Espresso", "Quality Assurance"],
-    readTime: "15 min read",
-    publishDate: "2023-12-20",
-    featured: false,
-    image: "🧪",
-    gradient: `linear-gradient(135deg, ${currentTheme.success} 0%, ${currentTheme.warning} 100%)`
   }];
   const filteredPosts = selectedCategory === 'all' ? blogPosts : blogPosts.filter(post => post.category === selectedCategory);
   const featuredPosts = blogPosts.filter(post => post.featured);
@@ -173,7 +141,41 @@ const WritingSection = ({
     });
   };
 
-  // Blog Post Card Component
+  // Analytics handlers
+  const handleCategoryFilter = category => {
+    setSelectedCategory(category);
+    (0,_utils_analytics__WEBPACK_IMPORTED_MODULE_2__.trackBlogInteraction)('filter_category', '', category);
+    (0,_utils_analytics__WEBPACK_IMPORTED_MODULE_2__.trackTechnologyFilter)(categories[category], 'blog');
+  };
+  const handleReadArticle = post => {
+    (0,_utils_analytics__WEBPACK_IMPORTED_MODULE_2__.trackBlogInteraction)('read_article', post.title, post.category);
+    (0,_utils_analytics__WEBPACK_IMPORTED_MODULE_2__.trackEvent)('blog_article_click', {
+      article_title: post.title,
+      article_category: post.category,
+      read_time: post.readTime,
+      is_featured: post.featured,
+      section: 'blog',
+      event_category: 'content'
+    });
+  };
+  const handleTagClick = (tag, postTitle) => {
+    (0,_utils_analytics__WEBPACK_IMPORTED_MODULE_2__.trackEvent)('blog_tag_click', {
+      tag: tag,
+      post_title: postTitle,
+      section: 'blog',
+      event_category: 'engagement'
+    });
+  };
+  const handleNewsletterSubscribe = email => {
+    (0,_utils_analytics__WEBPACK_IMPORTED_MODULE_2__.trackBlogInteraction)('newsletter_subscribe', '', '');
+    (0,_utils_analytics__WEBPACK_IMPORTED_MODULE_2__.trackEvent)('newsletter_subscription', {
+      email_provided: !!email,
+      section: 'blog',
+      event_category: 'conversion'
+    });
+  };
+
+  // Blog Post Card Component with Analytics
   const BlogPostCard = ({
     post,
     index,
@@ -183,6 +185,29 @@ const WritingSection = ({
       0: isHovered,
       1: setIsHovered
     } = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
+    const {
+      0: hasViewed,
+      1: setHasViewed
+    } = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
+
+    // Track when blog post comes into view
+    (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+      if (!hasViewed) {
+        const timer = setTimeout(() => {
+          (0,_utils_analytics__WEBPACK_IMPORTED_MODULE_2__.trackEvent)('blog_post_viewed', {
+            post_title: post.title,
+            post_category: post.category,
+            is_featured: featured,
+            view_time: 2000,
+            // 2 seconds
+            section: 'blog',
+            event_category: 'engagement'
+          });
+          setHasViewed(true);
+        }, 2000);
+        return () => clearTimeout(timer);
+      }
+    }, []);
     return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("article", {
       style: {
         background: `linear-gradient(135deg, ${currentTheme.surface} 0%, ${post.gradient}05 100%)`,
@@ -244,6 +269,7 @@ const WritingSection = ({
         flex: 1
       }
     }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+      onClick: () => handleCategoryFilter(post.category),
       style: {
         display: "inline-block",
         background: getCategoryColor(post.category),
@@ -253,7 +279,15 @@ const WritingSection = ({
         fontSize: "0.8rem",
         fontWeight: "600",
         marginBottom: "1rem",
-        textTransform: "capitalize"
+        textTransform: "capitalize",
+        cursor: "pointer",
+        transition: "all 0.3s ease"
+      },
+      onMouseEnter: e => {
+        e.currentTarget.style.transform = 'scale(1.05)';
+      },
+      onMouseLeave: e => {
+        e.currentTarget.style.transform = 'scale(1)';
       }
     }, post.category), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h3", {
       style: {
@@ -298,6 +332,7 @@ const WritingSection = ({
       }
     }, post.tags.map((tag, tagIndex) => /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
       key: tag,
+      onClick: () => handleTagClick(tag, post.title),
       style: {
         background: darkMode ? `${currentTheme.primary}15` : `${currentTheme.primary}10`,
         color: currentTheme.text,
@@ -307,6 +342,7 @@ const WritingSection = ({
         fontSize: "0.8rem",
         fontWeight: "500",
         transition: "all 0.2s ease",
+        cursor: "pointer",
         animation: `fadeInUp 0.3s ease ${tagIndex * 0.05 + 0.2}s both`
       },
       onMouseEnter: e => {
@@ -330,17 +366,9 @@ const WritingSection = ({
         transition: "all 0.3s ease",
         width: isMobile ? "100%" : "auto"
       },
-      onMouseEnter: e => {
-        e.target.style.background = currentTheme.primary;
-        e.target.style.color = "#ffffff";
-        e.target.style.transform = "translateY(-2px)";
-      },
-      onMouseLeave: e => {
-        e.target.style.background = "transparent";
-        e.target.style.color = currentTheme.primary;
-        e.target.style.transform = "translateY(0)";
-      },
-      onClick: () => {/* Handle read more */}
+      onClick: () => handleReadArticle(post),
+      analyticsLabel: "read_article",
+      analyticsSection: "blog"
     }, "Read Article \u2192")));
   };
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
@@ -452,7 +480,7 @@ const WritingSection = ({
     }
   }, Object.entries(categories).map(([key, label]) => /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", {
     key: key,
-    onClick: () => setSelectedCategory(key),
+    onClick: () => handleCategoryFilter(key),
     style: {
       background: selectedCategory === key ? `linear-gradient(135deg, ${currentTheme.primary} 0%, ${currentTheme.purple} 100%)` : "transparent",
       color: selectedCategory === key ? "white" : currentTheme.text,
@@ -465,18 +493,6 @@ const WritingSection = ({
       transition: "all 0.3s ease",
       textAlign: "center",
       boxShadow: selectedCategory === key ? `0 4px 12px ${currentTheme.primary}30` : "none"
-    },
-    onMouseEnter: e => {
-      if (!isMobile && selectedCategory !== key) {
-        e.target.style.transform = "translateY(-2px)";
-        e.target.style.background = `${currentTheme.primary}10`;
-      }
-    },
-    onMouseLeave: e => {
-      if (selectedCategory !== key) {
-        e.target.style.transform = "translateY(0)";
-        e.target.style.background = "transparent";
-      }
     }
   }, label)))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     style: {
@@ -572,6 +588,13 @@ const WritingSection = ({
       fontSize: "1rem",
       background: "rgba(255, 255, 255, 0.9)",
       color: currentTheme.text
+    },
+    onChange: e => {
+      (0,_utils_analytics__WEBPACK_IMPORTED_MODULE_2__.trackEvent)('newsletter_email_input', {
+        has_content: e.target.value.length > 0,
+        section: 'blog',
+        event_category: 'engagement'
+      });
     }
   }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_ui_buttons__WEBPACK_IMPORTED_MODULE_1__["default"], {
     variant: "primary",
@@ -586,19 +609,16 @@ const WritingSection = ({
       transition: "all 0.3s ease",
       whiteSpace: "nowrap"
     },
-    onMouseEnter: e => {
-      e.target.style.background = "rgba(255, 255, 255, 0.3)";
-      e.target.style.transform = "translateY(-2px)";
+    onClick: e => {
+      const email = e.target.closest('div').querySelector('input').value;
+      handleNewsletterSubscribe(email);
     },
-    onMouseLeave: e => {
-      e.target.style.background = "rgba(255, 255, 255, 0.2)";
-      e.target.style.transform = "translateY(0)";
-    }
+    analyticsLabel: "newsletter_subscribe",
+    analyticsSection: "blog"
   }, "Subscribe"))))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("style", {
     jsx: true,
     global: true
   }, `
-        /* BULLETPROOF gradient text styles */
         .gradient-title {
           transition: color 0.3s ease !important;
         }
@@ -619,7 +639,6 @@ const WritingSection = ({
           background-clip: text;
         }
         
-        /* Fallback for browsers that don't support background-clip */
         @supports not (background-clip: text) {
           .gradient-title {
             background: none !important;
@@ -708,11 +727,17 @@ const Button = ({
   className = "",
   type = "button",
   ariaLabel,
+  onMouseEnter,
+  onMouseLeave,
   ...props
 }) => {
   const {
     0: isPressed,
     1: setIsPressed
+  } = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
+  const {
+    0: isHovered,
+    1: setIsHovered
   } = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
   const variants = {
     primary: {
@@ -787,42 +812,59 @@ const Button = ({
   };
   const currentVariant = variants[variant];
   const currentSize = sizes[size];
-  const baseStyles = {
-    display: "inline-flex",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: "0.5rem",
-    fontWeight: "600",
-    fontFamily: "inherit",
-    cursor: disabled || loading ? "not-allowed" : "pointer",
-    transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
-    position: "relative",
-    overflow: "hidden",
-    userSelect: "none",
-    textDecoration: "none",
-    width: fullWidth ? "100%" : "auto",
-    opacity: disabled ? 0.6 : 1,
-    transform: isPressed && !disabled && !loading ? "translateY(1px)" : "translateY(0)",
-    ...currentSize,
-    ...style
-  };
-  const getStyles = () => {
-    if (loading || disabled) {
-      return {
-        ...baseStyles,
-        background: currentVariant.background,
-        color: currentVariant.color,
-        border: currentVariant.border || "none",
-        boxShadow: "none"
-      };
+  const getButtonStyles = () => {
+    let background = currentVariant.background;
+    let color = currentVariant.color;
+    if (disabled || loading) {
+      // Keep original styles when disabled/loading
+    } else if (isPressed) {
+      background = currentVariant.activeBg || currentVariant.hoverBg || background;
+    } else if (isHovered) {
+      background = currentVariant.hoverBg || background;
+      if (currentVariant.hoverColor) {
+        color = currentVariant.hoverColor;
+      }
     }
     return {
-      ...baseStyles,
-      background: currentVariant.background,
-      color: currentVariant.color,
+      display: "inline-flex",
+      alignItems: "center",
+      justifyContent: "center",
+      gap: "0.5rem",
+      fontWeight: "600",
+      fontFamily: "inherit",
+      cursor: disabled || loading ? "not-allowed" : "pointer",
+      transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
+      position: "relative",
+      overflow: "hidden",
+      userSelect: "none",
+      textDecoration: "none",
+      width: fullWidth ? "100%" : "auto",
+      opacity: disabled ? 0.6 : 1,
+      transform: isPressed && !disabled && !loading ? "translateY(1px)" : "translateY(0)",
+      background,
+      color,
       border: currentVariant.border || "none",
-      boxShadow: currentVariant.shadow || "none"
+      boxShadow: disabled || loading ? "none" : currentVariant.shadow || "none",
+      ...currentSize,
+      ...style
     };
+  };
+  const handleMouseEnter = e => {
+    if (!disabled && !loading) {
+      setIsHovered(true);
+    }
+    // Call any external onMouseEnter handler
+    if (onMouseEnter) {
+      onMouseEnter(e);
+    }
+  };
+  const handleMouseLeave = e => {
+    setIsHovered(false);
+    setIsPressed(false);
+    // Call any external onMouseLeave handler
+    if (onMouseLeave) {
+      onMouseLeave(e);
+    }
   };
   const handleMouseDown = () => {
     if (!disabled && !loading) {
@@ -832,9 +874,6 @@ const Button = ({
   const handleMouseUp = () => {
     setIsPressed(false);
   };
-  const handleMouseLeave = () => {
-    setIsPressed(false);
-  };
   const handleClick = e => {
     if (disabled || loading) {
       e.preventDefault();
@@ -842,16 +881,24 @@ const Button = ({
     }
     onClick === null || onClick === void 0 ? void 0 : onClick(e);
   };
-  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", Object.assign({
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("style", {
+    jsx: true
+  }, `
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+      `), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", Object.assign({
     type: type,
     onClick: handleClick,
+    onMouseEnter: handleMouseEnter,
+    onMouseLeave: handleMouseLeave,
     onMouseDown: handleMouseDown,
     onMouseUp: handleMouseUp,
-    onMouseLeave: handleMouseLeave,
     disabled: disabled || loading,
     "aria-label": ariaLabel || (typeof children === 'string' ? children : undefined),
     className: className,
-    style: getStyles()
+    style: getButtonStyles()
   }, props), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     style: {
       position: "absolute",
@@ -859,21 +906,9 @@ const Button = ({
       left: 0,
       right: 0,
       bottom: 0,
-      background: currentVariant.hoverBg || currentVariant.background,
-      opacity: 0,
-      transition: "opacity 0.2s ease",
-      pointerEvents: "none"
-    },
-    className: "button-hover-overlay"
-  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    style: {
-      position: "absolute",
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
       overflow: "hidden",
-      borderRadius: "inherit"
+      borderRadius: "inherit",
+      pointerEvents: "none"
     }
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     style: {
@@ -901,29 +936,15 @@ const Button = ({
       alignItems: "center",
       gap: "0.5rem",
       opacity: loading ? 0 : 1,
-      transition: "opacity 0.2s ease"
+      transition: "opacity 0.2s ease",
+      pointerEvents: "none"
     }
   }, icon && !loading && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
     style: {
       display: "flex",
       alignItems: "center"
     }
-  }, icon), children), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("style", {
-    jsx: true
-  }, `
-        button:hover .button-hover-overlay {
-          opacity: 1;
-        }
-        
-        button:focus .button-hover-overlay {
-          opacity: 0.8;
-        }
-        
-        @keyframes spin {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
-        }
-      `));
+  }, icon), children)));
 };
 
 // Preset button components for common use cases
@@ -960,6 +981,212 @@ const IconButton = ({
   }
 }, props), icon);
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Button);
+
+/***/ }),
+
+/***/ "./src/utils/analytics.js":
+/*!********************************!*\
+  !*** ./src/utils/analytics.js ***!
+  \********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   GA_TRACKING_ID: () => (/* binding */ GA_TRACKING_ID),
+/* harmony export */   initGA4: () => (/* binding */ initGA4),
+/* harmony export */   trackBlogInteraction: () => (/* binding */ trackBlogInteraction),
+/* harmony export */   trackButtonClick: () => (/* binding */ trackButtonClick),
+/* harmony export */   trackContactAttempt: () => (/* binding */ trackContactAttempt),
+/* harmony export */   trackDownload: () => (/* binding */ trackDownload),
+/* harmony export */   trackError: () => (/* binding */ trackError),
+/* harmony export */   trackEvent: () => (/* binding */ trackEvent),
+/* harmony export */   trackExternalLink: () => (/* binding */ trackExternalLink),
+/* harmony export */   trackPagePerformance: () => (/* binding */ trackPagePerformance),
+/* harmony export */   trackProjectInteraction: () => (/* binding */ trackProjectInteraction),
+/* harmony export */   trackScrollDepth: () => (/* binding */ trackScrollDepth),
+/* harmony export */   trackSearch: () => (/* binding */ trackSearch),
+/* harmony export */   trackSectionView: () => (/* binding */ trackSectionView),
+/* harmony export */   trackTechnologyFilter: () => (/* binding */ trackTechnologyFilter),
+/* harmony export */   trackThemeToggle: () => (/* binding */ trackThemeToggle)
+/* harmony export */ });
+const GA_TRACKING_ID = 'G-3TK5H4EPYR'; // Replace with your actual GA4 tracking ID
+
+// Initialize Google Analytics 4
+const initGA4 = () => {
+  // Only initialize if we're in the browser and haven't already loaded
+  if (typeof window === 'undefined' || window.gtag) return;
+
+  // Load the Google Analytics script
+  const script = document.createElement('script');
+  script.async = true;
+  script.src = `https://www.googletagmanager.com/gtag/js?id=${GA_TRACKING_ID}`;
+  document.head.appendChild(script);
+
+  // Initialize the dataLayer and gtag function
+  window.dataLayer = window.dataLayer || [];
+  function gtag() {
+    window.dataLayer.push(arguments);
+  }
+  window.gtag = gtag;
+
+  // Configure GA4
+  gtag('js', new Date());
+  gtag('config', GA_TRACKING_ID, {
+    page_title: document.title,
+    page_location: window.location.href,
+    // Enhanced measurement settings
+    send_page_view: true,
+    allow_google_signals: true,
+    allow_ad_personalization_signals: false // Set to true if you want ad personalization
+  });
+  console.log('GA4 initialized successfully');
+};
+
+// Generic event tracking function
+const trackEvent = (eventName, parameters = {}) => {
+  if (typeof window !== 'undefined' && window.gtag) {
+    window.gtag('event', eventName, {
+      // Add default parameters
+      timestamp: new Date().toISOString(),
+      page_location: window.location.href,
+      page_title: document.title,
+      ...parameters
+    });
+    console.log('GA4 Event:', eventName, parameters);
+  }
+};
+
+// Section Navigation Tracking
+const trackSectionView = (sectionName, fromSection = null) => {
+  trackEvent('section_view', {
+    section_name: sectionName,
+    from_section: fromSection,
+    event_category: 'navigation'
+  });
+};
+
+// Button Click Tracking
+const trackButtonClick = (buttonName, section, buttonType = 'primary') => {
+  trackEvent('button_click', {
+    button_name: buttonName,
+    section: section,
+    button_type: buttonType,
+    event_category: 'engagement'
+  });
+};
+
+// Project Interaction Tracking
+const trackProjectInteraction = (action, projectName, projectCategory = '') => {
+  trackEvent('project_interaction', {
+    action: action,
+    // 'view', 'click_github', 'click_demo', 'expand_details'
+    project_name: projectName,
+    project_category: projectCategory,
+    event_category: 'portfolio'
+  });
+};
+
+// Blog Interaction Tracking
+const trackBlogInteraction = (action, postTitle = '', category = '') => {
+  trackEvent('blog_interaction', {
+    action: action,
+    // 'read_article', 'filter_category', 'subscribe'
+    post_title: postTitle,
+    blog_category: category,
+    event_category: 'blog'
+  });
+};
+
+// Contact Method Tracking
+const trackContactAttempt = (method, destination = '') => {
+  trackEvent('contact_attempt', {
+    contact_method: method,
+    // 'email', 'linkedin', 'github'
+    destination: destination,
+    event_category: 'contact'
+  });
+};
+
+// External Link Tracking
+const trackExternalLink = (linkType, destination, context = '') => {
+  trackEvent('external_link_click', {
+    link_type: linkType,
+    destination: destination,
+    context: context,
+    event_category: 'outbound'
+  });
+};
+
+// Technology Filter Tracking
+const trackTechnologyFilter = (technology, section) => {
+  trackEvent('technology_filter', {
+    technology: technology,
+    section: section,
+    event_category: 'filter'
+  });
+};
+
+// Search Tracking (if you add search functionality)
+const trackSearch = (searchTerm, section, resultsCount = 0) => {
+  trackEvent('search', {
+    search_term: searchTerm,
+    section: section,
+    results_count: resultsCount,
+    event_category: 'search'
+  });
+};
+
+// Download/Resume Tracking
+const trackDownload = (fileName, fileType = '') => {
+  trackEvent('file_download', {
+    file_name: fileName,
+    file_type: fileType,
+    event_category: 'download'
+  });
+};
+
+// Theme Toggle Tracking
+const trackThemeToggle = newTheme => {
+  trackEvent('theme_toggle', {
+    theme: newTheme,
+    // 'dark' or 'light'
+    event_category: 'ui_interaction'
+  });
+};
+
+// Scroll Depth Tracking
+const trackScrollDepth = (depth, section) => {
+  trackEvent('scroll_depth', {
+    scroll_depth: depth,
+    // percentage
+    section: section,
+    event_category: 'engagement'
+  });
+};
+
+// Page Performance Tracking
+const trackPagePerformance = () => {
+  if (typeof window !== 'undefined' && 'performance' in window) {
+    var _performance$getEntri;
+    const navigation = performance.getEntriesByType('navigation')[0];
+    trackEvent('page_performance', {
+      load_time: Math.round(navigation.loadEventEnd - navigation.loadEventStart),
+      dom_content_loaded: Math.round(navigation.domContentLoadedEventEnd - navigation.domContentLoadedEventStart),
+      first_contentful_paint: Math.round(((_performance$getEntri = performance.getEntriesByName('first-contentful-paint')[0]) === null || _performance$getEntri === void 0 ? void 0 : _performance$getEntri.startTime) || 0),
+      event_category: 'performance'
+    });
+  }
+};
+
+// Error Tracking
+const trackError = (error, errorContext = '') => {
+  trackEvent('javascript_error', {
+    error_message: error.message,
+    error_context: errorContext,
+    user_agent: navigator.userAgent,
+    event_category: 'error'
+  });
+};
 
 /***/ })
 

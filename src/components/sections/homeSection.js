@@ -1,7 +1,8 @@
-// Updated Home Section with CSS class approach
+// Updated HomeSection with GA4 analytics integration
 import React, { useEffect, useState } from 'react'
 import Button from "../ui/buttons"
 import TechPill from "../ui/techPill"
+import { trackButtonClick, trackTechnologyFilter, trackSectionView } from '../../utils/analytics'
 
 const HomeSection = ({ setActiveSection, darkMode = false }) => {
   const [isMobile, setIsMobile] = useState(false)
@@ -20,6 +21,8 @@ const HomeSection = ({ setActiveSection, darkMode = false }) => {
 
   useEffect(() => {
     setIsVisible(true)
+    // Track home section view
+    trackSectionView('home')
   }, [])
 
   // Theme colors
@@ -56,6 +59,21 @@ const HomeSection = ({ setActiveSection, darkMode = false }) => {
     "Kotlin", "Java", "Jetpack Compose", "Android Studio", 
     "Firebase", "Room", "Retrofit", "Coroutines"
   ]
+
+  // Analytics handlers
+  const handleViewPortfolio = () => {
+    trackButtonClick('view_portfolio', 'home', 'primary')
+    setActiveSection('portfolio')
+  }
+
+  const handleViewBlog = () => {
+    trackButtonClick('view_blog', 'home', 'outline')
+    setActiveSection('writing')
+  }
+
+  const handleTechClick = (tech) => {
+    trackTechnologyFilter(tech, 'home')
+  }
 
   return (
     <div style={{
@@ -96,7 +114,6 @@ const HomeSection = ({ setActiveSection, darkMode = false }) => {
           Open to Android Projects
         </div>
         
-        {/* FIXED title using CSS classes */}
         <h1 
           className={`gradient-title ${darkMode ? 'dark-mode' : 'light-mode'}`}
           style={{
@@ -154,14 +171,16 @@ const HomeSection = ({ setActiveSection, darkMode = false }) => {
               transition: 'all 0.3s ease',
               color: 'white'
             }}
-            onClick={() => setActiveSection('portfolio')}
+            onClick={handleViewPortfolio}
+            analyticsLabel="view_portfolio"
+            analyticsSection="home"
           >
             <span style={{marginRight: '0.5rem'}}>📱</span>
             View My Apps
           </Button>
           <Button 
             variant="outline"
-            onClick={() => setActiveSection('writing')}
+            onClick={handleViewBlog}
             style={{ 
               width: isMobile ? "100%" : "auto",
               border: `2px solid ${currentTheme.primary}`,
@@ -173,6 +192,8 @@ const HomeSection = ({ setActiveSection, darkMode = false }) => {
               background: 'transparent',
               transition: 'all 0.3s ease'
             }}
+            analyticsLabel="view_blog"
+            analyticsSection="home"
           >
             <span style={{marginRight: '0.5rem'}}>✍️</span>
             Read Android Blog
@@ -200,6 +221,7 @@ const HomeSection = ({ setActiveSection, darkMode = false }) => {
             {androidTechnologies.map((tech, index) => (
               <span
                 key={tech}
+                onClick={() => handleTechClick(tech)}
                 style={{
                   background: darkMode 
                     ? `linear-gradient(135deg, ${currentTheme.primary}20 0%, ${currentTheme.purple}20 100%)`
@@ -211,7 +233,7 @@ const HomeSection = ({ setActiveSection, darkMode = false }) => {
                   fontSize: "0.9rem",
                   fontWeight: "500",
                   transition: "all 0.3s ease",
-                  cursor: "default",
+                  cursor: "pointer",
                   animation: `slideInUp 0.5s ease ${index * 0.1}s both`
                 }}
               >
@@ -306,11 +328,9 @@ const HomeSection = ({ setActiveSection, darkMode = false }) => {
         </div>
       </div>
 
-      {/* CSS Styles - FIXED gradient classes */}
+      {/* CSS Styles */}
       <style jsx global>{`
-        /* BULLETPROOF gradient text styles */
         .gradient-title {
-          /* Always ensure text is visible with solid color */
           transition: color 0.3s ease !important;
         }
         
@@ -330,7 +350,6 @@ const HomeSection = ({ setActiveSection, darkMode = false }) => {
           background-clip: text;
         }
         
-        /* Fallback for browsers that don't support background-clip */
         @supports not (background-clip: text) {
           .gradient-title {
             background: none !important;
@@ -345,12 +364,6 @@ const HomeSection = ({ setActiveSection, darkMode = false }) => {
           .gradient-title.dark-mode {
             color: #60a5fa !important;
           }
-        }
-        
-        /* Force fallback during transitions to prevent strip bug */
-        .gradient-title.transitioning {
-          -webkit-text-fill-color: unset !important;
-          background: none !important;
         }
         
         @keyframes fadeInUp {
