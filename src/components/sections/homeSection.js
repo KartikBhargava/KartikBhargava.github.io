@@ -1,8 +1,8 @@
-// Updated HomeSection with GA4 analytics integration
+// Updated HomeSection with corrected experience and GA4 analytics integration
 import React, { useEffect, useState } from 'react'
 import Button from "../ui/buttons"
 import TechPill from "../ui/techPill"
-import { trackButtonClick, trackTechnologyFilter, trackSectionView } from '../../utils/analytics'
+import { trackButtonClick, trackTechnologyFilter, trackSectionView, trackEvent } from '../../utils/analytics'
 
 const HomeSection = ({ setActiveSection, darkMode = false }) => {
   const [isMobile, setIsMobile] = useState(false)
@@ -75,6 +75,14 @@ const HomeSection = ({ setActiveSection, darkMode = false }) => {
     trackTechnologyFilter(tech, 'home')
   }
 
+  const handleGrowwExperienceClick = () => {
+    trackEvent('groww_experience_mention', {
+      section: 'home',
+      context: 'bio_description',
+      event_category: 'engagement'
+    })
+  }
+
   return (
     <div style={{
       display: "grid",
@@ -110,8 +118,8 @@ const HomeSection = ({ setActiveSection, darkMode = false }) => {
           marginBottom: "2rem",
           boxShadow: `0 4px 14px 0 ${currentTheme.success}39`
         }}>
-          <span style={{ fontSize: '1.1rem' }}>🤖</span>
-          Open to Android Projects
+          <span style={{ fontSize: '1.1rem' }}>🍊</span>
+          Currently at Swiggy
         </div>
         
         <h1 
@@ -135,7 +143,7 @@ const HomeSection = ({ setActiveSection, darkMode = false }) => {
           lineHeight: "1.3",
           animation: 'fadeInUp 0.6s ease 0.4s both'
         }}>
-          Android Developer & Mobile App Architect
+          Android Developer
         </h2>
         
         <p style={{ 
@@ -145,9 +153,19 @@ const HomeSection = ({ setActiveSection, darkMode = false }) => {
           lineHeight: "1.7",
           animation: 'fadeInUp 0.6s ease 0.6s both'
         }}>
-          I craft <strong style={{color: currentTheme.text}}>native Android applications</strong> that deliver exceptional user experiences. 
-          Passionate about <strong style={{color: currentTheme.primary}}>clean architecture</strong>, modern Android development, and building 
-          apps that users love.
+          I'm a passionate Android developer with <strong style={{color: currentTheme.text}}>4+ years of experience</strong> building 
+          native Android applications. Currently working at <strong 
+            style={{color: currentTheme.success, cursor: 'pointer'}}
+            onClick={() => trackEvent('swiggy_experience_mention', {
+              section: 'home',
+              context: 'current_role',
+              event_category: 'engagement'
+            })}
+          >Swiggy</strong>, and previously spent <strong 
+            style={{color: currentTheme.primary, cursor: 'pointer'}}
+            onClick={handleGrowwExperienceClick}
+          >3 years at Groww</strong>. I specialize in <strong style={{color: currentTheme.primary}}>modern Android development</strong> using 
+          Kotlin, Jetpack Compose, and clean architecture patterns.
         </p>
         
         <div style={{ 
@@ -176,7 +194,7 @@ const HomeSection = ({ setActiveSection, darkMode = false }) => {
             analyticsSection="home"
           >
             <span style={{marginRight: '0.5rem'}}>📱</span>
-            View My Apps
+            View My Projects
           </Button>
           <Button 
             variant="outline"
@@ -196,7 +214,7 @@ const HomeSection = ({ setActiveSection, darkMode = false }) => {
             analyticsSection="home"
           >
             <span style={{marginRight: '0.5rem'}}>✍️</span>
-            Read Android Blog
+            Read My Blog
           </Button>
         </div>
 
@@ -211,7 +229,7 @@ const HomeSection = ({ setActiveSection, darkMode = false }) => {
             marginBottom: "1rem",
             fontWeight: "600"
           }}>
-            <span style={{color: currentTheme.text}}>🚀 Technologies I work with:</span>
+            <span style={{color: currentTheme.text}}>🛠️ Technologies I work with:</span>
           </p>
           <div style={{
             display: "flex",
@@ -235,6 +253,18 @@ const HomeSection = ({ setActiveSection, darkMode = false }) => {
                   transition: "all 0.3s ease",
                   cursor: "pointer",
                   animation: `slideInUp 0.5s ease ${index * 0.1}s both`
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.transform = "translateY(-2px)"
+                  e.target.style.background = darkMode 
+                    ? `linear-gradient(135deg, ${currentTheme.primary}30 0%, ${currentTheme.purple}30 100%)`
+                    : `linear-gradient(135deg, ${currentTheme.primary}25 0%, ${currentTheme.purple}25 100%)`
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.transform = "translateY(0)"
+                  e.target.style.background = darkMode 
+                    ? `linear-gradient(135deg, ${currentTheme.primary}20 0%, ${currentTheme.purple}20 100%)`
+                    : `linear-gradient(135deg, ${currentTheme.primary}15 0%, ${currentTheme.purple}15 100%)`
                 }}
               >
                 {tech}
@@ -261,6 +291,18 @@ const HomeSection = ({ setActiveSection, darkMode = false }) => {
           ? '0 10px 25px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.1)'
           : '0 10px 25px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)'
       }}>
+        {/* Background Pattern */}
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundImage: `radial-gradient(circle at 2px 2px, ${currentTheme.primary}${darkMode ? '10' : '05'} 1px, transparent 0)`,
+          backgroundSize: '20px 20px',
+          opacity: 0.5
+        }} />
+
         {/* Phone Icon */}
         <div style={{ 
           fontSize: isMobile ? "4rem" : "5rem",
@@ -272,7 +314,7 @@ const HomeSection = ({ setActiveSection, darkMode = false }) => {
           📱
         </div>
         
-        {/* Stats Grid */}
+        {/* Updated Stats Grid */}
         <div style={{
           display: "grid",
           gridTemplateColumns: "1fr 1fr",
@@ -281,50 +323,103 @@ const HomeSection = ({ setActiveSection, darkMode = false }) => {
           position: 'relative',
           zIndex: 1
         }}>
-          <div style={{
+          <div 
+            onClick={() => trackEvent('experience_stat_click', {
+              stat_type: 'years_experience',
+              value: '4+',
+              section: 'home',
+              event_category: 'engagement'
+            })}
+            style={{
             padding: '1rem',
             borderRadius: '16px',
             background: currentTheme.badgeGradient,
             color: '#ffffff',
-            boxShadow: `0 4px 14px 0 ${currentTheme.success}30`
-          }}>
+            boxShadow: `0 4px 14px 0 ${currentTheme.success}30`,
+            cursor: 'pointer',
+            transition: 'all 0.3s ease'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.transform = 'scale(1.05)'
+            e.currentTarget.style.boxShadow = `0 8px 20px 0 ${currentTheme.success}40`
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = 'scale(1)'
+            e.currentTarget.style.boxShadow = `0 4px 14px 0 ${currentTheme.success}30`
+          }}
+          >
             <div style={{ 
               fontSize: isMobile ? "2rem" : "2.5rem",
               fontWeight: "800",
               marginBottom: "0.5rem"
             }}>
-              5+
+              4+
             </div>
             <div style={{ 
-              fontSize: "0.9rem", 
+              fontSize: "0.85rem", 
               fontWeight: "600",
               opacity: 0.9
             }}>
-              Years Android Dev
+              Years Experience
             </div>
           </div>
-          <div style={{
+          <div 
+            onClick={() => trackEvent('company_stat_click', {
+              stat_type: 'companies_worked',
+              value: '2',
+              companies: 'Swiggy, Groww',
+              section: 'home',
+              event_category: 'engagement'
+            })}
+            style={{
             padding: '1rem',
             borderRadius: '16px',
             background: currentTheme.buttonGradient,
             color: '#ffffff',
-            boxShadow: `0 4px 14px 0 ${currentTheme.primary}30`
-          }}>
+            boxShadow: `0 4px 14px 0 ${currentTheme.primary}30`,
+            cursor: 'pointer',
+            transition: 'all 0.3s ease'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.transform = 'scale(1.05)'
+            e.currentTarget.style.boxShadow = `0 8px 20px 0 ${currentTheme.primary}40`
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = 'scale(1)'
+            e.currentTarget.style.boxShadow = `0 4px 14px 0 ${currentTheme.primary}30`
+          }}
+          >
             <div style={{ 
               fontSize: isMobile ? "2rem" : "2.5rem",
               fontWeight: "800",
               marginBottom: "0.5rem"
             }}>
-              25+
+              2
             </div>
             <div style={{ 
-              fontSize: "0.9rem", 
+              fontSize: "0.85rem", 
               fontWeight: "600",
               opacity: 0.9
             }}>
-              Apps Published
+              Top Tech Companies
             </div>
           </div>
+        </div>
+
+        {/* Additional Info Badge */}
+        <div style={{
+          marginTop: "2rem",
+          padding: "1rem",
+          background: `linear-gradient(135deg, ${currentTheme.purple} 0%, ${currentTheme.primary} 100%)`,
+          borderRadius: "16px",
+          color: "white",
+          position: "relative",
+          zIndex: 1,
+          fontSize: "0.9rem",
+          fontWeight: "600"
+        }}>
+          <div style={{ marginBottom: "0.25rem" }}>🏢</div>
+          Swiggy • Groww • Fintech & FoodTech
         </div>
       </div>
 

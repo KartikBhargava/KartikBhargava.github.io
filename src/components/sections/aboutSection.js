@@ -56,12 +56,18 @@ const AboutSection = ({ darkMode = false }) => {
   const currentTheme = darkMode ? theme.dark : theme.light
   
   const quickFacts = [
-    { icon: "📍", label: "Based in India", color: currentTheme.primary },
-    { icon: "🎓", label: "Computer Science", color: currentTheme.success },
-    { icon: "🤖", label: "Android Enthusiast", color: currentTheme.purple }
+    { icon: "🍊", label: "Currently at Swiggy", color: currentTheme.success },
+    { icon: "🏢", label: "Ex-Groww Developer", color: currentTheme.primary },
+    { icon: "🚀", label: "4+ Years Experience", color: currentTheme.purple }
   ]
 
   const expertiseAreas = [
+    {
+      title: "FoodTech & FinTech",
+      description: "Swiggy, Groww - Building consumer apps at scale",
+      icon: "🏢",
+      gradient: `linear-gradient(135deg, ${currentTheme.success} 0%, ${currentTheme.primary} 100%)`
+    },
     {
       title: "Native Android",
       description: "Kotlin, Jetpack Compose, Material Design",
@@ -72,12 +78,6 @@ const AboutSection = ({ darkMode = false }) => {
       title: "Architecture & Tools",
       description: "MVVM, Clean Architecture, Room, Retrofit",
       icon: "🏗️",
-      gradient: `linear-gradient(135deg, ${currentTheme.success} 0%, ${currentTheme.primary} 100%)`
-    },
-    {
-      title: "Backend Integration",
-      description: "REST APIs, Firebase, GraphQL, Coroutines",
-      icon: "🔄",
       gradient: `linear-gradient(135deg, ${currentTheme.warning} 0%, ${currentTheme.pink} 100%)`
     },
     {
@@ -154,23 +154,33 @@ const AboutSection = ({ darkMode = false }) => {
             animation: 'fadeInUp 0.6s ease 0.4s both'
           }}>
             <p style={{ marginBottom: "1.5rem" }}>
-              I'm a <strong style={{color: currentTheme.text}}>passionate Android developer</strong> with over 5 years of experience building 
-              native Android applications. I specialize in <strong 
-                style={{color: currentTheme.primary, cursor: 'pointer'}}
-                onClick={() => handleTechnologyMention('modern_android')}
-              >modern Android development</strong> using 
-              Kotlin, Jetpack Compose, and clean architecture patterns.
+              I'm a <strong style={{color: currentTheme.text}}>passionate Android developer</strong> with 4+ years of hands-on experience building 
+              native Android applications. Currently working as an Android developer at <strong 
+                style={{color: currentTheme.success, cursor: 'pointer'}}
+                onClick={() => trackEvent('swiggy_experience_click', {
+                  section: 'about',
+                  context: 'current_role',
+                  event_category: 'engagement'
+                })}
+              >Swiggy</strong>, where I contribute to one of India's largest food delivery platforms serving millions of users daily.
             </p>
             
             <p style={{ marginBottom: "1.5rem" }}>
-              From concept to Play Store, I've guided <strong style={{color: currentTheme.success}}>numerous apps</strong> through their entire 
-              lifecycle. I love working with the latest Android technologies and creating 
-              smooth, performant user experiences.
+              Previously, I spent <strong 
+                style={{color: currentTheme.primary, cursor: 'pointer'}}
+                onClick={() => handleTechnologyMention('groww_experience')}
+              >3 years at Groww</strong>, contributing to fintech applications and learning to build scalable mobile solutions. 
+              I specialize in <strong 
+                style={{color: currentTheme.primary, cursor: 'pointer'}}
+                onClick={() => handleTechnologyMention('modern_android')}
+              >modern Android development</strong> using Kotlin, Jetpack Compose, and clean architecture patterns.
             </p>
             
             <p>
-              When I'm not coding, you'll find me <strong style={{color: currentTheme.purple}}>writing about Android development</strong>, 
-              contributing to open source Android libraries, or exploring new Android features.
+              My experience spans across <strong style={{color: currentTheme.success}}>FoodTech and FinTech</strong> industries, 
+              giving me unique insights into building consumer-facing applications at scale. When I'm not coding, you'll find me 
+              <strong style={{color: currentTheme.purple}}> writing about Android development</strong>, contributing to open source libraries, 
+              or exploring new Android features through personal side projects.
             </p>
           </div>
 
@@ -354,11 +364,11 @@ const AboutSection = ({ darkMode = false }) => {
             ))}
           </div>
           
-          {/* Android Version Badge */}
+          {/* Company Experience Badge */}
           <div 
-            onClick={() => trackEvent('android_version_click', {
-              version: 'Android 14',
-              api_level: 34,
+            onClick={() => trackEvent('company_experience_click', {
+              companies: 'Swiggy, Groww',
+              industries: 'FoodTech, FinTech',
               section: 'about',
               event_category: 'engagement'
             })}
@@ -392,15 +402,15 @@ const AboutSection = ({ darkMode = false }) => {
               justifyContent: "center",
               gap: "0.5rem"
             }}>
-              <span style={{fontSize: '1.2rem'}}>🎯</span>
-              Latest Target
+              <span style={{fontSize: '1.2rem'}}>🏢</span>
+              Industry Experience
             </div>
             <div style={{ 
               fontSize: "1rem",
               fontWeight: "600",
               opacity: 0.9
             }}>
-              Android 14 (API 34)
+              FoodTech • FinTech • Consumer Apps
             </div>
           </div>
 

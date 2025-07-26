@@ -406,7 +406,7 @@ const ContactSection = ({ darkMode = false }) => {
               lineHeight: "1.6",
               margin: 0
             }}>
-              Open to <strong>freelance Android projects</strong> and full-time opportunities. 
+              Open to <strong>freelance Android projects</strong>. 
               Remote work preferred.
             </p>
           </div>

@@ -913,6 +913,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var react_helmet__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-helmet */ "./node_modules/react-helmet/es/Helmet.js");
 /* harmony import */ var _components_layout_layout__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../components/layout/layout */ "./src/components/layout/layout.js");
+/* harmony import */ var _utils_analytics__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../utils/analytics */ "./src/utils/analytics.js");
+
 
 
 
@@ -962,6 +964,10 @@ const IndexPage = () => {
     1: setActiveSection
   } = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)('home');
   const {
+    0: previousSection,
+    1: setPreviousSection
+  } = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null);
+  const {
     0: isClient,
     1: setIsClient
   } = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
@@ -969,6 +975,118 @@ const IndexPage = () => {
     0: darkMode,
     1: setDarkMode
   } = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
+  const {
+    0: analyticsInitialized,
+    1: setAnalyticsInitialized
+  } = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
+
+  // Initialize Google Analytics
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    if (typeof window !== 'undefined' && !analyticsInitialized) {
+      // Initialize GA4
+      (0,_utils_analytics__WEBPACK_IMPORTED_MODULE_3__.initGA4)();
+      setAnalyticsInitialized(true);
+
+      // Track initial page load
+      (0,_utils_analytics__WEBPACK_IMPORTED_MODULE_3__.trackEvent)('page_load', {
+        initial_section: activeSection,
+        user_agent: navigator.userAgent,
+        screen_resolution: `${window.screen.width}x${window.screen.height}`,
+        viewport: `${window.innerWidth}x${window.innerHeight}`,
+        event_category: 'system'
+      });
+
+      // Track page performance after load
+      const handleLoad = () => {
+        setTimeout(() => {
+          (0,_utils_analytics__WEBPACK_IMPORTED_MODULE_3__.trackPagePerformance)();
+        }, 1000);
+      };
+      if (document.readyState === 'complete') {
+        handleLoad();
+      } else {
+        window.addEventListener('load', handleLoad);
+      }
+
+      // Global error tracking
+      const handleError = event => {
+        (0,_utils_analytics__WEBPACK_IMPORTED_MODULE_3__.trackError)(event.error, 'global_error_handler');
+      };
+      const handleUnhandledRejection = event => {
+        (0,_utils_analytics__WEBPACK_IMPORTED_MODULE_3__.trackError)(new Error(event.reason), 'unhandled_promise_rejection');
+      };
+      window.addEventListener('error', handleError);
+      window.addEventListener('unhandledrejection', handleUnhandledRejection);
+
+      // Track page visibility changes
+      const handleVisibilityChange = () => {
+        if (document.hidden) {
+          (0,_utils_analytics__WEBPACK_IMPORTED_MODULE_3__.trackEvent)('page_hidden', {
+            section: activeSection,
+            time_on_section: Date.now() - window.sectionStartTime,
+            event_category: 'engagement'
+          });
+        } else {
+          (0,_utils_analytics__WEBPACK_IMPORTED_MODULE_3__.trackEvent)('page_visible', {
+            section: activeSection,
+            event_category: 'engagement'
+          });
+          window.sectionStartTime = Date.now();
+        }
+      };
+      document.addEventListener('visibilitychange', handleVisibilityChange);
+
+      // Track scroll depth
+      let maxScrollDepth = 0;
+      const handleScroll = () => {
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const windowHeight = window.innerHeight;
+        const documentHeight = document.documentElement.scrollHeight;
+        const scrollDepth = Math.round((scrollTop + windowHeight) / documentHeight * 100);
+        if (scrollDepth > maxScrollDepth && scrollDepth % 25 === 0) {
+          maxScrollDepth = scrollDepth;
+          (0,_utils_analytics__WEBPACK_IMPORTED_MODULE_3__.trackEvent)('scroll_depth', {
+            depth: scrollDepth,
+            section: activeSection,
+            event_category: 'engagement'
+          });
+        }
+      };
+      window.addEventListener('scroll', handleScroll, {
+        passive: true
+      });
+      return () => {
+        window.removeEventListener('load', handleLoad);
+        window.removeEventListener('error', handleError);
+        window.removeEventListener('unhandledrejection', handleUnhandledRejection);
+        document.removeEventListener('visibilitychange', handleVisibilityChange);
+        window.removeEventListener('scroll', handleScroll);
+      };
+    }
+  }, [analyticsInitialized]);
+
+  // Track section changes
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    if (analyticsInitialized && previousSection !== null) {
+      // Track section navigation
+      (0,_utils_analytics__WEBPACK_IMPORTED_MODULE_3__.trackSectionView)(activeSection, previousSection);
+
+      // Track time spent on previous section
+      if (window.sectionStartTime) {
+        const timeOnSection = Date.now() - window.sectionStartTime;
+        (0,_utils_analytics__WEBPACK_IMPORTED_MODULE_3__.trackEvent)('section_time_spent', {
+          section: previousSection,
+          time_spent: timeOnSection,
+          next_section: activeSection,
+          event_category: 'engagement'
+        });
+      }
+    }
+
+    // Update section tracking
+    setPreviousSection(activeSection);
+    window.sectionStartTime = Date.now();
+  }, [activeSection, analyticsInitialized]);
 
   // Prevent hydration mismatch and get dark mode state
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
@@ -980,8 +1098,17 @@ const IndexPage = () => {
       const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
       const isDark = savedTheme ? JSON.parse(savedTheme) : prefersDark;
       setDarkMode(isDark);
+
+      // Track initial theme preference
+      if (analyticsInitialized) {
+        (0,_utils_analytics__WEBPACK_IMPORTED_MODULE_3__.trackEvent)('initial_theme_preference', {
+          theme: isDark ? 'dark' : 'light',
+          source: savedTheme ? 'saved_preference' : 'system_preference',
+          event_category: 'ui_interaction'
+        });
+      }
     }
-  }, []);
+  }, [analyticsInitialized]); // Only depend on analyticsInitialized
 
   // Listen for dark mode changes from Layout component
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
@@ -989,7 +1116,14 @@ const IndexPage = () => {
       if (typeof window !== 'undefined') {
         const savedTheme = localStorage.getItem('darkMode');
         if (savedTheme) {
-          setDarkMode(JSON.parse(savedTheme));
+          const newDarkMode = JSON.parse(savedTheme);
+          if (newDarkMode !== darkMode) {
+            setDarkMode(newDarkMode);
+            // Track theme toggle
+            if (analyticsInitialized) {
+              (0,_utils_analytics__WEBPACK_IMPORTED_MODULE_3__.trackThemeToggle)(newDarkMode ? 'dark' : 'light');
+            }
+          }
         }
       }
     };
@@ -1003,6 +1137,9 @@ const IndexPage = () => {
           const isDark = JSON.parse(currentTheme);
           if (isDark !== darkMode) {
             setDarkMode(isDark);
+            if (analyticsInitialized) {
+              (0,_utils_analytics__WEBPACK_IMPORTED_MODULE_3__.trackThemeToggle)(isDark ? 'dark' : 'light');
+            }
           }
         }
       }, 100);
@@ -1011,7 +1148,7 @@ const IndexPage = () => {
         clearInterval(interval);
       };
     }
-  }, [darkMode]);
+  }, [darkMode, analyticsInitialized]); // Dependencies are correct
 
   // Preload next likely sections
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
@@ -1019,11 +1156,20 @@ const IndexPage = () => {
       if (activeSection === 'home') {
         __webpack_require__.e(/*! import() */ "src_components_sections_aboutSection_js").then(__webpack_require__.bind(__webpack_require__, /*! ../components/sections/aboutSection */ "./src/components/sections/aboutSection.js"));
         __webpack_require__.e(/*! import() */ "src_components_sections_portfolioSection_js").then(__webpack_require__.bind(__webpack_require__, /*! ../components/sections/portfolioSection */ "./src/components/sections/portfolioSection.js"));
+
+        // Track preloading
+        if (analyticsInitialized) {
+          (0,_utils_analytics__WEBPACK_IMPORTED_MODULE_3__.trackEvent)('section_preload', {
+            sections: ['about', 'portfolio'],
+            trigger_section: 'home',
+            event_category: 'performance'
+          });
+        }
       }
     };
     const timer = setTimeout(preloadSections, 2000);
     return () => clearTimeout(timer);
-  }, [activeSection]);
+  }, [activeSection, analyticsInitialized]); // Added activeSection dependency
 
   // Handle keyboard navigation
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
@@ -1037,14 +1183,64 @@ const IndexPage = () => {
         '5': 'contact'
       };
       if (sectionKeys[e.key]) {
-        setActiveSection(sectionKeys[e.key]);
+        const newSection = sectionKeys[e.key];
+        setActiveSection(newSection);
+
+        // Track keyboard navigation
+        if (analyticsInitialized) {
+          (0,_utils_analytics__WEBPACK_IMPORTED_MODULE_3__.trackEvent)('keyboard_navigation', {
+            key_pressed: e.key,
+            from_section: activeSection,
+            to_section: newSection,
+            event_category: 'navigation'
+          });
+        }
       }
     };
     if (typeof window !== 'undefined') {
       window.addEventListener('keydown', handleKeyPress);
       return () => window.removeEventListener('keydown', handleKeyPress);
     }
-  }, []);
+  }, [activeSection, analyticsInitialized]);
+
+  // Track user engagement metrics
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    if (typeof window !== 'undefined' && analyticsInitialized) {
+      // Track mouse movement to detect user engagement
+      let mouseMovements = 0;
+      const handleMouseMove = () => {
+        mouseMovements++;
+        if (mouseMovements === 10) {
+          // Track after 10 mouse movements
+          (0,_utils_analytics__WEBPACK_IMPORTED_MODULE_3__.trackEvent)('user_engaged', {
+            section: activeSection,
+            mouse_movements: mouseMovements,
+            event_category: 'engagement'
+          });
+        }
+      };
+
+      // Track clicks for engagement
+      const handleClick = e => {
+        (0,_utils_analytics__WEBPACK_IMPORTED_MODULE_3__.trackEvent)('page_click', {
+          section: activeSection,
+          element_tag: e.target.tagName.toLowerCase(),
+          element_class: e.target.className,
+          event_category: 'engagement'
+        });
+      };
+      window.addEventListener('mousemove', handleMouseMove, {
+        passive: true
+      });
+      window.addEventListener('click', handleClick, {
+        passive: true
+      });
+      return () => {
+        window.removeEventListener('mousemove', handleMouseMove);
+        window.removeEventListener('click', handleClick);
+      };
+    }
+  }, [activeSection, analyticsInitialized]);
   const sections = {
     home: 'Home',
     about: 'About',
@@ -1053,17 +1249,30 @@ const IndexPage = () => {
     contact: 'Contact'
   };
   const sectionDescriptions = {
-    home: 'Welcome to my tech blog and portfolio',
-    about: 'Learn more about my background and expertise',
-    portfolio: 'Explore my projects and technical work',
-    writing: 'Read my latest blog posts and articles',
-    contact: 'Get in touch for collaborations and opportunities'
+    home: 'Welcome to my tech blog and portfolio - Android Developer & Mobile App Architect',
+    about: 'Learn about my Android development background, expertise in Kotlin, Jetpack Compose, and mobile architecture',
+    portfolio: 'Explore my Android projects, apps, and technical work showcasing modern mobile development',
+    writing: 'Read my latest blog posts about Android development, mobile architecture, and tech insights',
+    contact: 'Get in touch for Android development collaborations, freelance projects, and career opportunities'
+  };
+
+  // Enhanced section change handler with analytics
+  const handleSectionChange = newSection => {
+    if (newSection !== activeSection && analyticsInitialized) {
+      (0,_utils_analytics__WEBPACK_IMPORTED_MODULE_3__.trackEvent)('manual_section_change', {
+        from_section: activeSection,
+        to_section: newSection,
+        method: 'navigation_click',
+        event_category: 'navigation'
+      });
+    }
+    setActiveSection(newSection);
   };
   const renderContent = () => {
     const commonProps = {
-      setActiveSection,
+      setActiveSection: handleSectionChange,
       activeSection,
-      darkMode // Make sure to pass darkMode to all sections
+      darkMode
     };
     switch (activeSection) {
       case 'home':
@@ -1136,34 +1345,61 @@ const IndexPage = () => {
       }
     }, "Loading Kartik's Portfolio...")));
   }
-  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_helmet__WEBPACK_IMPORTED_MODULE_1__.Helmet, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("title", null, sections[activeSection], " - Kartik Bhargava"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("meta", {
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_helmet__WEBPACK_IMPORTED_MODULE_1__.Helmet, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("title", null, sections[activeSection], " - Kartik Bhargava | Android Developer"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("meta", {
     name: "description",
     content: sectionDescriptions[activeSection]
   }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("meta", {
     property: "og:title",
-    content: `${sections[activeSection]} - Kartik Bhargava`
+    content: `${sections[activeSection]} - Kartik Bhargava | Android Developer`
   }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("meta", {
     property: "og:description",
+    content: sectionDescriptions[activeSection]
+  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("meta", {
+    property: "og:type",
+    content: "website"
+  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("meta", {
+    property: "og:url",
+    content: `https://kartikbhargava.github.io#${activeSection}`
+  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("meta", {
+    property: "og:image",
+    content: "https://kartikbhargava.github.io/og-image.jpg"
+  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("meta", {
+    name: "twitter:card",
+    content: "summary_large_image"
+  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("meta", {
+    name: "twitter:title",
+    content: `${sections[activeSection]} - Kartik Bhargava`
+  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("meta", {
+    name: "twitter:description",
     content: sectionDescriptions[activeSection]
   }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("link", {
     rel: "canonical",
     href: `https://kartikbhargava.github.io#${activeSection}`
+  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("meta", {
+    name: "keywords",
+    content: "Android Developer, Kotlin, Jetpack Compose, Mobile App Development, Android Architecture, MVVM, Clean Architecture, Firebase, Room Database, Material Design"
   }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("script", {
     type: "application/ld+json"
   }, JSON.stringify({
     "@context": "https://schema.org",
     "@type": "Person",
     "name": "Kartik Bhargava",
-    "jobTitle": "Android Developer",
+    "jobTitle": "Android Developer & Mobile App Architect",
+    "description": "Experienced Android developer specializing in Kotlin, Jetpack Compose, and modern mobile architecture",
     "url": "https://kartikbhargava.github.io",
     "sameAs": ["https://github.com/KartikBhargava", "https://linkedin.com/in/kartik-bhargava-39586611b"],
-    "knowsAbout": ["Android", "Kotlin", "Jetpack Compose", "Mobile Development"]
-  }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_components_layout_layout__WEBPACK_IMPORTED_MODULE_2__["default"], {
+    "knowsAbout": ["Android Development", "Kotlin", "Jetpack Compose", "Mobile Development", "MVVM Architecture", "Clean Architecture", "Firebase", "Room Database", "Material Design"],
+    "worksFor": {
+      "@type": "Organization",
+      "name": "Freelance Android Developer"
+    }
+  })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("script", {
+    async: true,
+    src: "https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"
+  })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_components_layout_layout__WEBPACK_IMPORTED_MODULE_2__["default"], {
     activeSection: activeSection,
-    setActiveSection: setActiveSection,
-    sections: sections
-    // Pass dark mode state to Layout
-    ,
+    setActiveSection: handleSectionChange,
+    sections: sections,
     darkMode: darkMode,
     setDarkMode: setDarkMode
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
@@ -1205,7 +1441,222 @@ const Head = () => /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().cre
 }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("meta", {
   name: "author",
   content: "Kartik Bhargava"
+}), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("meta", {
+  name: "theme-color",
+  content: "#3b82f6"
+}), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("link", {
+  rel: "icon",
+  href: "/favicon.ico"
+}), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("link", {
+  rel: "apple-touch-icon",
+  href: "/apple-touch-icon.png"
 }));
+
+/***/ }),
+
+/***/ "./src/utils/analytics.js":
+/*!********************************!*\
+  !*** ./src/utils/analytics.js ***!
+  \********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   GA_TRACKING_ID: () => (/* binding */ GA_TRACKING_ID),
+/* harmony export */   initGA4: () => (/* binding */ initGA4),
+/* harmony export */   trackBlogInteraction: () => (/* binding */ trackBlogInteraction),
+/* harmony export */   trackButtonClick: () => (/* binding */ trackButtonClick),
+/* harmony export */   trackContactAttempt: () => (/* binding */ trackContactAttempt),
+/* harmony export */   trackDownload: () => (/* binding */ trackDownload),
+/* harmony export */   trackError: () => (/* binding */ trackError),
+/* harmony export */   trackEvent: () => (/* binding */ trackEvent),
+/* harmony export */   trackExternalLink: () => (/* binding */ trackExternalLink),
+/* harmony export */   trackPagePerformance: () => (/* binding */ trackPagePerformance),
+/* harmony export */   trackProjectInteraction: () => (/* binding */ trackProjectInteraction),
+/* harmony export */   trackScrollDepth: () => (/* binding */ trackScrollDepth),
+/* harmony export */   trackSearch: () => (/* binding */ trackSearch),
+/* harmony export */   trackSectionView: () => (/* binding */ trackSectionView),
+/* harmony export */   trackTechnologyFilter: () => (/* binding */ trackTechnologyFilter),
+/* harmony export */   trackThemeToggle: () => (/* binding */ trackThemeToggle)
+/* harmony export */ });
+const GA_TRACKING_ID = 'G-3TK5H4EPYR'; // Replace with your actual GA4 tracking ID
+
+// Initialize Google Analytics 4
+const initGA4 = () => {
+  // Only initialize if we're in the browser and haven't already loaded
+  if (typeof window === 'undefined' || window.gtag) return;
+
+  // Load the Google Analytics script
+  const script = document.createElement('script');
+  script.async = true;
+  script.src = `https://www.googletagmanager.com/gtag/js?id=${GA_TRACKING_ID}`;
+  document.head.appendChild(script);
+
+  // Initialize the dataLayer and gtag function
+  window.dataLayer = window.dataLayer || [];
+  function gtag() {
+    window.dataLayer.push(arguments);
+  }
+  window.gtag = gtag;
+
+  // Configure GA4
+  gtag('js', new Date());
+  gtag('config', GA_TRACKING_ID, {
+    page_title: document.title,
+    page_location: window.location.href,
+    // Enhanced measurement settings
+    send_page_view: true,
+    allow_google_signals: true,
+    allow_ad_personalization_signals: false // Set to true if you want ad personalization
+  });
+  console.log('GA4 initialized successfully');
+};
+
+// Generic event tracking function
+const trackEvent = (eventName, parameters = {}) => {
+  if (typeof window !== 'undefined' && window.gtag) {
+    window.gtag('event', eventName, {
+      // Add default parameters
+      timestamp: new Date().toISOString(),
+      page_location: window.location.href,
+      page_title: document.title,
+      ...parameters
+    });
+    console.log('GA4 Event:', eventName, parameters);
+  }
+};
+
+// Section Navigation Tracking
+const trackSectionView = (sectionName, fromSection = null) => {
+  trackEvent('section_view', {
+    section_name: sectionName,
+    from_section: fromSection,
+    event_category: 'navigation'
+  });
+};
+
+// Button Click Tracking
+const trackButtonClick = (buttonName, section, buttonType = 'primary') => {
+  trackEvent('button_click', {
+    button_name: buttonName,
+    section: section,
+    button_type: buttonType,
+    event_category: 'engagement'
+  });
+};
+
+// Project Interaction Tracking
+const trackProjectInteraction = (action, projectName, projectCategory = '') => {
+  trackEvent('project_interaction', {
+    action: action,
+    // 'view', 'click_github', 'click_demo', 'expand_details'
+    project_name: projectName,
+    project_category: projectCategory,
+    event_category: 'portfolio'
+  });
+};
+
+// Blog Interaction Tracking
+const trackBlogInteraction = (action, postTitle = '', category = '') => {
+  trackEvent('blog_interaction', {
+    action: action,
+    // 'read_article', 'filter_category', 'subscribe'
+    post_title: postTitle,
+    blog_category: category,
+    event_category: 'blog'
+  });
+};
+
+// Contact Method Tracking
+const trackContactAttempt = (method, destination = '') => {
+  trackEvent('contact_attempt', {
+    contact_method: method,
+    // 'email', 'linkedin', 'github'
+    destination: destination,
+    event_category: 'contact'
+  });
+};
+
+// External Link Tracking
+const trackExternalLink = (linkType, destination, context = '') => {
+  trackEvent('external_link_click', {
+    link_type: linkType,
+    destination: destination,
+    context: context,
+    event_category: 'outbound'
+  });
+};
+
+// Technology Filter Tracking
+const trackTechnologyFilter = (technology, section) => {
+  trackEvent('technology_filter', {
+    technology: technology,
+    section: section,
+    event_category: 'filter'
+  });
+};
+
+// Search Tracking (if you add search functionality)
+const trackSearch = (searchTerm, section, resultsCount = 0) => {
+  trackEvent('search', {
+    search_term: searchTerm,
+    section: section,
+    results_count: resultsCount,
+    event_category: 'search'
+  });
+};
+
+// Download/Resume Tracking
+const trackDownload = (fileName, fileType = '') => {
+  trackEvent('file_download', {
+    file_name: fileName,
+    file_type: fileType,
+    event_category: 'download'
+  });
+};
+
+// Theme Toggle Tracking
+const trackThemeToggle = newTheme => {
+  trackEvent('theme_toggle', {
+    theme: newTheme,
+    // 'dark' or 'light'
+    event_category: 'ui_interaction'
+  });
+};
+
+// Scroll Depth Tracking
+const trackScrollDepth = (depth, section) => {
+  trackEvent('scroll_depth', {
+    scroll_depth: depth,
+    // percentage
+    section: section,
+    event_category: 'engagement'
+  });
+};
+
+// Page Performance Tracking
+const trackPagePerformance = () => {
+  if (typeof window !== 'undefined' && 'performance' in window) {
+    var _performance$getEntri;
+    const navigation = performance.getEntriesByType('navigation')[0];
+    trackEvent('page_performance', {
+      load_time: Math.round(navigation.loadEventEnd - navigation.loadEventStart),
+      dom_content_loaded: Math.round(navigation.domContentLoadedEventEnd - navigation.domContentLoadedEventStart),
+      first_contentful_paint: Math.round(((_performance$getEntri = performance.getEntriesByName('first-contentful-paint')[0]) === null || _performance$getEntri === void 0 ? void 0 : _performance$getEntri.startTime) || 0),
+      event_category: 'performance'
+    });
+  }
+};
+
+// Error Tracking
+const trackError = (error, errorContext = '') => {
+  trackEvent('javascript_error', {
+    error_message: error.message,
+    error_context: errorContext,
+    user_agent: navigator.userAgent,
+    event_category: 'error'
+  });
+};
 
 /***/ })
 

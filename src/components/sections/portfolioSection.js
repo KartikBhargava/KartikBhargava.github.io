@@ -1,4 +1,4 @@
-// Updated PortfolioSection with GA4 analytics integration
+// Updated PortfolioSection with GA4 analytics integration and FurnitureTryOut project
 import React, { useState, useEffect } from "react"
 import Button from "../ui/buttons"
 import { trackSectionView, trackProjectInteraction, trackTechnologyFilter, trackEvent } from '../../utils/analytics'
@@ -34,7 +34,8 @@ const PortfolioSection = ({ darkMode = false }) => {
       success: '#10b981',
       warning: '#f59e0b',
       purple: '#8b5cf6',
-      pink: '#ec4899'
+      pink: '#ec4899',
+      orange: '#f97316'
     },
     dark: {
       background: '#0f172a',
@@ -47,7 +48,8 @@ const PortfolioSection = ({ darkMode = false }) => {
       success: '#34d399',
       warning: '#fbbf24',
       purple: '#a78bfa',
-      pink: '#f472b6'
+      pink: '#f472b6',
+      orange: '#fb923c'
     }
   }
 
@@ -99,6 +101,26 @@ const PortfolioSection = ({ darkMode = false }) => {
     },
     {
       id: 3,
+      title: "FurnitureTryOut",
+      category: "experimental",
+      description: "An innovative AR-powered furniture visualization app that lets users place and try virtual furniture in their real space using augmented reality technology.",
+      technologies: ["Kotlin", "ARCore", "Sceneform", "3D Rendering", "Camera API", "Material Design"],
+      image: "🏠",
+      githubUrl: "https://github.com/KartikBhargava/FurnitureTryOut",
+      status: "Experimental",
+      highlights: ["AR Technology", "3D Visualization", "Real-time Rendering"],
+      features: [
+        "Augmented reality furniture placement in real environments",
+        "Interactive 3D furniture models with realistic lighting",
+        "Intuitive gesture controls for positioning and scaling",
+        "Screenshot capture for saving AR setups",
+        "Furniture catalog with various categories",
+        "Performance optimized for smooth AR experience"
+      ],
+      gradient: `linear-gradient(135deg, ${currentTheme.orange} 0%, ${currentTheme.pink} 100%)`
+    },
+    {
+      id: 4,
       title: "ComposePlayground",
       category: "learning",
       description: "A collection of Jetpack Compose experiments and UI components. This project serves as my learning sandbox for exploring Compose capabilities.",
@@ -126,7 +148,7 @@ const PortfolioSection = ({ darkMode = false }) => {
       case 'Completed': return currentTheme.success
       case 'In Development': return currentTheme.primary
       case 'Ongoing': return currentTheme.warning
-      case 'Experimental': return currentTheme.purple
+      case 'Experimental': return currentTheme.orange
       case 'Learning Project': return currentTheme.pink
       default: return currentTheme.textLight
     }
